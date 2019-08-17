@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import LandingPage from './Landing';
 
-it('renders without crashing', () => {
+function setTitle(title = String) {
+  return `Render without crashing - ${title}`;
+}
+
+it(setTitle('Landing Page'), () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<LandingPage />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
