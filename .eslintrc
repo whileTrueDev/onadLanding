@@ -1,0 +1,54 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "extends": [
+        "airbnb"
+    ],
+    "plugins": [
+        "prettier",
+        "jest"
+    ],
+    "rules": {
+        "no-underscore-dangle": "off",
+        "comma-dangle": "off",
+        "linebreak-style": [
+            "error",
+        ],
+        "react/require-default-props": 1,
+        "no-unused-vars": "warn",
+        "button-has-type": 0,
+        "react/prefer-stateless-function": 1,
+        "react/forbid-prop-types": [
+            0,
+            {
+                "forbid": [
+                    "object"
+                ]
+            }
+        ],
+        "react/prop-types": [
+            1,
+            {
+                "ignore": [
+                    "className",
+                    "children",
+                    "location",
+                    "params",
+                    "location*"
+                ]
+            }
+        ]
+    },
+    "env": {
+        "browser": true,
+        "jest": true,
+        "es6": true
+    }
+}
