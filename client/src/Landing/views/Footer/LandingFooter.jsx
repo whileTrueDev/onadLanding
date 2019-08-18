@@ -5,9 +5,8 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(5),
     marginBottom: theme.spacing(3),
-    borderTop: '0.5px solid',
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(3),
       fontSize: 10,
@@ -20,13 +19,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function LandingHero(props) {
+export default function LandingHero() {
   const classes = useStyles();
 
   return (
     <Grid container justify="center" direction="column" alignItems="center" className={classes.root}>
       <a href="/">
-        <img src="/pngs/logo/onad_logo_vertical.png" alt="" className={classes.logo} />
+        <img src="/images/logo/onad_logo_vertical.png" alt="" className={classes.logo} />
       </a>
       <Typography variant="body2">Powered by OnAD</Typography>
       <Typography variant="body2">OnAD Corp. All Right Reserved</Typography>

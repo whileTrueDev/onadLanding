@@ -15,7 +15,7 @@ const text = `🌙지으신 그대로 주님께_(selah_🌙
   •유튜브 구독👉🏻안지연 An Ji Yeon
   `;
 
-const defaultText = '안지연 님의 광고 배너 랜딩 페이지입니다.';
+// const defaultText = '안지연 님의 광고 배너 랜딩 페이지입니다.';
 
 const linkUrl = 'https://youtube.com/channel/UCUi9Axrsx21RvTEhUZCAIsA';
 
@@ -62,7 +62,7 @@ export default function LandingHero(props) {
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
-          <Avatar alt="avatar" src="/pngs/logo/whileTrue_final.png" className={classes.bigAvatar} />
+          <Avatar alt="avatar" src="/images/chanu01.jpeg" className={classes.bigAvatar} />
         </Grid>
       </Grid>
 

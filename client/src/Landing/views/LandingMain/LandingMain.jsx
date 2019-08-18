@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
-import LandingHero from './LandingHero';
-import LandingImages from './LandingImages';
-import LandingFooter from './LandingFooter';
+import LandingHero from './components/LandingHero';
+import LandingImages from './components/LandingImages';
 // import LandingError from './LandingError';
 // config files
 
@@ -13,8 +12,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     [theme.breakpoints.up('lg')]: {
       // background: 'linear-gradient(115deg, rgb(29.4%, 0%, 51%) 30%, #FE6B8B 90%)',
-      backgroundImage: 'url(\'/pngs/landing/landing_back_image.jpg\')',
-      backgroundSize: 'auto',
+      backgroundImage: 'url(\'/images/landing_back_image.jpg\')',
+      // backgroundSize: 'auto',
     },
   },
   container: {
@@ -45,7 +44,6 @@ const LandingMain = (props) => {
         <div>
           <LandingHero data="onad" isDesktopWidth={isDesktopWidth} />
           <LandingImages isDesktopWidth={isDesktopWidth} />
-          <LandingFooter isDesktopWidth={isDesktopWidth} />
         </div>
 
 
@@ -55,3 +53,8 @@ const LandingMain = (props) => {
 };
 
 export default LandingMain;
+
+LandingMain.propTypes = {
+  match: PropTypes.object.isRequired,
+  isDesktopWidth: PropTypes.bool.isRequired,
+};

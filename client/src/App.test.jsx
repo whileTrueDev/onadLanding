@@ -6,7 +6,7 @@ function setTitle(title = String) {
   return `Render without crashing - ${title}`;
 }
 
-it(setTitle('Landing Page'), () => {
+test(setTitle('Landing Page'), () => {
   const div = document.createElement('div');
   ReactDOM.render(<LandingPage />, div);
   ReactDOM.unmountComponentAtNode(div);

@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Switch, Route } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 // Pages
 import LandingPage from './Landing';
 
 import * as serviceWorker from './serviceWorker';
 
+const history = createBrowserHistory();
+
 ReactDOM.render(
-  <Router>
-    <Switch>
-      <Route path="/" component={LandingPage} />
-    </Switch>
+  <Router history={history}>
+    <Route path="/" component={LandingPage} />
   </Router>, document.getElementById('root')
 );
 

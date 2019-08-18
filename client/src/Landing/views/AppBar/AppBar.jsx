@@ -71,7 +71,7 @@ export default function PrimarySearchAppBar() {
 
           <Typography className={classes.logo} variant="h6" noWrap>
             <a href="/">
-              <img src="/pngs/logo/onad_logo_vertical.png" alt="" height="50" />
+              <img src="/images/logo/onad_logo_vertical.png" alt="" height="50" />
             </a>
           </Typography>
 
