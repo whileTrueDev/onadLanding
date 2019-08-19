@@ -1,0 +1,13 @@
+{
+    "DB": {
+        "host": "onad.cbjjamtlar2t.ap-northeast-2.rds.amazonaws.com",
+        "user": "onad",
+        "password": "rkdghktn12",
+        "database": "onadnode",
+        "port": 3306
+    },
+    "dev": {
+        "apiHostName": "http://localhost:3010",
+        "reactHostName": "http://localhost:3011"
+    }
+}

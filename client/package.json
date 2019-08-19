@@ -16,7 +16,7 @@
     "shortid": "^2.2.14"
   },
   "scripts": {
-    "start": "set PORT=3011 react-scripts start",
+    "start": "PORT=3011 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -41,11 +41,8 @@ const LandingMain = (props) => {
       className={classes.root}
     >
       <Grid item xs={12} sm={12} md={12} lg={9} xl={6} className={classes.container}>
-        <div>
-          <LandingHero data="onad" isDesktopWidth={isDesktopWidth} />
-          <LandingImages isDesktopWidth={isDesktopWidth} />
-        </div>
-
+        <LandingHero data="onad" isDesktopWidth={isDesktopWidth} />
+        <LandingImages isDesktopWidth={isDesktopWidth} />
 
       </Grid>
     </Grid>
