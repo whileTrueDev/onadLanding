@@ -8,14 +8,25 @@ import Typography from '@material-ui/core/Typography';
 // icons
 // import FavoriteIcon from '@material-ui/icons/Favorite';
 
+/**
+ * @author hwasurr
+ * 크리에이터 이름
+ * 아바타 이미지
+ * 진행한 광고 수
+ * 광고 클릭 전체 수
+ * 각 배너당 클릭 수
+ * 배너 당 링크
+ * 개인 디스크립션
+ * 개인 링크
+ * 뒷 배경
+ *  */
 
+// const defaultText = '안지연 님의 광고 배너 랜딩 페이지입니다.';
 const text = `🌙지으신 그대로 주님께_(selah_🌙
   •축가&스케줄 문의 메일👉🏻 lkh@aknobinc.com
   •Facebook👉🏻안지연
   •유튜브 구독👉🏻안지연 An Ji Yeon
   `;
-
-// const defaultText = '안지연 님의 광고 배너 랜딩 페이지입니다.';
 
 const linkUrl = 'https://youtube.com/channel/UCUi9Axrsx21RvTEhUZCAIsA';
 
@@ -53,7 +64,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LandingHero(props) {
-  const { data, isDesktopWidth } = props;
+  const { user, isDesktopWidth } = props;
   const classes = useStyles();
 
 
@@ -68,7 +79,7 @@ export default function LandingHero(props) {
 
       {/* My description section */}
       <Grid item sm={6} xs={12}>
-        <Typography variant="h4" gutterBottom className={classes.title}>{`${data}`}</Typography>
+        <Typography variant="h4" gutterBottom className={classes.title}>{`${user}`}</Typography>
         <Grid container justify="flex-start" spacing={isDesktopWidth ? 2 : 1}>
           <Grid item>
             <Typography variant="h6" gutterBottom>
@@ -102,9 +113,10 @@ export default function LandingHero(props) {
 }
 
 LandingHero.propTypes = {
-  data: PropTypes.string,
+  user: PropTypes.string,
+  isDesktopWidth: PropTypes.bool.isRequired
 };
 
 LandingHero.defaultProps = {
-  data: '',
+  user: '',
 };

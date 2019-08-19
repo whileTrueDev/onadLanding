@@ -18,8 +18,9 @@ const useStyles = makeStyles(theme => ({
   },
   container: {
     backgroundColor: '#fff',
+    marginBottom: theme.spacing(20),
     margin: '0 auto 30px',
-    padding: 20,
+    padding: '60px 20px',
     [theme.breakpoints.up('lg')]: {
       marginTop: 200,
     },
@@ -32,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 
 const LandingMain = (props) => {
   const classes = useStyles();
-  const { match, isDesktopWidth } = props;
+  const { isDesktopWidth, user } = props;
 
   return (
     <Grid
@@ -41,7 +42,7 @@ const LandingMain = (props) => {
       className={classes.root}
     >
       <Grid item xs={12} sm={12} md={12} lg={9} xl={6} className={classes.container}>
-        <LandingHero data="onad" isDesktopWidth={isDesktopWidth} />
+        <LandingHero user={user} isDesktopWidth={isDesktopWidth} />
         <LandingImages isDesktopWidth={isDesktopWidth} />
 
       </Grid>
@@ -52,6 +53,10 @@ const LandingMain = (props) => {
 export default LandingMain;
 
 LandingMain.propTypes = {
-  match: PropTypes.object.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
+  user: PropTypes.string,
+};
+
+LandingMain.defaultProps = {
+  user: '',
 };

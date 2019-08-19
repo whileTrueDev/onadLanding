@@ -6,7 +6,6 @@ const router = express.Router();
 
 router.get('/user', (req, res) => {
   const { name } = req.query;
-
   const query = 'SELECT creatorName FROM creatorInfo WHERE creatorTwitchId = ?';
   let lastResult;
   doQuery(query, [name])

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -16,7 +17,10 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(2),
     },
   },
-  imageContainer: {},
+  imageContainer: {
+    display: 'flex',
+    justifyContent: 'center'
+  },
   imageButton: {
     cursor: 'pointer',
     marginTop: 27,
@@ -57,6 +61,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.common.black,
   },
   image: {
+    maxHeight: 293,
     width: 293,
     [theme.breakpoints.down('sm')]: {
       width: 'calc( 100% - 5px )',
@@ -65,6 +70,11 @@ const useStyles = makeStyles(theme => ({
       width: 'calc( 100% - 5px )',
     },
   },
+  iconOnImage: {
+    width: 60,
+    fontSize: 30,
+    fontWeight: 'bold'
+  }
 }));
 
 const useTabValue = () => {
@@ -114,21 +124,20 @@ export default function ImageGridList(props) {
           aria-label="icon tabs example"
         >
           <Tab aria-label="favorite" label="배너목록" />
-          <Tab aria-label="plus" label="plus++" disabled />
+          {/* <Tab aria-label="plus" label="plus++" disabled /> */}
         </Tabs>
       </Grid>
 
       {/* Image section */}
-      <Grid container>
-
-        <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 3 : 0} className={classes.imageContainer}>
-          {images.map(image => (
-            <Grid item xs={4} key={shortid.generate()}>
+      <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageContainer}>
+        {images.map(image => (
+          <Grid item xs={4} key={shortid.generate()}>
+            <div className={classes.imageContainer}>
               <ButtonBase onClick={handleClick} className={classes.imageButton}>
                 <img src={image.src} alt="" className={classes.image} />
                 <div className={classes.imageBackdrop} />
                 <div className={classes.imageDesc}>
-                  <Flag style={{ width: 60, fontSize: 30, fontWeight: 'bold' }} />
+                  <Flag className={classes.iconOnImage} />
                   <Typography
                     variant="h5"
                     color="inherit"
@@ -138,12 +147,15 @@ export default function ImageGridList(props) {
                   </Typography>
                 </div>
               </ButtonBase>
-            </Grid>
-          ))}
-        </Grid>
-
+            </div>
+          </Grid>
+        ))}
       </Grid>
 
     </Grid>
   );
 }
+
+ImageGridList.propTypes = {
+  isDesktopWidth: PropTypes.bool.isRequired
+};

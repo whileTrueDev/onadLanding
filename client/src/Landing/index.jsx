@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -15,9 +16,7 @@ import useFetchData from './lib/useDataFetch';
 export default function Landing(props) {
   const { match } = props;
   const isDesktopWidth = useMediaQuery('(min-width:600px)');
-  const params = { name: 'iamsupermazinga' };
-  const userData = useFetchData('/api/user', { ...params });
-  console.log(userData);
+  const userData = useFetchData('/api/user', { name: match.params.name });
 
   return (
     <ThemeProvider theme={theme}>
@@ -25,11 +24,20 @@ export default function Landing(props) {
 
       <AppBar />
 
+      {userData.Loading && (
+        <span>loading...</span>
+      )}
+
       {!userData.loading && userData.errorState && (
       <Error />
       )}
+
       {!userData.loading && userData.data && (
-      <LandingMain match={match} isDesktopWidth={isDesktopWidth} />
+      <LandingMain
+        match={match}
+        isDesktopWidth={isDesktopWidth}
+        user={userData.data.creatorName}
+      />
       )}
 
       <Footer />
@@ -37,3 +45,7 @@ export default function Landing(props) {
     </ThemeProvider>
   );
 }
+
+Landing.propTypes = {
+  match: PropTypes.object.isRequired,
+};
