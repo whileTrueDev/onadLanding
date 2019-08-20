@@ -4,7 +4,7 @@ import apiHOST from '../../.config/host';
 // functions
 import querify from './querify';
 
-const useFetchData = (initialUrl, params = {}) => {
+const useFetchData = (initialUrl = '', params = {}) => {
   /**
    * @author hwasurr
    * @function_description get 방식의 요청 query 형태로 만들어 주는 함수.
@@ -15,32 +15,36 @@ const useFetchData = (initialUrl, params = {}) => {
 
   const [data, setData] = useState();
   const [url] = useState(`${apiHOST}${initialUrl}${querify(params)}`);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorState, setErrorState] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsError(false);
-      setIsLoading(true);
+      setErrorState(false);
+      setLoading(true);
 
       try {
-        const result = await axios(url);
+        const response = await axios(url);
 
-        if (!result.error) {
-          setData(result.data.result);
+        if (!response.data.error) {
+          // api 서버에서 올바른 결과를 받은 경우
+          setData(response.data.result);
+        } else {
+          // 쿼리 결과가 있는 경우
+          setErrorState(true);
         }
       } catch (error) {
-        setIsError(true);
+        // api 요청 과정에서의 오류
+        setErrorState(true);
       }
 
-      setIsLoading(false);
+      setLoading(false);
     };
 
     fetchData();
   }, [url]);
 
-  return { data, isLoading, isError };
+  return { data, loading, errorState };
 };
-
 
 export default useFetchData;
