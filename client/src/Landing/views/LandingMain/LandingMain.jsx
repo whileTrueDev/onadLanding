@@ -5,8 +5,24 @@ import Grid from '@material-ui/core/Grid';
 // sub components
 import LandingHero from './components/LandingHero';
 import LandingImages from './components/LandingImages';
-// import LandingError from './LandingError';
-// config files
+import InProgress from '../../components/InProgress';
+// from my own hooks
+import useFetchData from '../../lib/hook/useDataFetch';
+
+/**
+ * @author hwasurr
+ * @param {크리에이터 이름} Done creatorLanding - creatorInfo
+ * @param {아바타 이미지} Done creatorInfo - creatorLogo
+ * @param {개인 디스크립션} Done creatorLanding - creatorDesc
+ * @param {개인 링크} Done creatorLanding - creatorDescLink
+ * @param {뒷 배경} Done creatorLanding - creatorBackgroundImage
+ * @param {테마} Done creatorLanding - creatorTheme
+ * @param {진행한 광고 수} Done bannerMatched에서가져오기
+ * @param {광고 클릭 전체 수 (해당 크리에이터의 모든 contraction의 클릭 수)} creatorLandingClick - LandingBannerClick 의 합
+ * @param {배너 당 링크} BannerRegistered 의 배너링크(생성 요망) - 배너{ 링크가 없는 경우는?}
+ * @param {각 배너당 (contractionId 당) 클릭 수} creatorLandingClick - LandingBannerClick
+ * @param {각 배너 이미지} Done landingClick - contractionId 및 bannerRegistered
+ * */
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,8 +35,9 @@ const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: '#fff',
     marginBottom: theme.spacing(20),
-    margin: '0 auto 30px',
-    padding: '60px 20px',
+    margin: '0 auto 20px',
+    padding: '40px 20px',
+    minHeight: '75vh',
     [theme.breakpoints.up('lg')]: {
       marginTop: 200,
     },
@@ -30,10 +47,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 const LandingMain = (props) => {
   const classes = useStyles();
-  const { isDesktopWidth, user } = props;
+  const { match, isDesktopWidth, userData } = props;
+
+  const userDescData = useFetchData('/api/description', { name: match.params.name });
+  const bannerData = useFetchData('/api/banner', { name: match.params.name });
+  const clickData = useFetchData('/api/clicks', { name: match.params.name });
 
   return (
     <Grid
@@ -42,8 +62,26 @@ const LandingMain = (props) => {
       className={classes.root}
     >
       <Grid item xs={12} sm={12} md={12} lg={9} xl={6} className={classes.container}>
-        <LandingHero user={user} isDesktopWidth={isDesktopWidth} />
-        <LandingImages isDesktopWidth={isDesktopWidth} />
+        {userDescData.loading && (<InProgress />)}
+        {!userDescData.loading && userDescData.data && (
+          <LandingHero
+            user={userData.creatorName}
+            userLogo={userData.creatorLogo}
+            userDesc={userDescData.data.creatorDesc}
+            userDescTitle={userDescData.data.creatorDescTitle}
+            userDescLink={userDescData.data.creatorDescLlink}
+            bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
+            totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
+            isDesktopWidth={isDesktopWidth}
+          />
+        )}
+        {bannerData.loading && (<InProgress style={{ marginTop: 60 }} />)}
+        {!bannerData.loading && bannerData.data && (
+          <LandingImages
+            isDesktopWidth={isDesktopWidth}
+            bannerData={bannerData}
+          />
+        )}
 
       </Grid>
     </Grid>
@@ -53,10 +91,14 @@ const LandingMain = (props) => {
 export default LandingMain;
 
 LandingMain.propTypes = {
+  match: PropTypes.object.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
-  user: PropTypes.string,
+  userData: PropTypes.object
 };
 
 LandingMain.defaultProps = {
-  user: '',
+  userData: {
+    creatorName: '',
+    creatorLogo: '/images/logo/onad_logo_vertical_small.png'
+  }
 };

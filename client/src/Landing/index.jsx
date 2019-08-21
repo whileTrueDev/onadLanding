@@ -8,10 +8,11 @@ import LandingMain from './views/LandingMain/LandingMain';
 import AppBar from './views/AppBar/AppBar';
 import Footer from './views/Footer/LandingFooter';
 import Error from './views/Error/LandingError';
+import InProgress from './components/InProgress';
 // theme
 import theme from './theme';
 // config
-import useFetchData from './lib/useDataFetch';
+import useFetchData from './lib/hook/useDataFetch';
 
 export default function Landing(props) {
   const { match } = props;
@@ -24,20 +25,20 @@ export default function Landing(props) {
 
       <AppBar />
 
-      {userData.Loading && (
-        <span>loading...</span>
+      {userData.loading && (
+        <InProgress large />
       )}
 
       {!userData.loading && userData.errorState && (
-      <Error />
+        <Error />
       )}
 
       {!userData.loading && userData.data && (
-      <LandingMain
-        match={match}
-        isDesktopWidth={isDesktopWidth}
-        user={userData.data.creatorName}
-      />
+        <LandingMain
+          match={match}
+          isDesktopWidth={isDesktopWidth}
+          userData={userData.data}
+        />
       )}
 
       <Footer />

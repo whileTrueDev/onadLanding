@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import shortid from 'shortid';
+// material-ui
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
@@ -8,18 +9,26 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Flag from '@material-ui/icons/Flag';
+// own handler
+import useBannerClick from '../../../lib/hook/useBannerClick';
 
 const useStyles = makeStyles(theme => ({
   root: {
     borderTop: '0.5px solid',
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(5),
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(2),
     },
   },
+  imageSection: {
+    marginTop: theme.spacing(5)
+  },
   imageContainer: {
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    [theme.breakpoints.up('md')]: {
+      marginBottom: theme.spacing(5)
+    }
   },
   imageButton: {
     cursor: 'pointer',
@@ -87,29 +96,11 @@ const useTabValue = () => {
   return { value, handleTabChange };
 };
 
-const images = [
-  { src: '/images/chanu01.jpeg', clickNum: 36 },
-  { src: '/images/chanu01.jpeg', clickNum: 123 },
-  { src: '/images/chanu01.jpeg', clickNum: 234 },
-  { src: '/images/chanu01.jpeg', clickNum: 345 },
-  { src: '/images/chanu01.jpeg', clickNum: 456 },
-  { src: '/images/chanu01.jpeg', clickNum: 567 },
-  { src: '/images/chanu01.jpeg', clickNum: 678 },
-  { src: '/images/chanu01.jpeg', clickNum: 789 },
-  { src: '/images/chanu01.jpeg', clickNum: 890 },
-  { src: '/images/chanu01.jpeg', clickNum: 901 },
-  { src: '/images/chanu01.jpeg', clickNum: 1231 },
-  { src: '/images/chanu01.jpeg', clickNum: 1234 },
-  { src: '/images/chanu01.jpeg', clickNum: 2345 },
-];
-
 export default function ImageGridList(props) {
-  const { isDesktopWidth } = props;
+  const { isDesktopWidth, bannerData } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
-  const handleClick = (banner) => {
-    console.log(`${banner}clicked!`);
-  };
+  const { handleClick } = useBannerClick(bannerData.data);
 
   return (
     <Grid container className={classes.root}>
@@ -129,12 +120,15 @@ export default function ImageGridList(props) {
       </Grid>
 
       {/* Image section */}
-      <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageContainer}>
-        {images.map(image => (
+      <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
+        {bannerData.data.map((banner, index) => (
           <Grid item xs={4} key={shortid.generate()}>
             <div className={classes.imageContainer}>
-              <ButtonBase onClick={handleClick} className={classes.imageButton}>
-                <img src={image.src} alt="" className={classes.image} />
+              <ButtonBase
+                onClick={() => { handleClick(index, banner.contractionId); }}
+                className={classes.imageButton}
+              >
+                <img src={banner.bannerSrc} alt="" className={classes.image} />
                 <div className={classes.imageBackdrop} />
                 <div className={classes.imageDesc}>
                   <Flag className={classes.iconOnImage} />
@@ -143,7 +137,7 @@ export default function ImageGridList(props) {
                     color="inherit"
                     style={{ fontWeight: 'bold' }}
                   >
-                    {image.clickNum}
+                    {banner.clickCount}
                   </Typography>
                 </div>
               </ButtonBase>
@@ -157,5 +151,10 @@ export default function ImageGridList(props) {
 }
 
 ImageGridList.propTypes = {
-  isDesktopWidth: PropTypes.bool.isRequired
+  isDesktopWidth: PropTypes.bool.isRequired,
+  bannerData: PropTypes.object
+};
+
+ImageGridList.defaultProps = {
+  bannerData: [{}]
 };

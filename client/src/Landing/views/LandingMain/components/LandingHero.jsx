@@ -5,30 +5,6 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
-// icons
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-
-/**
- * @author hwasurr
- * 크리에이터 이름
- * 아바타 이미지
- * 진행한 광고 수
- * 광고 클릭 전체 수
- * 각 배너당 클릭 수
- * 배너 당 링크
- * 개인 디스크립션
- * 개인 링크
- * 뒷 배경
- *  */
-
-// const defaultText = '안지연 님의 광고 배너 랜딩 페이지입니다.';
-const text = `🌙지으신 그대로 주님께_(selah_🌙
-  •축가&스케줄 문의 메일👉🏻 lkh@aknobinc.com
-  •Facebook👉🏻안지연
-  •유튜브 구독👉🏻안지연 An Ji Yeon
-  `;
-
-const linkUrl = 'https://youtube.com/channel/UCUi9Axrsx21RvTEhUZCAIsA';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -64,16 +40,18 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LandingHero(props) {
-  const { user, isDesktopWidth } = props;
+  const {
+    user, userLogo, userDesc, userDescTitle,
+    userDescLink, isDesktopWidth, bannerCount, totalClickCount
+  } = props;
   const classes = useStyles();
-
 
   return (
     <Grid container className={classes.root}>
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
-          <Avatar alt="avatar" src="/images/chanu01.jpeg" className={classes.bigAvatar} />
+          <Avatar alt="avatar" src={userLogo} className={classes.bigAvatar} />
         </Grid>
       </Grid>
 
@@ -84,29 +62,41 @@ export default function LandingHero(props) {
           <Grid item>
             <Typography variant="h6" gutterBottom>
               {'진행한 광고 '}
-              <span className={classes.bold}>14</span>
+              <span className={classes.bold}>{bannerCount}</span>
             </Typography>
           </Grid>
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
               {'광고 클릭수 '}
-              <span className={classes.bold}>276</span>
+              <span className={classes.bold}>{totalClickCount}</span>
             </Typography>
           </Grid>
         </Grid>
 
         <br />
-        <Typography variant="h6" className={classes.bold}>안 지연</Typography>
+        {userDescTitle && (
+          <Typography variant="h6" className={classes.bold}>{userDescTitle}</Typography>
+        )}
+        <br />
 
-        {text.split('\n').map(row => (
+        {userDesc && userDesc.split('\\n').map(row => (
           <Typography variant="body1" key={row}>{row}</Typography>
         ))}
-        <a href={linkUrl} onClick={(e) => { e.preventDefault(); }}>
-          <Typography variant="body1">
-            {linkUrl}
-          </Typography>
-        </a>
+
+        {userDescLink && (
+          <a
+            href={userDescLink}
+            onClick={(e) => {
+              // 링크 또는 다른 이벤트 등록
+              e.preventDefault();
+            }}
+          >
+            <Typography variant="body1">
+              {userDescLink}
+            </Typography>
+          </a>
+        )}
       </Grid>
     </Grid>
   );
@@ -114,9 +104,20 @@ export default function LandingHero(props) {
 
 LandingHero.propTypes = {
   user: PropTypes.string,
-  isDesktopWidth: PropTypes.bool.isRequired
+  userLogo: PropTypes.string.isRequired,
+  isDesktopWidth: PropTypes.bool.isRequired,
+  userDesc: PropTypes.string,
+  userDescTitle: PropTypes.string,
+  userDescLink: PropTypes.string,
+  bannerCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  totalClickCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 LandingHero.defaultProps = {
   user: '',
+  userDesc: '',
+  userDescTitle: '',
+  userDescLink: '',
+  bannerCount: 0,
+  totalClickCount: 0
 };
