@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const logger = require('../middleware/logger');
-const config = require('../config/config.json');
+const config = require('../.config/config.json');
 
 const pool = mysql.createPool({
   host: config.DB.host,
