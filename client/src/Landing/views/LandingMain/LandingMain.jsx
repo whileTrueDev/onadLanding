@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 // sub components
 import LandingHero from './components/LandingHero';
 import LandingImages from './components/LandingImages';
+import LandingNoAd from './components/LandingNoAd';
 import InProgress from '../../components/InProgress';
 // from my own hooks
 import useFetchData from '../../lib/hook/useDataFetch';
@@ -76,6 +77,7 @@ const LandingMain = (props) => {
           />
         )}
         {bannerData.loading && (<InProgress style={{ marginTop: 60 }} />)}
+        {!bannerData.loading && !bannerData.data && (<LandingNoAd />)}
         {!bannerData.loading && bannerData.data && (
           <LandingImages
             isDesktopWidth={isDesktopWidth}

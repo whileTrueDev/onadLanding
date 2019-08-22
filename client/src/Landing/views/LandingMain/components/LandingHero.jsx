@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   bigAvatar: {
+    cursor: 'pointer',
     boxShadow: '0 2px 10px 1px rgba(102, 102, 102, 0.5)',
     margin: 25,
     width: 200,
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
       height: 100,
     },
     '&:hover': {
-      opacity: 0.75,
+      opacity: 0.85,
     },
   },
   title: {
@@ -51,7 +52,14 @@ export default function LandingHero(props) {
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
-          <Avatar alt="avatar" src={userLogo} className={classes.bigAvatar} />
+          <Avatar
+            alt="avatar"
+            src={userLogo}
+            className={classes.bigAvatar}
+            onClick={() => {
+              window.open(`https://www.twitch.tv${window.location.pathname}`);
+            }}
+          />
         </Grid>
       </Grid>
 
@@ -62,14 +70,22 @@ export default function LandingHero(props) {
           <Grid item>
             <Typography variant="h6" gutterBottom>
               {'진행한 광고 '}
-              <span className={classes.bold}>{bannerCount}</span>
+              { bannerCount === null ? (
+                <span className={classes.bold}>0</span>
+              ) : (
+                <span className={classes.bold}>{bannerCount}</span>
+              )}
             </Typography>
           </Grid>
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
               {'광고 클릭수 '}
-              <span className={classes.bold}>{totalClickCount}</span>
+              { totalClickCount === null ? (
+                <span className={classes.bold}>0</span>
+              ) : (
+                <span className={classes.bold}>{totalClickCount}</span>
+              )}
             </Typography>
           </Grid>
         </Grid>

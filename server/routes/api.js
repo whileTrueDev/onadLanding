@@ -227,7 +227,7 @@ router.post('/banner/click', (req, res) => {
       const { error, result } = row;
       if (!error) {
       // 쿼리 과정에서 오류가 아닌 경우
-        if (result.length > 0) {
+        if (result) {
           // 쿼리 결과가 있는 경우
           lastResult = {
             error: null,

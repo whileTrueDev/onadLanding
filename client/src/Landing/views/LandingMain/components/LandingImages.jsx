@@ -11,6 +11,8 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import Flag from '@material-ui/icons/Flag';
 // own handler
 import useBannerClick from '../../../lib/hook/useBannerClick';
+// own component
+import LandingDialog from './LandingDialog';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -100,7 +102,15 @@ export default function ImageGridList(props) {
   const { isDesktopWidth, bannerData } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
-  const { handleClick } = useBannerClick(bannerData.data);
+  const { clickedList, handleClick } = useBannerClick(bannerData.data);
+
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  function handleDialogOpen(targetIndex) {
+    setDialogOpen(targetIndex);
+  }
+  function handleDialogClose() {
+    setDialogOpen(false);
+  }
 
   return (
     <Grid container className={classes.root}>
@@ -121,11 +131,15 @@ export default function ImageGridList(props) {
 
       {/* Image section */}
       <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
-        {bannerData.data.map((banner, index) => (
+        {clickedList.map((banner, index) => (
           <Grid item xs={4} key={shortid.generate()}>
             <div className={classes.imageContainer}>
               <ButtonBase
-                onClick={() => { handleClick(index, banner.contractionId); }}
+                onClick={() => {
+                  handleClick(index, banner.contractionId);
+                  // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1
+                  handleDialogOpen(index + 1);
+                }}
                 className={classes.imageButton}
               >
                 <img src={banner.bannerSrc} alt="" className={classes.image} />
@@ -146,15 +160,33 @@ export default function ImageGridList(props) {
         ))}
       </Grid>
 
+      {dialogOpen ? (
+        <LandingDialog
+          open={Boolean(dialogOpen)}
+          handleClose={handleDialogClose}
+          // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1 했기 때문에 - 1
+          data={clickedList[dialogOpen - 1]}
+        />
+      ) : (
+        null
+      )}
+
     </Grid>
   );
 }
 
 ImageGridList.propTypes = {
   isDesktopWidth: PropTypes.bool.isRequired,
-  bannerData: PropTypes.object
+  bannerData: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
 };
 
 ImageGridList.defaultProps = {
-  bannerData: [{}]
+  bannerData: [{
+    clicked: false,
+    success: false,
+    error: '',
+    contractionId: '',
+    clickCount: 0,
+    bannerSrc: '',
+  }]
 };
