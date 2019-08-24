@@ -28,7 +28,7 @@ import useFetchData from '../../lib/hook/useDataFetch';
 const useStyles = makeStyles(theme => ({
   root: {
     [theme.breakpoints.up('lg')]: {
-      // background: 'linear-gradient(115deg, rgb(29.4%, 0%, 51%) 30%, #FE6B8B 90%)',
+      // background: 'linear-gradient(115deg, #FE6B8B 30%, rgb(29.4%, 0%, 51%) 90%)',
       backgroundImage: 'url(\'/images/landing_back_image.jpg\')',
       // backgroundSize: 'auto',
     },
@@ -73,6 +73,7 @@ const LandingMain = (props) => {
             userDescLink={userDescData.data.creatorDescLlink}
             bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
             totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
+            totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
             isDesktopWidth={isDesktopWidth}
           />
         )}

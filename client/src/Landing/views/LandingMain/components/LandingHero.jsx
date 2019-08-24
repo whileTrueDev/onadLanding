@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
 export default function LandingHero(props) {
   const {
     user, userLogo, userDesc, userDescTitle,
-    userDescLink, isDesktopWidth, bannerCount, totalClickCount
+    userDescLink, isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
   } = props;
   const classes = useStyles();
 
@@ -80,11 +80,22 @@ export default function LandingHero(props) {
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'광고 클릭수 '}
+              {'광고 조회수 '}
               { totalClickCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
                 <span className={classes.bold}>{totalClickCount}</span>
+              )}
+            </Typography>
+          </Grid>
+
+          <Grid item>
+            <Typography variant="h6" gutterBottom>
+              {'광고 이동수 '}
+              { totalTransferCount === null ? (
+                <span className={classes.bold}>0</span>
+              ) : (
+                <span className={classes.bold}>{totalTransferCount}</span>
               )}
             </Typography>
           </Grid>
@@ -126,7 +137,8 @@ LandingHero.propTypes = {
   userDescTitle: PropTypes.string,
   userDescLink: PropTypes.string,
   bannerCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  totalClickCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  totalClickCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  totalTransferCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
 };
 
 LandingHero.defaultProps = {
@@ -135,5 +147,6 @@ LandingHero.defaultProps = {
   userDescTitle: '',
   userDescLink: '',
   bannerCount: 0,
-  totalClickCount: 0
+  totalClickCount: 0,
+  totalTransferCount: 0
 };

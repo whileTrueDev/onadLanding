@@ -9,6 +9,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
+// own function
+import setDateFormat from '../../../lib/setDateFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -28,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   description: {
     maxWidth: theme.breakpoints.width('sm'),
-    padding: 15
+    padding: 15,
   },
   descriptionIcons: {
     fontWeight: 'bold'
@@ -45,14 +47,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function LandingDialog(props) {
-  const { open, handleClose, data } = props;
+  const {
+    open, handleClose, data, handleTransferClick, indexOfThisData
+  } = props;
   const classes = useStyles();
 
-  function handleImageButtonClick() {
-    console.log('image클릭!');
-  }
-
-  console.log('LandingDialog, ', data);
   return (
     <Dialog
       open={open}
@@ -60,16 +59,30 @@ export default function LandingDialog(props) {
       maxWidth="md"
     >
       <DialogContent className={classes.content}>
-        <ButtonBase className={classes.imageWrapper} onClick={handleImageButtonClick}>
+        <ButtonBase
+          className={classes.imageWrapper}
+          onClick={() => { handleTransferClick(indexOfThisData); }}
+        >
           <img src={data.bannerSrc} alt="banner" className={classes.image} />
         </ButtonBase>
         <div className={classes.description}>
-          <DialogContentText>
-            이 게시물 ( 배너에 대한 소개 ) 이벤트 정보 등등~~
-            이 게시물 ( 배너에 대한 소개 ) 이벤트 정보 등등~~
-            이 게시물 ( 배너에 대한 소개 ) 이벤트 정보 등등~~
-            이 게시물 ( 배너에 대한 소개 ) 이벤트 정보 등등~~
-          </DialogContentText>
+
+          {data.companyDescription ? (
+            <DialogContentText>
+              {`- ${data.companyDescription}`}
+            </DialogContentText>
+          ) : (
+            <div style={{ height: 20 }} />
+          )}
+
+          {data.bannerDescription ? (
+            <DialogContentText>
+              {`- ${data.bannerDescription}`}
+            </DialogContentText>
+          ) : (
+            <div style={{ height: 20 }} />
+          )}
+
 
           <DialogContentText className={classes.descriptionIcons}>
             <Flag className={classes.flagicon} />
@@ -77,13 +90,17 @@ export default function LandingDialog(props) {
             <ReDo className={classes.redirecticon} />
             {`${data.transferCount} 이동 `}
           </DialogContentText>
+
+          <DialogContentText variant="body2">
+            {`${setDateFormat(data.contractionDate)}`}
+          </DialogContentText>
         </div>
 
         <div className={classes.actions}>
 
           <DialogActions>
             <Button
-              onClick={handleClose}
+              onClick={() => { handleTransferClick(indexOfThisData); }}
               color="primary"
               variant="contained"
               className={classes.button}
@@ -109,5 +126,7 @@ export default function LandingDialog(props) {
 LandingDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  handleTransferClick: PropTypes.func.isRequired,
+  indexOfThisData: PropTypes.number.isRequired
 };

@@ -8,6 +8,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
+// icons
+import ReDo from '@material-ui/icons/Redo';
 import Flag from '@material-ui/icons/Flag';
 // own handler
 import useBannerClick from '../../../lib/hook/useBannerClick';
@@ -102,7 +104,7 @@ export default function ImageGridList(props) {
   const { isDesktopWidth, bannerData } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
-  const { clickedList, handleClick } = useBannerClick(bannerData.data);
+  const { clickedList, handleClick, handleTransferClick } = useBannerClick(bannerData.data);
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
   function handleDialogOpen(targetIndex) {
@@ -153,6 +155,14 @@ export default function ImageGridList(props) {
                   >
                     {banner.clickCount}
                   </Typography>
+                  <ReDo className={classes.iconOnImage} />
+                  <Typography
+                    variant="h5"
+                    color="inherit"
+                    style={{ fontWeight: 'bold' }}
+                  >
+                    {banner.transferCount}
+                  </Typography>
                 </div>
               </ButtonBase>
             </div>
@@ -164,8 +174,10 @@ export default function ImageGridList(props) {
         <LandingDialog
           open={Boolean(dialogOpen)}
           handleClose={handleDialogClose}
+          handleTransferClick={handleTransferClick}
           // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1 했기 때문에 - 1
           data={clickedList[dialogOpen - 1]}
+          indexOfThisData={dialogOpen - 1}
         />
       ) : (
         null
@@ -183,8 +195,8 @@ ImageGridList.propTypes = {
 ImageGridList.defaultProps = {
   bannerData: [{
     clicked: false,
-    success: false,
-    error: '',
+    clickSuccess: false,
+    clickError: '',
     contractionId: '',
     clickCount: 0,
     bannerSrc: '',
