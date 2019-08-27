@@ -5,6 +5,8 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+// own function
+import setNumberFormat from '../../../lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,7 +75,7 @@ export default function LandingHero(props) {
               { bannerCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
-                <span className={classes.bold}>{bannerCount}</span>
+                <span className={classes.bold}>{setNumberFormat(bannerCount)}</span>
               )}
             </Typography>
           </Grid>
@@ -84,7 +86,7 @@ export default function LandingHero(props) {
               { totalClickCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
-                <span className={classes.bold}>{totalClickCount}</span>
+                <span className={classes.bold}>{setNumberFormat(totalClickCount)}</span>
               )}
             </Typography>
           </Grid>
@@ -95,7 +97,7 @@ export default function LandingHero(props) {
               { totalTransferCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
-                <span className={classes.bold}>{totalTransferCount}</span>
+                <span className={classes.bold}>{setNumberFormat(totalTransferCount)}</span>
               )}
             </Typography>
           </Grid>

@@ -11,6 +11,7 @@ import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
 // own function
 import setDateFormat from '../../../lib/setDateFormat';
+import setNumberFormat from '../../../lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -86,9 +87,9 @@ export default function LandingDialog(props) {
 
           <DialogContentText className={classes.descriptionIcons}>
             <Flag className={classes.flagicon} />
-            {`${data.clickCount} 조회 `}
+            {`${setNumberFormat(data.clickCount)} 조회 `}
             <ReDo className={classes.redirecticon} />
-            {`${data.transferCount} 이동 `}
+            {`${setNumberFormat(data.transferCount)} 이동 `}
           </DialogContentText>
 
           <DialogContentText variant="body2">

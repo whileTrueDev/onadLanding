@@ -15,6 +15,8 @@ import Flag from '@material-ui/icons/Flag';
 import useBannerClick from '../../../lib/hook/useBannerClick';
 // own component
 import LandingDialog from './LandingDialog';
+// own functions
+import setNumberFormat from '../../../lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -153,7 +155,7 @@ export default function ImageGridList(props) {
                     color="inherit"
                     style={{ fontWeight: 'bold' }}
                   >
-                    {banner.clickCount}
+                    {setNumberFormat(banner.clickCount)}
                   </Typography>
                   <ReDo className={classes.iconOnImage} />
                   <Typography
@@ -161,7 +163,7 @@ export default function ImageGridList(props) {
                     color="inherit"
                     style={{ fontWeight: 'bold' }}
                   >
-                    {banner.transferCount}
+                    {setNumberFormat(banner.transferCount)}
                   </Typography>
                 </div>
               </ButtonBase>
