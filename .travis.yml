@@ -28,8 +28,8 @@ after_success:
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
   - docker build -t $DOCKER_USERNAME/onad_landing ./client
   - docker build -t $DOCKER_USERNAME/onad_landing_api ./server
-  - docker tag $DOCKER_USERNAME/onad_web $DOCKER_USERNAME/onad_landing:0.$TRAVIS_JOB_NUMBER
-  - docker tag $DOCKER_USERNAME/onad_web_api $DOCKER_USERNAME/onad_landing_api:0.$TRAVIS_JOB_NUMBER
+  - docker tag $DOCKER_USERNAME/onad_landing $DOCKER_USERNAME/onad_landing:0.$TRAVIS_JOB_NUMBER
+  - docker tag $DOCKER_USERNAME/onad_landing_api $DOCKER_USERNAME/onad_landing_api:0.$TRAVIS_JOB_NUMBER
   - docker push $DOCKER_USERNAME/onad_landing
   - docker push $DOCKER_USERNAME/onad_landing_api
 
