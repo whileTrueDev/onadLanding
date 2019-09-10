@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -101,3 +102,11 @@ export default function PrimarySearchAppBar(props) {
     </div>
   );
 }
+
+PrimarySearchAppBar.propTypes = {
+  handleSearchChange: PropTypes.func,
+};
+
+PrimarySearchAppBar.defaultProps = {
+  handleSearchChange() {}
+};

@@ -140,6 +140,7 @@ export default function LandingImages(props) {
             searchText === null
               ? banner
               : banner.bannerDescription.concat(banner.companyDescription)
+                .toLowerCase()
                 .indexOf(searchText) !== -1
           ))
           .map((banner, index) => (

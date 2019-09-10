@@ -18,7 +18,7 @@ const useSearch = () => {
   const [searchText, setSearchText] = React.useState(null);
 
   function handleSearchChange(evt) {
-    setSearchText(evt.target.value);
+    setSearchText(evt.target.value.toLowerCase());
   }
 
   return { searchText, handleSearchChange };
