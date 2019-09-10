@@ -43,7 +43,7 @@ router.get('/user', (req, res) => {
 router.get('/description', (req, res) => {
   const { name } = req.query;
   const query = `
-    SELECT creatorDesc, creatorDescTitle, creatorDescLink
+    SELECT creatorDesc
     FROM creatorLanding
     WHERE creatorTwitchId = ?`;
   const queryArray = [name];

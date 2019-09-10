@@ -104,28 +104,10 @@ export default function LandingHero(props) {
         </Grid>
 
         <br />
-        {userDescTitle && (
-          <Typography variant="h6" className={classes.bold}>{userDescTitle}</Typography>
-        )}
-        <br />
-
         {userDesc && userDesc.split('\\n').map(row => (
           <Typography variant="body1" key={row}>{row}</Typography>
         ))}
 
-        {userDescLink && (
-          <a
-            href={userDescLink}
-            onClick={(e) => {
-              // 링크 또는 다른 이벤트 등록
-              e.preventDefault();
-            }}
-          >
-            <Typography variant="body1">
-              {userDescLink}
-            </Typography>
-          </a>
-        )}
       </Grid>
     </Grid>
   );

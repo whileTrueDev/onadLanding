@@ -8,6 +8,7 @@ node_js:
 branches:
   only:
     - master
+
 sudo: required
 
 before_install:
@@ -19,7 +20,7 @@ services:
 
 script:
   - cd client && yarn install --prod && CI="false" yarn build && cd -
-  - cd server && yarn && cd -
+  - cd server && yarn install --prod && cd -
 
 cache:
   yarn: true
