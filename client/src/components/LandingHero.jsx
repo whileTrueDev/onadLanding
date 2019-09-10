@@ -134,8 +134,8 @@ export default function LandingHero(props) {
         <Grid item sm={1} xs={3}>
           <Typography variant="h6">Lv. 04</Typography>
           <LinearProgress
-            value={30}
-            valueBuffer={100}
+            value={30} // 경험치 100 분위수
+            valueBuffer={100} // 최대 경험치
             variant="buffer"
           />
         </Grid>

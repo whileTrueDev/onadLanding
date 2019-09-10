@@ -4,6 +4,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
 import LandingHero from '../components/LandingHero';
+import LandingImagesLoading from '../components/LandingImagesLoading';
 import LandingImages from '../components/LandingImages';
 import LandingNoAd from '../components/LandingNoAd';
 import InProgress from '../components/InProgress';
@@ -77,7 +78,7 @@ const LandingMain = (props) => {
             isDesktopWidth={isDesktopWidth}
           />
         )}
-        {bannerData.loading && (<InProgress style={{ marginTop: 60 }} />)}
+        {bannerData.loading && (<LandingImagesLoading />)}
         {!bannerData.loading && !bannerData.data && (<LandingNoAd />)}
         {!bannerData.loading && bannerData.data && (
           <LandingImages
