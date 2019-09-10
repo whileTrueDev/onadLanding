@@ -102,8 +102,8 @@ const useTabValue = () => {
   return { value, handleTabChange };
 };
 
-export default function ImageGridList(props) {
-  const { isDesktopWidth, bannerData } = props;
+export default function LandingImages(props) {
+  const { isDesktopWidth, bannerData, searchText } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
   const { clickedList, handleClick, handleTransferClick } = useBannerClick(bannerData.data);
@@ -115,7 +115,6 @@ export default function ImageGridList(props) {
   function handleDialogClose() {
     setDialogOpen(false);
   }
-
   return (
     <Grid container className={classes.root}>
       {/* Tabs */}
@@ -135,41 +134,49 @@ export default function ImageGridList(props) {
 
       {/* Image section */}
       <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
-        {clickedList.map((banner, index) => (
-          <Grid item xs={4} key={shortid.generate()}>
-            <div className={classes.imageContainer}>
-              <ButtonBase
-                onClick={() => {
-                  handleClick(index, banner.contractionId);
-                  // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1
-                  handleDialogOpen(index + 1);
-                }}
-                className={classes.imageButton}
-              >
-                <img src={banner.bannerSrc} alt="" className={classes.image} />
-                <div className={classes.imageBackdrop} />
-                <div className={classes.imageDesc}>
-                  <Flag className={classes.iconOnImage} />
-                  <Typography
-                    variant="h5"
-                    color="inherit"
-                    style={{ fontWeight: 'bold' }}
-                  >
-                    {setNumberFormat(banner.clickCount)}
-                  </Typography>
-                  <ReDo className={classes.iconOnImage} />
-                  <Typography
-                    variant="h5"
-                    color="inherit"
-                    style={{ fontWeight: 'bold' }}
-                  >
-                    {setNumberFormat(banner.transferCount)}
-                  </Typography>
-                </div>
-              </ButtonBase>
-            </div>
-          </Grid>
-        ))}
+        {/* // 검색어에 해당하는 배너만을 필터링 */}
+        {clickedList
+          .filter(banner => (
+            searchText === null
+              ? banner
+              : banner.bannerDescription.concat(banner.companyDescription)
+                .indexOf(searchText) !== -1
+          ))
+          .map((banner, index) => (
+            <Grid item xs={4} key={shortid.generate()}>
+              <div className={classes.imageContainer}>
+                <ButtonBase
+                  onClick={() => {
+                    handleClick(index, banner.contractionId);
+                    // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1
+                    handleDialogOpen(index + 1);
+                  }}
+                  className={classes.imageButton}
+                >
+                  <img src={banner.bannerSrc} alt="" className={classes.image} />
+                  <div className={classes.imageBackdrop} />
+                  <div className={classes.imageDesc}>
+                    <Flag className={classes.iconOnImage} />
+                    <Typography
+                      variant="h5"
+                      color="inherit"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {setNumberFormat(banner.clickCount)}
+                    </Typography>
+                    <ReDo className={classes.iconOnImage} />
+                    <Typography
+                      variant="h5"
+                      color="inherit"
+                      style={{ fontWeight: 'bold' }}
+                    >
+                      {setNumberFormat(banner.transferCount)}
+                    </Typography>
+                  </div>
+                </ButtonBase>
+              </div>
+            </Grid>
+          ))}
       </Grid>
 
       {dialogOpen ? (
@@ -189,12 +196,13 @@ export default function ImageGridList(props) {
   );
 }
 
-ImageGridList.propTypes = {
+LandingImages.propTypes = {
   isDesktopWidth: PropTypes.bool.isRequired,
-  bannerData: PropTypes.oneOfType([PropTypes.object, PropTypes.string])
+  bannerData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  searchText: PropTypes.string
 };
 
-ImageGridList.defaultProps = {
+LandingImages.defaultProps = {
   bannerData: [{
     clicked: false,
     clickSuccess: false,
@@ -202,5 +210,6 @@ ImageGridList.defaultProps = {
     contractionId: '',
     clickCount: 0,
     bannerSrc: '',
-  }]
+  }],
+  searchText: null
 };

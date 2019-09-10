@@ -14,16 +14,27 @@ import theme from './theme';
 // config
 import useFetchData from '../../lib/hook/useDataFetch';
 
+const useSearch = () => {
+  const [searchText, setSearchText] = React.useState(null);
+
+  function handleSearchChange(evt) {
+    setSearchText(evt.target.value);
+  }
+
+  return { searchText, handleSearchChange };
+};
+
 export default function Landing(props) {
   const { match } = props;
   const isDesktopWidth = useMediaQuery('(min-width:600px)');
   const userData = useFetchData('/api/user', { name: match.params.name });
+  const { searchText, handleSearchChange } = useSearch();
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
 
-      <AppBar />
+      <AppBar handleSearchChange={handleSearchChange} />
 
       {userData.loading && (
         <InProgress large />
@@ -38,6 +49,7 @@ export default function Landing(props) {
           match={match}
           isDesktopWidth={isDesktopWidth}
           userData={userData.data}
+          searchText={searchText}
         />
       )}
 

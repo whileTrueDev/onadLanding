@@ -83,19 +83,22 @@ const useStyles = makeStyles(theme => ({
 
 const dummyArray = ['', '', '', '', '', ''];
 
-export default function ImageGridList(props) {
+export default function LandingImageLoading(props) {
   const { isDesktopWidth } = props;
   const classes = useStyles();
 
   return (
     <Grid container className={classes.root}>
+      <Grid item xs={12}>
+        <Skeleton height={25} />
+      </Grid>
 
       {/* Image section */}
       <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
         {dummyArray.map(() => (
           <Grid item xs={4} key={shortid.generate()}>
             <div className={classes.imageContainer}>
-              <Skeleton className={classes.image} height={180} />
+              <Skeleton className={classes.image} height={isDesktopWidth ? 180 : 100} />
             </div>
           </Grid>
         ))}
@@ -105,6 +108,6 @@ export default function ImageGridList(props) {
   );
 }
 
-ImageGridList.propTypes = {
+LandingImageLoading.propTypes = {
   isDesktopWidth: PropTypes.bool.isRequired,
 };

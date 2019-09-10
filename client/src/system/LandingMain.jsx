@@ -51,7 +51,9 @@ const useStyles = makeStyles(theme => ({
 
 const LandingMain = (props) => {
   const classes = useStyles();
-  const { match, isDesktopWidth, userData } = props;
+  const {
+    match, isDesktopWidth, userData, searchText
+  } = props;
 
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
@@ -78,12 +80,13 @@ const LandingMain = (props) => {
             isDesktopWidth={isDesktopWidth}
           />
         )}
-        {bannerData.loading && (<LandingImagesLoading />)}
+        {bannerData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
         {!bannerData.loading && !bannerData.data && (<LandingNoAd />)}
         {!bannerData.loading && bannerData.data && (
           <LandingImages
             isDesktopWidth={isDesktopWidth}
             bannerData={bannerData}
+            searchText={searchText}
           />
         )}
 
@@ -97,12 +100,14 @@ export default LandingMain;
 LandingMain.propTypes = {
   match: PropTypes.object.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
-  userData: PropTypes.object
+  userData: PropTypes.object,
+  searchText: PropTypes.string
 };
 
 LandingMain.defaultProps = {
   userData: {
     creatorName: '',
     creatorLogo: '/images/logo/onad_logo_vertical_small.png'
-  }
+  },
+  searchText: null
 };

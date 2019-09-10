@@ -58,7 +58,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+export default function PrimarySearchAppBar(props) {
+  const { handleSearchChange } = props;
   const classes = useStyles();
   return (
     <div className={classes.grow} style={{}}>
@@ -87,8 +88,8 @@ export default function PrimarySearchAppBar() {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
-              // // 검색 기능
-              // onChage={handleInputChange}
+              // 검색 기능
+              onChange={handleSearchChange}
             />
           </div>
 
