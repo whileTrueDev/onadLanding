@@ -4,15 +4,15 @@ import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // components
-import LandingMain from './views/LandingMain/LandingMain';
-import AppBar from './views/AppBar/AppBar';
-import Footer from './views/Footer/LandingFooter';
-import Error from './views/Error/LandingError';
-import InProgress from './components/InProgress';
+import LandingMain from '../../system/LandingMain';
+import AppBar from '../../system/AppBar/AppBar';
+import Footer from '../../system/Footer/LandingFooter';
+import Error from '../../system/Error/LandingError';
+import InProgress from '../../components/InProgress';
 // theme
 import theme from './theme';
 // config
-import useFetchData from './lib/hook/useDataFetch';
+import useFetchData from '../../lib/hook/useDataFetch';
 
 export default function Landing(props) {
   const { match } = props;

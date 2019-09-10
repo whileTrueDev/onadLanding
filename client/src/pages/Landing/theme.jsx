@@ -114,7 +114,7 @@ const theme = {
       ...fontHeader,
       fontSize: 18,
       [rawTheme.breakpoints.down('xs')]: {
-        fontSize: 16,
+        fontSize: 13,
       },
     },
     subtitle1: {

@@ -5,8 +5,9 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 // own function
-import setNumberFormat from '../../../lib/setNumberFormat';
+import setNumberFormat from '../lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,8 +45,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function LandingHero(props) {
   const {
-    user, userLogo, userDesc, userDescTitle,
-    userDescLink, isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
+    user, userLogo, userDesc,
+    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
   } = props;
   const classes = useStyles();
 
@@ -67,11 +68,29 @@ export default function LandingHero(props) {
 
       {/* My description section */}
       <Grid item sm={6} xs={12}>
-        <Typography variant="h4" gutterBottom className={classes.title}>{`${user}`}</Typography>
+        {isDesktopWidth ? (
+          <Typography variant="h4" gutterBottom className={classes.title}>{`${user}`}</Typography>
+        ) : (
+          <Grid container>
+            <Grid item xs={9}>
+              <Typography variant="h4" gutterBottom className={classes.title}>{`${user}`}</Typography>
+            </Grid>
+
+            <Grid item xs={3}>
+              <Typography variant="h6">Lv. 04</Typography>
+              <LinearProgress
+                value={30}
+                valueBuffer={100}
+                variant="buffer"
+              />
+            </Grid>
+          </Grid>
+
+        )}
         <Grid container justify="flex-start" spacing={isDesktopWidth ? 2 : 1}>
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'진행한 광고 '}
+              {'진행 광고 '}
               { bannerCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
@@ -82,9 +101,9 @@ export default function LandingHero(props) {
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'광고 조회수 '}
+              {'광고 조회 '}
               { totalClickCount === null ? (
-                <span className={classes.bold}>0</span>
+                <span className={classes.bold}>110만</span>
               ) : (
                 <span className={classes.bold}>{setNumberFormat(totalClickCount)}</span>
               )}
@@ -93,9 +112,9 @@ export default function LandingHero(props) {
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'광고 이동수 '}
+              {'광고 이동 '}
               { totalTransferCount === null ? (
-                <span className={classes.bold}>0</span>
+                <span className={classes.bold}>110만</span>
               ) : (
                 <span className={classes.bold}>{setNumberFormat(totalTransferCount)}</span>
               )}
@@ -109,6 +128,21 @@ export default function LandingHero(props) {
         ))}
 
       </Grid>
+
+      {/* loyalty level visualization */}
+      {isDesktopWidth ? (
+        <Grid item sm={1} xs={3}>
+          <Typography variant="h6">Lv. 04</Typography>
+          <LinearProgress
+            value={30}
+            valueBuffer={100}
+            variant="buffer"
+          />
+        </Grid>
+      ) : (
+        null
+      )}
+
     </Grid>
   );
 }
@@ -118,8 +152,6 @@ LandingHero.propTypes = {
   userLogo: PropTypes.string.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
   userDesc: PropTypes.string,
-  userDescTitle: PropTypes.string,
-  userDescLink: PropTypes.string,
   bannerCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalClickCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalTransferCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
@@ -128,8 +160,6 @@ LandingHero.propTypes = {
 LandingHero.defaultProps = {
   user: '',
   userDesc: '',
-  userDescTitle: '',
-  userDescLink: '',
   bannerCount: 0,
   totalClickCount: 0,
   totalTransferCount: 0

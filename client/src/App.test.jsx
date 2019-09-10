@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import LandingPage from './Landing';
+import LandingPage from './pages/Landing';
 
 function setTitle(title = String) {
   return `Render without crashing - ${title}`;

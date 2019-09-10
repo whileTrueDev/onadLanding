@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
-import LandingHero from './components/LandingHero';
-import LandingImages from './components/LandingImages';
-import LandingNoAd from './components/LandingNoAd';
-import InProgress from '../../components/InProgress';
+import LandingHero from '../components/LandingHero';
+import LandingImages from '../components/LandingImages';
+import LandingNoAd from '../components/LandingNoAd';
+import InProgress from '../components/InProgress';
 // from my own hooks
-import useFetchData from '../../lib/hook/useDataFetch';
+import useFetchData from '../lib/hook/useDataFetch';
 
 /**
  * @author hwasurr
