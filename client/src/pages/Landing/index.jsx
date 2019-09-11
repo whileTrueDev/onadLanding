@@ -13,16 +13,7 @@ import InProgress from '../../components/InProgress';
 import theme from './theme';
 // config
 import useFetchData from '../../lib/hook/useDataFetch';
-
-const useSearch = () => {
-  const [searchText, setSearchText] = React.useState(null);
-
-  function handleSearchChange(evt) {
-    setSearchText(evt.target.value.toLowerCase());
-  }
-
-  return { searchText, handleSearchChange };
-};
+import useSearch from '../../lib/hook/useSearch';
 
 export default function Landing(props) {
   const { match } = props;
