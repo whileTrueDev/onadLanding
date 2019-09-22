@@ -7,7 +7,7 @@ import querify from '../querify';
 const useFetchData = (initialUrl = '', params = {}) => {
   /**
    * @author hwasurr
-   * @function_description get 방식의 요청 query 형태로 만들어 주는 함수.
+   * @description api 서버와의 통신을 통해 데이터를 가져오는 훅. ( only get 방식)
    * @param {string} initialUrl api 요청하고자 하는 url 주소
    * @param {object} params 요청시에 필요한 객체형태의 데이터
    * @return { payload:any, loading:bool, error:string } 전달받은 데이터, 로딩 bool, 에러 string
