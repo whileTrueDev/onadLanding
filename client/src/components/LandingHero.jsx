@@ -19,7 +19,8 @@ const useStyles = makeStyles(theme => ({
   },
   bigAvatar: {
     cursor: 'pointer',
-    boxShadow: '0 2px 10px 1px rgba(102, 102, 102, 0.5)',
+    backgroundColor: theme.palette.background.default,
+    boxShadow: `0 2px 10px 1px ${theme.palette.grey}`,
     margin: 25,
     width: 200,
     height: 200,
