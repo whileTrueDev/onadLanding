@@ -124,7 +124,7 @@ export default function LandingHero(props) {
         </Grid>
 
         <br />
-        {userDesc && userDesc.split('\\n').map(row => (
+        {userDesc && userDesc.split('\n').map(row => (
           <Typography variant="body1" key={row}>{row}</Typography>
         ))}
 

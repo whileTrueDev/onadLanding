@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     [theme.breakpoints.up('lg')]: {
       // background: 'linear-gradient(115deg, #FE6B8B 30%, rgb(29.4%, 0%, 51%) 90%)',
-      backgroundImage: 'url(\'/images/landing_back_image.jpg\')',
+      backgroundImage: 'url(\'/images/background-whale.jpg\')',
       // backgroundSize: 'auto',
     },
   },
