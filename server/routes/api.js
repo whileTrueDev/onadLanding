@@ -8,9 +8,11 @@ const router = express.Router();
 router.get('/user', (req, res) => {
   const { name } = req.query;
   const query = `SELECT
-    creatorName, creatorLogo
-    FROM creatorInfo
-    WHERE creatorTwitchId = ?`;
+    creatorName, creatorLogo, creatorBackgroundImage, creatorTheme, visitCount
+    FROM creatorInfo as ci
+    JOIN creatorLanding as cl
+    ON ci.creatorTwitchId = cl.creatorTwitchId
+    WHERE ci.creatorTwitchId = ?`;
   let lastResult;
   doQuery(query, [name])
     .then((row) => {

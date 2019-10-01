@@ -51,7 +51,11 @@ const LandingMain = (props) => {
     <Grid
       container
       justify="center"
-      className={classes.root}
+      // className={classes.root}
+      style={
+        userData.creatorBackgroundImage ? { backgroundImage: `url(${userData.creatorBackgroundImage})` }
+          : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
+      }
     >
       <Grid item xs={12} sm={12} md={12} lg={9} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
