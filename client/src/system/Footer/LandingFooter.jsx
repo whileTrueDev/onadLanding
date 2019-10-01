@@ -5,8 +5,9 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    marginTop: theme.spacing(5),
-    marginBottom: theme.spacing(3),
+    backgroundColor: theme.palette.background.paper,
+    paddingTop: theme.spacing(5),
+    paddingBottom: theme.spacing(3),
     [theme.breakpoints.down('sm')]: {
       marginTop: theme.spacing(3),
       fontSize: 10,

@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
   },
   appBar: {
-    backgroundColor: theme.palette.common.white,
+    backgroundColor: theme.palette.background.paper,
     // background: 'linear-gradient(45deg,# 30%, #FF8E53 90%)',
   },
   logo: {
@@ -62,6 +62,7 @@ const useStyles = makeStyles(theme => ({
 export default function PrimarySearchAppBar(props) {
   const { handleSearchChange } = props;
   const classes = useStyles();
+
   return (
     <div className={classes.grow} style={{}}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -78,6 +79,7 @@ export default function PrimarySearchAppBar(props) {
           </Typography>
 
           <div className={classes.grow} />
+
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
