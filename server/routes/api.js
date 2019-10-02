@@ -90,7 +90,7 @@ router.get('/banner', (req, res) => {
     
     FROM landingClick
     JOIN creatorLanding
-      ON substring_index(substring_index(contractionId, '/', 2), '/', -1) = creatorId
+      ON substring_index(substring_index(contractionId, '/', 2), '/', -1) = creatorLanding.creatorId
     JOIN bannerRegistered as br
       ON br.bannerId = substring_index(contractionId, '/', 1)
     WHERE creatorTwitchId = ?
