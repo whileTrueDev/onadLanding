@@ -110,7 +110,7 @@ const lightTheme = {
     ...rawTheme.palette,
     background: {
       ...rawTheme.palette.background,
-      default: rawTheme.palette.common.white,
+      default: rawTheme.palette.background,
     },
   },
   typography: {
@@ -196,7 +196,7 @@ const darkTheme = {
     ...darkRawTheme.palette,
     background: {
       ...darkRawTheme.palette.background,
-      default: darkRawTheme.palette.common.white,
+      default: darkRawTheme.palette.background,
     },
   },
   typography: {

@@ -127,7 +127,6 @@ export default function LandingHero(props) {
         {userDesc && userDesc.split('\n').map(row => (
           <Typography variant="body1" key={row}>{row}</Typography>
         ))}
-
       </Grid>
 
       {/* loyalty level visualization */}

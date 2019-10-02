@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ThemeProvider } from '@material-ui/styles';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // components
@@ -22,7 +21,7 @@ export default function Landing(props) {
   const userData = useFetchData('/api/user', { name: match.params.name });
   const { searchText, handleSearchChange } = useSearch();
 
-  const [isDarkTheme, setDarkTheme] = React.useState(false);
+  const [isDarkTheme, setDarkTheme] = React.useState('light');
   React.useEffect(() => {
     if (!userData.loading && userData.data) {
       setDarkTheme(userData.data.creatorTheme);
@@ -34,7 +33,7 @@ export default function Landing(props) {
       <CssBaseline />
 
 
-      <AppBar handleSearchChange={handleSearchChange} />
+      <AppBar isDarkTheme={isDarkTheme} handleSearchChange={handleSearchChange} />
 
       {userData.loading && (
         <InProgress large />

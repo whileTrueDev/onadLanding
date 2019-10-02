@@ -21,15 +21,16 @@ const useStyles = makeStyles(theme => ({
   },
   container: {
     backgroundColor: theme.palette.background.paper,
-    marginBottom: theme.spacing(20),
-    margin: '0 auto 20px',
+    margin: '0 auto 0px',
     padding: '40px 20px',
-    minHeight: '75vh',
+    minHeight: '80vh',
     [theme.breakpoints.up('lg')]: {
+      marginBottom: theme.spacing(20),
       marginTop: 200,
     },
-    [theme.breakpoints.down('xs')]: {
-      padding: 8,
+    [theme.breakpoints.down('md')]: {
+      minHeight: '100vh',
+      padding: theme.spacing(1),
     },
   },
 }));
@@ -37,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 const LandingMain = (props) => {
   const classes = useStyles();
   const {
-    match, isDesktopWidth, userData, searchText
+    match, isDesktopWidth, userData, searchText, setDarkTheme
   } = props;
 
   // title 설정
@@ -51,7 +52,6 @@ const LandingMain = (props) => {
     <Grid
       container
       justify="center"
-      // className={classes.root}
       style={
         userData.creatorBackgroundImage ? { backgroundImage: `url(${userData.creatorBackgroundImage})` }
           : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
@@ -61,6 +61,8 @@ const LandingMain = (props) => {
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
           <LandingHero
+            userTheme={userData.userTheme}
+            setDarkTheme={setDarkTheme}
             user={userData.creatorName}
             userLogo={userData.creatorLogo}
             userDesc={userDescData.data.creatorDesc}
@@ -92,6 +94,7 @@ export default LandingMain;
 LandingMain.propTypes = {
   match: PropTypes.object.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
+  setDarkTheme: PropTypes.func.isRequired,
   userData: PropTypes.object,
   searchText: PropTypes.string
 };

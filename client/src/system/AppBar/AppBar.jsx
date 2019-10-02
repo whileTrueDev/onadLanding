@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 
+
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
@@ -17,10 +18,7 @@ const useStyles = makeStyles(theme => ({
     // background: 'linear-gradient(45deg,# 30%, #FF8E53 90%)',
   },
   logo: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
+    padding: theme.spacing(1)
   },
   search: {
     position: 'relative',
@@ -31,13 +29,13 @@ const useStyles = makeStyles(theme => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
+    width: '65%',
+    [theme.breakpoints.up('xs')]: {
+      marginLeft: theme.spacing(2),
       width: 'auto',
     },
   },
-  searchIcon: {
+  searchIconWrapper: {
     width: theme.spacing(7),
     height: '100%',
     position: 'absolute',
@@ -45,6 +43,9 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  searchIcon: {
+    color: theme.palette.action.active
   },
   inputRoot: {
     color: theme.palette.text,
@@ -60,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PrimarySearchAppBar(props) {
-  const { handleSearchChange } = props;
+  const { isDarkTheme, handleSearchChange } = props;
   const classes = useStyles();
 
   return (
@@ -74,15 +75,21 @@ export default function PrimarySearchAppBar(props) {
 
           <Typography className={classes.logo} variant="h6" noWrap>
             <a href="https://onad.io">
-              <img src="/images/logo/onad_logo_vertical.png" alt="" height="50" />
+              <img
+                src={isDarkTheme === 'dark'
+                  ? '/images/logo/onad_logo_vertical_white.png'
+                  : '/images/logo/onad_logo_vertical.png'}
+                alt=""
+                height="50"
+              />
             </a>
           </Typography>
 
           <div className={classes.grow} />
 
           <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
+            <div className={classes.searchIconWrapper}>
+              <SearchIcon className={classes.searchIcon} />
             </div>
             <InputBase
               placeholder="배너를 검색하세요…"
@@ -107,8 +114,9 @@ export default function PrimarySearchAppBar(props) {
 
 PrimarySearchAppBar.propTypes = {
   handleSearchChange: PropTypes.func,
+  isDarkTheme: PropTypes.string.isRequired,
 };
 
 PrimarySearchAppBar.defaultProps = {
-  handleSearchChange() {}
+  handleSearchChange() {},
 };
