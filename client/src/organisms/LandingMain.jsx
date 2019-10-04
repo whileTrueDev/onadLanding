@@ -9,7 +9,7 @@ import LandingImages from './Landing/LandingImages';
 import LandingNoAd from './Landing/LandingNoAd';
 import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
-import useFetchData from '../lib/hook/useDataFetch';
+import useFetchData from '../utils/lib/hook/useDataFetch';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,10 +26,11 @@ const useStyles = makeStyles(theme => ({
     minHeight: '80vh',
     [theme.breakpoints.up('lg')]: {
       marginBottom: theme.spacing(20),
-      marginTop: 200,
+      marginTop: theme.spacing(20),
     },
     [theme.breakpoints.down('md')]: {
       minHeight: '100vh',
+      marginTop: theme.spacing(5),
       padding: theme.spacing(1),
     },
   },
@@ -47,6 +48,7 @@ const LandingMain = (props) => {
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
+  const levelData = useFetchData('/api/level', { name: match.params.name });
 
   return (
     <Grid
@@ -70,6 +72,7 @@ const LandingMain = (props) => {
             bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
             totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
             totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
+            levelData={levelData}
             isDesktopWidth={isDesktopWidth}
           />
         )}

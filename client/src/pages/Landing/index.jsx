@@ -8,12 +8,12 @@ import LandingMain from '../../organisms/LandingMain';
 import AppBar from '../../organisms/AppBar/AppBar';
 import Footer from '../../organisms/Footer/LandingFooter';
 import Error from '../../organisms/Error/LandingError';
-import CircularProgress from '../../atoms/CircularProgress';
+import CircularProgress from '../../atoms/CircularProgress/CircularProgress';
 // theme
 import { lightTheme, darkTheme } from './theme';
 // config
-import useFetchData from '../../lib/hook/useDataFetch';
-import useSearch from '../../lib/hook/useSearch';
+import useFetchData from '../../utils/lib/hook/useDataFetch';
+import useSearch from '../../utils/lib/hook/useSearch';
 
 export default function Landing(props) {
   const { match } = props;

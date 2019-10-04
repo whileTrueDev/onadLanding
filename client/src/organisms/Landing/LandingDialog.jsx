@@ -10,8 +10,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
 // own function
-import setDateFormat from '../../lib/setDateFormat';
-import setNumberFormat from '../../lib/setNumberFormat';
+import setDateFormat from '../../utils/lib/setDateFormat';
+import setNumberFormat from '../../utils/lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {

@@ -12,11 +12,11 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import ReDo from '@material-ui/icons/Redo';
 import Flag from '@material-ui/icons/Flag';
 // own handler
-import useBannerClick from '../../lib/hook/useBannerClick';
+import useBannerClick from '../../utils/lib/hook/useBannerClick';
 // own component
 import LandingDialog from './LandingDialog';
 // own functions
-import setNumberFormat from '../../lib/setNumberFormat';
+import setNumberFormat from '../../utils/lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   root: {

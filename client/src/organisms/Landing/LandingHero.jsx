@@ -7,7 +7,10 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 // own function
-import setNumberFormat from '../../lib/setNumberFormat';
+import setNumberFormat from '../../utils/lib/setNumberFormat';
+// own component
+import LevelBar from '../../atoms/LevelBar/LevelBar';
+import Tooltip from '../../atoms/Tooltip/Tooltip';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,11 +49,10 @@ const useStyles = makeStyles(theme => ({
 
 export default function LandingHero(props) {
   const {
-    user, userLogo, userDesc,
+    user, userLogo, userDesc, levelData,
     isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
   } = props;
   const classes = useStyles();
-
   return (
     <Grid container className={classes.root}>
       {/* Avatar logo */}
@@ -77,16 +79,15 @@ export default function LandingHero(props) {
               <Typography variant="h4" gutterBottom className={classes.title}>{`${user}`}</Typography>
             </Grid>
 
+            {!levelData.loading && !levelData.errorState && levelData.data && (
             <Grid item xs={3}>
-              <Typography variant="h6">Lv. 04</Typography>
-              <LinearProgress
-                value={30}
-                valueBuffer={100}
-                variant="buffer"
+              <LevelBar
+                level={levelData.data.level}
+                exp={Math.ceil(levelData.data.exp / 5)}
               />
             </Grid>
+            )}
           </Grid>
-
         )}
         <Grid container justify="flex-start" spacing={isDesktopWidth ? 2 : 1}>
           <Grid item>
@@ -130,14 +131,16 @@ export default function LandingHero(props) {
       </Grid>
 
       {/* loyalty level visualization */}
-      {isDesktopWidth ? (
+      {isDesktopWidth && !levelData.loading && !levelData.errorState && levelData.data ? (
         <Grid item sm={1} xs={3}>
-          <Typography variant="h6">Lv. 04</Typography>
-          <LinearProgress
-            value={30} // 경험치 100 분위수
-            valueBuffer={100} // 최대 경험치
-            variant="buffer"
-          />
+          <Tooltip textArray={[`${user}님의 광고 레벨입니다.`, '광고페이지에서의 상호작용에 따라', ' 레벨이 변화합니다.']}>
+            <div>
+              <LevelBar
+                level={levelData.data.level}
+                exp={Math.ceil(levelData.data.exp / 5)}
+              />
+            </div>
+          </Tooltip>
         </Grid>
       ) : (
         null
@@ -154,7 +157,8 @@ LandingHero.propTypes = {
   userDesc: PropTypes.string,
   bannerCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   totalClickCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  totalTransferCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  totalTransferCount: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  levelData: PropTypes.object
 };
 
 LandingHero.defaultProps = {
@@ -162,5 +166,6 @@ LandingHero.defaultProps = {
   userDesc: '',
   bannerCount: 0,
   totalClickCount: 0,
-  totalTransferCount: 0
+  totalTransferCount: 0,
+  levelData: { exp: 0, level: 1 }
 };

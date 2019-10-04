@@ -378,4 +378,45 @@ router.post('/banner/transfer', (req, res) => {
     });
 });
 
+router.get('/level', (req, res) => {
+  const { name } = req.query;
+  const query = `
+  SELECT exp, level, updateDate
+  FROM creatorRoyaltyLevel as crl
+  JOIN creatorLanding as cl
+  ON cl.creatorId = crl.creatorId
+  WHERE cl.creatorTwitchId = ?
+  ORDER BY updateDate desc
+    `;
+  const queryArray = [name];
+
+  let lastResult;
+
+  doQuery(query, queryArray)
+    .then((row) => {
+      const { error, result } = row;
+      if (!error) {
+      // 쿼리 과정에서 오류가 아닌 경우
+        if (result.length > 0) {
+          // 쿼리 결과가 있는 경우
+          lastResult = { error: null, result: row.result[0] };
+          res.send(lastResult);
+        } else {
+        // 쿼리 결과가 없는 경우
+          lastResult = { error: true, result: null, };
+          res.send(lastResult);
+        }
+      } else {
+      // 쿼리 과정에서 오류인 경우
+        lastResult = { error: true, result: error, };
+        res.send(lastResult);
+      }
+    }).catch((reason) => {
+    // db 쿼리 수행 과정의 오류인 경우
+      console.log(`ERROR - [${new Date().toLocaleString()}] - /level\n`, reason);
+      lastResult = { error: true, reason };
+      res.send(lastResult);
+    });
+});
+
 module.exports = router;
