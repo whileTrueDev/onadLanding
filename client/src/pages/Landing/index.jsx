@@ -4,11 +4,11 @@ import { ThemeProvider } from '@material-ui/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // components
-import LandingMain from '../../system/LandingMain';
-import AppBar from '../../system/AppBar/AppBar';
-import Footer from '../../system/Footer/LandingFooter';
-import Error from '../../system/Error/LandingError';
-import InProgress from '../../components/InProgress';
+import LandingMain from '../../organisms/LandingMain';
+import AppBar from '../../organisms/AppBar/AppBar';
+import Footer from '../../organisms/Footer/LandingFooter';
+import Error from '../../organisms/Error/LandingError';
+import CircularProgress from '../../atoms/CircularProgress';
 // theme
 import { lightTheme, darkTheme } from './theme';
 // config
@@ -36,7 +36,7 @@ export default function Landing(props) {
       <AppBar isDarkTheme={isDarkTheme} handleSearchChange={handleSearchChange} />
 
       {userData.loading && (
-        <InProgress large />
+        <CircularProgress large />
       )}
 
       {!userData.loading && userData.errorState && (

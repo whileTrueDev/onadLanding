@@ -7,7 +7,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import LinearProgress from '@material-ui/core/LinearProgress';
 // own function
-import setNumberFormat from '../lib/setNumberFormat';
+import setNumberFormat from '../../lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   root: {

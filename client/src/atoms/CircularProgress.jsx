@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import makeStyles from '@material-ui/core/styles/makeStyles';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import MuiCircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -18,23 +18,23 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function InProgress(props) {
+export default function CircularProgress(props) {
   const classes = useStyles();
   const { small, large, ...rest } = props;
 
   return (
     <div className={classnames(classes.root, { [classes.small]: small, [classes.large]: large })}>
-      <CircularProgress {...rest} />
+      <MuiCircularProgress {...rest} />
     </div>
   );
 }
 
-InProgress.propTypes = {
+CircularProgress.propTypes = {
   small: PropTypes.bool,
   large: PropTypes.bool,
 };
 
-InProgress.defaultProps = {
+CircularProgress.defaultProps = {
   small: true,
   large: false
 };

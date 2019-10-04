@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
-import LandingHero from '../components/LandingHero';
-import LandingImagesLoading from '../components/LandingImagesLoading';
-import LandingImages from '../components/LandingImages';
-import LandingNoAd from '../components/LandingNoAd';
-import LandingHeroLoading from '../components/LandingHeroLoading';
+import LandingHero from './Landing/LandingHero';
+import LandingImagesLoading from './Landing/LandingImagesLoading';
+import LandingImages from './Landing/LandingImages';
+import LandingNoAd from './Landing/LandingNoAd';
+import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
 import useFetchData from '../lib/hook/useDataFetch';
 
@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 const LandingMain = (props) => {
   const classes = useStyles();
   const {
-    match, isDesktopWidth, userData, searchText, setDarkTheme
+    match, isDesktopWidth, userData, searchText
   } = props;
 
   // title 설정
@@ -62,7 +62,6 @@ const LandingMain = (props) => {
         {!userDescData.loading && userDescData.data && (
           <LandingHero
             userTheme={userData.userTheme}
-            setDarkTheme={setDarkTheme}
             user={userData.creatorName}
             userLogo={userData.creatorLogo}
             userDesc={userDescData.data.creatorDesc}
@@ -94,7 +93,6 @@ export default LandingMain;
 LandingMain.propTypes = {
   match: PropTypes.object.isRequired,
   isDesktopWidth: PropTypes.bool.isRequired,
-  setDarkTheme: PropTypes.func.isRequired,
   userData: PropTypes.object,
   searchText: PropTypes.string
 };
