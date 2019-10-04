@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import apiHOST from '../../.config/host';
+import apiHOST from '../../../.config/host';
 
 const useBannerClick = (bannerList) => {
   /**

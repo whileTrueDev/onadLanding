@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import apiHOST from '../../.config/host';
+import apiHOST from '../../../.config/host';
 // functions
 import querify from '../querify';
 
