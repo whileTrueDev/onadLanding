@@ -148,7 +148,7 @@ export default function LandingImages(props) {
               <div className={classes.imageContainer}>
                 <ButtonBase
                   onClick={() => {
-                    handleClick(index, banner.contractionId);
+                    handleClick(index);
                     // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1
                     handleDialogOpen(index + 1);
                   }}
@@ -208,7 +208,8 @@ LandingImages.defaultProps = {
     clicked: false,
     clickSuccess: false,
     clickError: '',
-    contractionId: '',
+    campaignId: '',
+    creatorId: '',
     clickCount: 0,
     bannerSrc: '',
   }],

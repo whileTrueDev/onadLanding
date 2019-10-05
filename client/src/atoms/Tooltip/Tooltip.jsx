@@ -28,7 +28,7 @@ function Tooltip(props) {
       title={textArray ? (
         <React.Fragment>
           {textArray.map(text => (
-            <Typography color="inherit" variant="body2">{text}</Typography>
+            <Typography key={text} color="inherit" variant="body2">{text}</Typography>
           ))}
         </React.Fragment>
       ) : title}

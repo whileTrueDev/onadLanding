@@ -5,7 +5,8 @@ import apiHOST from '../../../.config/host';
 const useBannerClick = (bannerList) => {
   /**
    * @author hwasurr
-   * @function_description 배너 클릭 hook 으로, 중복클릭을 방지하기 위해 배너 컴포넌트 생성 당 클릭 한번으로 제한한다.
+   * @function_description 배너 클릭 hook 으로, 중복클릭을 방지하기 위해
+   * 배너 컴포넌트 생성 당 클릭 한번으로 제한한다.
    * @return { clickedList:Array, handleClick:function, handleTransferClick:function }
    * @return_description 배너 정보를 담고 있는 배열, 클릭 핸들러 함수
    */
@@ -33,7 +34,8 @@ const useBannerClick = (bannerList) => {
     const postRequest = async function call(targetObject) {
       try {
         const res = await axios.post(`${apiHOST}/api/banner/click`, {
-          contractionId: clickedList[targetIndex].contractionId
+          creatorId: clickedList[targetIndex].creatorId,
+          campaignId: clickedList[targetIndex].campaignId,
         });
         const { data } = res;
         let processedObject;
@@ -45,7 +47,7 @@ const useBannerClick = (bannerList) => {
               clickSuccess: true,
               clickCount: targetObject.clickCount + 1
             };
-            // console.log(`정상적으로 입력됨 - click,${targetObject.contractionId}`);
+            // console.log(`정상적으로 입력됨 - click,${targetObject.campaignId}`);
           } else {
             // ip 존재하여 클릭 체크 안함.
             // console.log('이미 1시간 이내에 <조회>한 IP 이므로 체크 안됨.');
@@ -112,7 +114,8 @@ const useBannerClick = (bannerList) => {
        * */
       try {
         const res = await axios.post(`${apiHOST}/api/banner/transfer`, {
-          contractionId: targetObject.contractionId
+          creatorId: clickedList[targetIndex].creatorId,
+          campaignId: clickedList[targetIndex].campaignId,
         });
         const { data } = res;
         let processedObject;
@@ -123,7 +126,7 @@ const useBannerClick = (bannerList) => {
               transferSuccess: true,
               transferCount: targetObject.transferCount + 1
             };
-            // console.log(`정상적으로 입력됨 - transfer,${processedObject.contractionId}`);
+            // console.log(`정상적으로 입력됨 - transfer,${processedObject.campaignId}`);
           } else {
             // ip 존재하여 클릭 체크 안함.
             // console.log('이미 1시간 이내에 <이동>한 IP 이므로 체크 안됨.');

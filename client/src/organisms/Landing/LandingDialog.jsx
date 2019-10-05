@@ -10,12 +10,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
 // own function
-import setDateFormat from '../../utils/lib/setDateFormat';
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {
-    padding: 0,
+    padding: '0',
   },
   imageWrapper: {
     marginBottom: theme.spacing(2),
@@ -93,7 +92,7 @@ export default function LandingDialog(props) {
           </DialogContentText>
 
           <DialogContentText variant="body2">
-            {`${setDateFormat(data.contractionDate)}`}
+            {`${data.regiDate}`}
           </DialogContentText>
         </div>
 

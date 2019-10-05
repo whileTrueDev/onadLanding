@@ -83,19 +83,21 @@ router.get('/description', (req, res) => {
 router.get('/banner', (req, res) => {
   const { name } = req.query;
   const query = `
-    SELECT
-    bannerSrc, clickCount, transferCount, contractionId,
-    bannerDescription, companyDescription, landingUrl,
-    substring_index(contractionId, '/', -1) as contractionDate
-    
-    FROM landingClick
-    JOIN creatorLanding
-      ON substring_index(substring_index(contractionId, '/', 2), '/', -1) = creatorLanding.creatorId
-    JOIN bannerRegistered as br
-      ON br.bannerId = substring_index(contractionId, '/', 1)
-    WHERE creatorTwitchId = ?
-    ORDER BY contractionDate DESC
-    `;
+  SELECT
+  bannerSrc, clickCount, transferCount, campaign.campaignId, lc.creatorId,
+  bannerDescription, companyDescription, landingUrl,
+  DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
+  
+      
+  FROM landingClick as lc
+  JOIN creatorLanding as cl
+    ON lc.creatorId = cl.creatorId
+  JOIN campaign
+    ON lc.campaignId = campaign.campaignId
+  JOIN bannerRegistered as br
+    ON campaign.bannerId = br.bannerId
+  WHERE creatorTwitchId = ?
+  ORDER BY regiDate DESC`;
   const queryArray = [name];
 
   let lastResult;
@@ -131,14 +133,14 @@ router.get('/banner', (req, res) => {
 router.get('/clicks', (req, res) => {
   const { name } = req.query;
   const query = `
-    SELECT count(*) as bannerCount,
-          sum(clickCount) as totalClickCount,
-          sum(transferCount) as totalTransferCount
-    FROM landingClick as lc
-    JOIN creatorLanding as cl
-    ON cl.creatorId = SUBSTRING_INDEX(SUBSTRING_INDEX(lc.contractionId, '/', 2), '/', -1)
-    WHERE creatorTwitchId = ?
-    LIMIT 1
+  SELECT count(*) as bannerCount,
+    sum(clickCount) as totalClickCount,
+    sum(transferCount) as totalTransferCount
+  FROM landingClick as lc
+  JOIN creatorLanding as cl
+  ON cl.creatorId = lc.creatorId
+  WHERE creatorTwitchId = ?
+  LIMIT 1
     `;
   const queryArray = [name];
 
@@ -175,30 +177,30 @@ router.get('/clicks', (req, res) => {
 router.post('/banner/click', (req, res) => {
   const TRANSFER_TYPE_NUM = 0; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const { contractionId } = req.body;
+  const { campaignId, creatorId } = req.body;
 
   // ip체크쿼리
   const ipCheckQuery = `
     SELECT ipAddress
     FROM landingClickIp
-    WHERE contractionId = ?
+    WHERE campaignId = ? AND creatorId = ?
     AND type = ?
     AND date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
     `;
-  const ipCheckArray = [contractionId, TRANSFER_TYPE_NUM];
+  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
-    (contractionId, ipAddress, type)
+    (campaignId, creatorId, ipAddress, type)
     VALUES (?, ?, ?)
     `;
-  const ipInsertArray = [contractionId, userIp, TRANSFER_TYPE_NUM];
+  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
 
   const clickUpdateQuery = `
     UPDATE landingClick
     SET clickCount = clickCount + ?
-    WHERE contractionId = ?`;
-  const clickUpdateArray = [1, contractionId];
+    WHERE campaignId = ? AND creatorId = ?`;
+  const clickUpdateArray = [1, campaignId, creatorId];
 
   //
   let lastResult = {
@@ -221,7 +223,7 @@ router.post('/banner/click', (req, res) => {
           Promise.all([
             doQuery(ipInsertQuery, ipInsertArray)
               .then((ipInsertRow) => {
-                console.log(`[click-ipInsert] - ${contractionId} - ${new Date().toLocaleString()}`);
+                console.log(`[click-ipInsert] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
                 const { ipInsertError, ipInsertResult } = ipInsertRow;
                 if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 존재하는 경우
@@ -239,7 +241,7 @@ router.post('/banner/click', (req, res) => {
               }),
             doQuery(clickUpdateQuery, clickUpdateArray)
               .then((clickUpdateRow) => {
-                console.log(`[clickUpdate] - ${contractionId} - ${new Date().toLocaleString()}`);
+                console.log(`[clickUpdate] - ${campaignId}/creatorId - ${new Date().toLocaleString()}`);
                 const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
                 if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 있는 경우
@@ -278,32 +280,32 @@ router.post('/banner/click', (req, res) => {
 router.post('/banner/transfer', (req, res) => {
   const TRANSFER_TYPE_NUM = 1; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const { contractionId } = req.body;
+  const { campaignId, creatorId } = req.body;
 
   // Queries
   // ip 체크가 1시간 이내에 찍힌게 있는지 확인
   const ipCheckQuery = `
     SELECT ipAddress
     FROM landingClickIp
-    WHERE contractionId = ?
+    WHERE campaignId = ? AND creatorId = ?
     AND date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
     AND type = ?
     `;
-  const ipCheckArray = [contractionId, TRANSFER_TYPE_NUM];
+  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
-    (contractionId, ipAddress, type)
+    (campaignId, creatorId, ipAddress, type)
     VALUES (?, ?, ?)
     `;
-  const ipInsertArray = [contractionId, userIp, TRANSFER_TYPE_NUM];
+  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
 
   // <이동>클릭 수 증가쿼리
   const clickUpdateQuery = `
     UPDATE landingClick
     SET transferCount = transferCount + ?
-    WHERE contractionId = ?`;
-  const clickUpdateArray = [1, contractionId];
+    WHERE campaignId = ? AND creatorId = ?`;
+  const clickUpdateArray = [1, campaignId, creatorId];
 
   let lastResult = {
     error: null,
@@ -325,7 +327,7 @@ router.post('/banner/transfer', (req, res) => {
           Promise.all([
             doQuery(ipInsertQuery, ipInsertArray)
               .then((ipInsertRow) => {
-                console.log(`[click-ipInsert] - ${contractionId} - ${new Date().toLocaleString()}`);
+                console.log(`[click-ipInsert] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
                 const { ipInsertError, ipInsertResult } = ipInsertRow;
                 if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 존재하는 경우
@@ -343,7 +345,7 @@ router.post('/banner/transfer', (req, res) => {
               }),
             doQuery(clickUpdateQuery, clickUpdateArray)
               .then((clickUpdateRow) => {
-                console.log(`[transferUpdate] - ${contractionId} - ${new Date().toLocaleString()}`);
+                console.log(`[transferUpdate] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
                 const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
                 if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 있는 경우
