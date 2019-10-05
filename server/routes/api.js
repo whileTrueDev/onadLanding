@@ -88,7 +88,6 @@ router.get('/banner', (req, res) => {
   bannerDescription, companyDescription, landingUrl,
   DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
   
-      
   FROM landingClick as lc
   JOIN creatorLanding as cl
     ON lc.creatorId = cl.creatorId
@@ -192,7 +191,7 @@ router.post('/banner/click', (req, res) => {
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
     (campaignId, creatorId, ipAddress, type)
-    VALUES (?, ?, ?)
+    VALUES (?, ?, ?, ?)
     `;
   const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
 
@@ -296,7 +295,7 @@ router.post('/banner/transfer', (req, res) => {
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
     (campaignId, creatorId, ipAddress, type)
-    VALUES (?, ?, ?)
+    VALUES (?, ?, ?, ?)
     `;
   const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
 
