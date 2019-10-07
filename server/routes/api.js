@@ -383,7 +383,7 @@ router.post('/banner/transfer', (req, res) => {
 router.get('/level', (req, res) => {
   const { name } = req.query;
   const query = `
-  SELECT exp, level, updateDate
+  SELECT exp, truncate(exp / 500, 0) + 1 as level, updateDate
   FROM creatorRoyaltyLevel as crl
   JOIN creatorLanding as cl
   ON cl.creatorId = crl.creatorId
