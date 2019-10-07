@@ -95,7 +95,7 @@ router.get('/banner', (req, res) => {
     ON lc.campaignId = campaign.campaignId
   JOIN bannerRegistered as br
     ON campaign.bannerId = br.bannerId
-  WHERE creatorTwitchId = ?
+  WHERE creatorTwitchId = ? AND campaign.deletedState = 0
   ORDER BY regiDate DESC`;
   const queryArray = [name];
 
@@ -128,11 +128,12 @@ router.get('/banner', (req, res) => {
     });
 });
 
-// 배너딩 클릭 수의 모든 합, 진행한 광고의 수
+// 지금껏 진행한 모든 (삭제된 캠페인 포함된 통계정보) 배너딩 클릭 수의 모든 합, 진행한 광고의 수
 router.get('/clicks', (req, res) => {
   const { name } = req.query;
   const query = `
-  SELECT count(*) as bannerCount,
+  SELECT
+  count(*) as bannerCount,
     sum(clickCount) as totalClickCount,
     sum(transferCount) as totalTransferCount
   FROM landingClick as lc
