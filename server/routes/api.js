@@ -177,7 +177,7 @@ router.get('/clicks', (req, res) => {
 
 // 배너 클릭시, 클릭 수 + 1
 router.post('/banner/click', (req, res) => {
-  const TRANSFER_TYPE_NUM = 0; // db에서 이동의 type 넘버
+  const TRANSFER_TYPE_NUM = 2; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
   const { campaignId, creatorId } = req.body;
 
@@ -280,7 +280,7 @@ router.post('/banner/click', (req, res) => {
 
 // 배너 <이동> 버튼 클릭 시, 이동 수 + 1
 router.post('/banner/transfer', (req, res) => {
-  const TRANSFER_TYPE_NUM = 1; // db에서 이동의 type 넘버
+  const TRANSFER_TYPE_NUM = 3; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
   const { campaignId, creatorId } = req.body;
 
