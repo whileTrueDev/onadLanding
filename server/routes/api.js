@@ -12,6 +12,8 @@ router.get('/user', (req, res) => {
     FROM creatorInfo as ci
     JOIN creatorLanding as cl
     ON ci.creatorTwitchId = cl.creatorTwitchId
+    JOIN creatorRoyaltyLevel as crl
+    ON ci.creatorId = crl.creatorId
     WHERE ci.creatorTwitchId = ?`;
   let lastResult;
   doQuery(query, [name])
