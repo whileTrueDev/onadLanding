@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import apiHOST from '../../../.config/host';
+import apiHOST from '../../../config/host';
 
 const usePostData = (initialUrl = '', params) => {
   const [param] = useState(params);
