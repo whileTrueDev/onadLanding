@@ -10,6 +10,7 @@ import LandingNoAd from './Landing/LandingNoAd';
 import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
+import usePostData from '../utils/lib/hook/usePostData';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,6 +50,7 @@ const LandingMain = (props) => {
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
   const levelData = useFetchData('/api/level', { name: match.params.name });
+  usePostData('/api/visit', { name: match.params.name });
 
   return (
     <Grid

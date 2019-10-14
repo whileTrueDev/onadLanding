@@ -1,21 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import apiHOST from '../../../.config/host';
-// functions
-import querify from '../querify';
 
-/**
- * @author hwasurr
- * @description api 서버와의 통신을 통해 데이터를 가져오는 훅. ( only get 방식)
- * @param {string} initialUrl api 요청하고자 하는 url 주소
- * @param {object} params 요청시에 필요한 객체형태의 데이터
- * @return { data:any, loading:bool, error:string } 전달받은 데이터, 로딩 bool, 에러 string
-*/
-const useFetchData = (initialUrl = '', params = {}) => {
+const usePostData = (initialUrl = '', params) => {
+  const [param] = useState(params);
   const [data, setData] = useState();
-  const [url] = useState(`${apiHOST}${initialUrl}${querify(params)}`);
   const [loading, setLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
+  const [url] = useState(`${apiHOST}${initialUrl}`);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +15,11 @@ const useFetchData = (initialUrl = '', params = {}) => {
       setLoading(true);
 
       try {
-        const response = await axios(url);
+        const response = await axios({
+          method: 'POST',
+          url,
+          data: param
+        });
 
         if (!response.data.error) {
           // api 서버에서 올바른 결과를 받은 경우
@@ -41,9 +37,9 @@ const useFetchData = (initialUrl = '', params = {}) => {
     };
 
     fetchData();
-  }, [url]);
+  }, [param, url]);
 
   return { data, loading, errorState };
 };
 
-export default useFetchData;
+export default usePostData;

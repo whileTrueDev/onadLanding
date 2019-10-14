@@ -4,6 +4,105 @@ const doQuery = require('../lib/doQuery');
 const router = express.Router();
 
 /* GET method of API server */
+
+// visitCount 처리 ( 아이피에 따른 카운트 차단 )
+router.post('/visit', (req, res) => {
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  const VISIT_TYPE_NUM = 1; // db에서 방문의 type 넘버
+  // ip 체크가 1시간 이내에 찍힌게 있는지 확인
+  const ipCheckQuery = `
+    SELECT ipAddress
+    FROM landingClickIp as cli
+    JOIN creatorInfo as ci
+    ON ci.creatorId = cli.creatorId
+    WHERE ci.creatorTwitchId = ?
+    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    `;
+  const ipCheckArray = [name, VISIT_TYPE_NUM];
+
+  const ipInsertQuery = `
+    INSERT INTO landingClickIp  (creatorId, ipAddress, type)
+    VALUES (
+    (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?), ?, ?)
+    `;
+  const ipInsertArray = [name, userIp, VISIT_TYPE_NUM];
+
+  // <랜딩페이지 입장>클릭 수 증가쿼리
+  const visitUpdateQuery = `
+    UPDATE creatorRoyaltyLevel
+    SET visitCount = visitCount + ?
+    WHERE creatorId = (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?)`;
+  const visitUpdateArray = [1, name];
+
+  let lastResult = {
+    error: null,
+    result: { ipCheck: {}, ipInsert: {}, visitUpdate: {} }
+  };
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      const { error, result } = row;
+      if (!error) {
+        if (result.length === 0) {
+          lastResult.result.ipCheck = { error: null, result: 'success' };
+          // 이전에 찍힌 ip가 없는 경우
+          console.log('<방문> 이전에 찍힌 ip 가 아니기 때문에 작업합니다...');
+          Promise.all([
+            doQuery(ipInsertQuery, ipInsertArray)
+              .then((ipInsertRow) => {
+                console.log(`[visit=>ipInsert] - ${name} - ${new Date().toLocaleString()}`);
+                const { ipInsertError, ipInsertResult } = ipInsertRow;
+                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 존재하는 경우
+                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.ipCheck = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.ipCheck = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                console.log(`ERROR - [${new Date().toLocaleString()}] - /visit=>IpInsert\n`, reason);
+                lastResult.result.ipCheck = { error: true, reason };
+              }),
+            doQuery(visitUpdateQuery, visitUpdateArray)
+              .then((clickUpdateRow) => {
+                console.log(`[visit=>visitUpdate] - ${name} - ${new Date().toLocaleString()}`);
+                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
+                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 있는 경우
+                    lastResult.result.visitUpdate = { error: null, result: clickUpdateResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.visitUpdate = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.visitUpdate = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                console.log(`ERROR - [${new Date().toLocaleString()}] - /visit=>visitUpdate\n`, reason);
+                lastResult.result.visitUpdate = { error: true, reason };
+              })
+          ])
+            .then(() => {
+              res.send(lastResult);
+            });
+        } else {
+          // 이전에 찍힌 ip가 있는 경우
+          console.log(`<방문> ${name} - 이전에찍힌  IP가 있기 때문에 skip합니다...`);
+          lastResult = { error: null, result: 'fail' };
+          res.send(lastResult);
+        }
+      }
+    })
+    .catch((reason) => {
+      console.log(reason);
+      lastResult = { error: true, reason };
+      res.send(lastResult);
+    });
+});
+
 // 랜딩페이지 크리에이터 이름
 router.get('/user', (req, res) => {
   const { name } = req.query;
@@ -81,7 +180,7 @@ router.get('/description', (req, res) => {
     });
 });
 
-// 계약되었던 모든 배너, 배너당 클릭 수, 컨트렉션ID
+// 계약되었던 모든 배너, 배너당 클릭수, 이동수, 배너 정보들 조회
 router.get('/banner', (req, res) => {
   const { name } = req.query;
   const query = `
@@ -382,15 +481,15 @@ router.post('/banner/transfer', (req, res) => {
     });
 });
 
+// 크리에이터 레벨
 router.get('/level', (req, res) => {
   const { name } = req.query;
   const query = `
-  SELECT exp, truncate(exp / 500, 0) + 1 as level, updateDate
+  SELECT exp, truncate(exp / 500, 0) + 1 as level
   FROM creatorRoyaltyLevel as crl
   JOIN creatorLanding as cl
   ON cl.creatorId = crl.creatorId
   WHERE cl.creatorTwitchId = ?
-  ORDER BY updateDate desc
     `;
   const queryArray = [name];
 
