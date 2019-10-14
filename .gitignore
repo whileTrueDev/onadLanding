@@ -28,5 +28,3 @@ yarn-error.log*
 */bin/log
 .eslintrc
 .log
-
-config.json
