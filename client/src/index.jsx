@@ -11,6 +11,7 @@ const history = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={history}>
+    <Route path="/" component={LandingPage} />
     <Route path="/:name" component={LandingPage} />
   </Router>, document.getElementById('root')
 );
