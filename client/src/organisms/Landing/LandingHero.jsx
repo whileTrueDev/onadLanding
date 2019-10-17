@@ -104,7 +104,7 @@ export default function LandingHero(props) {
             <Typography variant="h6" gutterBottom>
               {'광고 조회 '}
               { totalClickCount === null ? (
-                <span className={classes.bold}>110만</span>
+                <span className={classes.bold}>0</span>
               ) : (
                 <span className={classes.bold}>{setNumberFormat(totalClickCount)}</span>
               )}
@@ -115,7 +115,7 @@ export default function LandingHero(props) {
             <Typography variant="h6" gutterBottom>
               {'광고 이동 '}
               { totalTransferCount === null ? (
-                <span className={classes.bold}>110만</span>
+                <span className={classes.bold}>0</span>
               ) : (
                 <span className={classes.bold}>{setNumberFormat(totalTransferCount)}</span>
               )}
