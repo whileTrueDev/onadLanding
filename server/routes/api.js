@@ -16,10 +16,10 @@ router.post('/visit', (req, res) => {
     FROM landingClickIp as cli
     JOIN creatorInfo as ci
     ON ci.creatorId = cli.creatorId
-    WHERE ci.creatorTwitchId = ?
+    WHERE ci.creatorTwitchId = ? AND cli.ipAddress = ?
     AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
     `;
-  const ipCheckArray = [name, VISIT_TYPE_NUM];
+  const ipCheckArray = [name, userIp, VISIT_TYPE_NUM];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp  (creatorId, ipAddress, type)
