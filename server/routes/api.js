@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/visit', (req, res) => {
   const { name } = req.body;
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const VISIT_TYPE_NUM = 1; // db에서 방문의 type 넘버
+  const VISIT_TYPE_NUM = 0; // db에서 방문의 type 넘버
   // ip 체크가 1시간 이내에 찍힌게 있는지 확인
   const ipCheckQuery = `
     SELECT ipAddress
@@ -44,6 +44,7 @@ router.post('/visit', (req, res) => {
       const { error, result } = row;
       if (!error) {
         if (result.length === 0) {
+          console.log(result);
           lastResult.result.ipCheck = { error: null, result: 'success' };
           // 이전에 찍힌 ip가 없는 경우
           console.log('<방문> 이전에 찍힌 ip 가 아니기 때문에 작업합니다...');
@@ -276,7 +277,7 @@ router.get('/clicks', (req, res) => {
 
 // 배너 클릭시, 클릭 수 + 1
 router.post('/banner/click', (req, res) => {
-  const TRANSFER_TYPE_NUM = 2; // db에서 이동의 type 넘버
+  const TRANSFER_TYPE_NUM = 1; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
   const { campaignId, creatorId } = req.body;
 
@@ -379,7 +380,7 @@ router.post('/banner/click', (req, res) => {
 
 // 배너 <이동> 버튼 클릭 시, 이동 수 + 1
 router.post('/banner/transfer', (req, res) => {
-  const TRANSFER_TYPE_NUM = 3; // db에서 이동의 type 넘버
+  const TRANSFER_TYPE_NUM = 2; // db에서 이동의 type 넘버
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
   const { campaignId, creatorId } = req.body;
 
