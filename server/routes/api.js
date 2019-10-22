@@ -17,7 +17,7 @@ router.post('/visit', (req, res) => {
     JOIN creatorInfo as ci
     ON ci.creatorId = cli.creatorId
     WHERE ci.creatorTwitchId = ? AND cli.ipAddress = ?
-    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
     `;
   const ipCheckArray = [name, userIp, VISIT_TYPE_NUM];
 
@@ -287,7 +287,7 @@ router.post('/banner/click', (req, res) => {
     FROM landingClickIp
     WHERE campaignId = ? AND creatorId = ?
     AND type = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
     `;
   const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
 
@@ -390,7 +390,7 @@ router.post('/banner/transfer', (req, res) => {
     SELECT ipAddress
     FROM landingClickIp
     WHERE campaignId = ? AND creatorId = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 HOUR)
+    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
     AND type = ?
     `;
   const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
