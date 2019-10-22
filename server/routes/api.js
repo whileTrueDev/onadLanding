@@ -183,6 +183,7 @@ router.get('/description', (req, res) => {
 
 // 계약되었던 모든 배너, 배너당 클릭수, 이동수, 배너 정보들 조회
 router.get('/banner', (req, res) => {
+  const ON_STATE = 1;
   const { name } = req.query;
   const query = `
   SELECT
@@ -197,9 +198,9 @@ router.get('/banner', (req, res) => {
     ON lc.campaignId = campaign.campaignId
   JOIN bannerRegistered as br
     ON campaign.bannerId = br.bannerId
-  WHERE creatorTwitchId = ? AND campaign.deletedState = 0
+  WHERE creatorTwitchId = ? AND campaign.deletedState = 0 AND campaign.onOff = ?
   ORDER BY regiDate DESC`;
-  const queryArray = [name];
+  const queryArray = [name, ON_STATE];
 
   let lastResult;
 
