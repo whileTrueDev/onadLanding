@@ -57,7 +57,7 @@ const LandingMain = (props) => {
       container
       justify="center"
       style={
-        userData.creatorBackgroundImage
+        userData.creatorBackgroundImage && userData.creatorBackgroundImage !== '/pngs/landing/background-whale.jpg'
           ? {
             backgroundImage: `url(${userData.creatorBackgroundImage})`,
             backgroundSize: 'contain'
