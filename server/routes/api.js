@@ -1,108 +1,14 @@
 const express = require('express');
 const doQuery = require('../lib/doQuery');
+const logger = require('../middleware/landingActionLogging');
 
 const router = express.Router();
 
 /* GET method of API server */
 
-// visitCount 처리 ( 아이피에 따른 카운트 차단 )
-router.post('/visit', (req, res) => {
-  const { name } = req.body;
-  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const VISIT_TYPE_NUM = 0; // db에서 방문의 type 넘버
-  // ip 체크가 1시간 이내에 찍힌게 있는지 확인
-  const ipCheckQuery = `
-    SELECT ipAddress
-    FROM landingClickIp as cli
-    JOIN creatorInfo as ci
-    ON ci.creatorId = cli.creatorId
-    WHERE ci.creatorTwitchId = ? AND cli.ipAddress = ?
-    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-    `;
-  const ipCheckArray = [name, userIp, VISIT_TYPE_NUM];
-
-  const ipInsertQuery = `
-    INSERT INTO landingClickIp  (creatorId, ipAddress, type)
-    VALUES (
-    (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?), ?, ?)
-    `;
-  const ipInsertArray = [name, userIp, VISIT_TYPE_NUM];
-
-  // <랜딩페이지 입장>클릭 수 증가쿼리
-  const visitUpdateQuery = `
-    UPDATE creatorRoyaltyLevel
-    SET visitCount = visitCount + ?
-    WHERE creatorId = (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?)`;
-  const visitUpdateArray = [1, name];
-
-  let lastResult = {
-    error: null,
-    result: { ipCheck: {}, ipInsert: {}, visitUpdate: {} }
-  };
-  doQuery(ipCheckQuery, ipCheckArray)
-    .then((row) => {
-      const { error, result } = row;
-      if (!error) {
-        if (result.length === 0) {
-          console.log(result);
-          lastResult.result.ipCheck = { error: null, result: 'success' };
-          // 이전에 찍힌 ip가 없는 경우
-          console.log('<방문> 이전에 찍힌 ip 가 아니기 때문에 작업합니다...');
-          Promise.all([
-            doQuery(ipInsertQuery, ipInsertArray)
-              .then((ipInsertRow) => {
-                console.log(`[visit=>ipInsert] - ${name} - ${new Date().toLocaleString()}`);
-                const { ipInsertError, ipInsertResult } = ipInsertRow;
-                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 존재하는 경우
-                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.ipCheck = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.ipCheck = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /visit=>IpInsert\n`, reason);
-                lastResult.result.ipCheck = { error: true, reason };
-              }),
-            doQuery(visitUpdateQuery, visitUpdateArray)
-              .then((clickUpdateRow) => {
-                console.log(`[visit=>visitUpdate] - ${name} - ${new Date().toLocaleString()}`);
-                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
-                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 있는 경우
-                    lastResult.result.visitUpdate = { error: null, result: clickUpdateResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.visitUpdate = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.visitUpdate = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /visit=>visitUpdate\n`, reason);
-                lastResult.result.visitUpdate = { error: true, reason };
-              })
-          ])
-            .then(() => {
-              res.send(lastResult);
-            });
-        } else {
-          // 이전에 찍힌 ip가 있는 경우
-          console.log(`<방문> ${name} - 이전에찍힌  IP가 있기 때문에 skip합니다...`);
-          lastResult = { error: null, result: 'fail' };
-          res.send(lastResult);
-        }
-      }
-    })
-    .catch((reason) => {
-      console.log(reason);
-      lastResult = { error: true, reason };
-      res.send(lastResult);
-    });
-});
+/* ***********************************
+ * data fetch
+ * *********************************** */
 
 // 랜딩페이지 크리에이터 이름
 router.get('/user', (req, res) => {
@@ -276,213 +182,6 @@ router.get('/clicks', (req, res) => {
     });
 });
 
-// 배너 클릭시, 클릭 수 + 1
-router.post('/banner/click', (req, res) => {
-  const TRANSFER_TYPE_NUM = 1; // db에서 이동의 type 넘버
-  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const { campaignId, creatorId } = req.body;
-
-  // ip체크쿼리
-  const ipCheckQuery = `
-    SELECT ipAddress
-    FROM landingClickIp
-    WHERE campaignId = ? AND creatorId = ?
-    AND type = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-    `;
-  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
-
-  const ipInsertQuery = `
-    INSERT INTO landingClickIp 
-    (campaignId, creatorId, ipAddress, type)
-    VALUES (?, ?, ?, ?)
-    `;
-  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
-
-  const clickUpdateQuery = `
-    UPDATE landingClick
-    SET clickCount = clickCount + ?
-    WHERE campaignId = ? AND creatorId = ?`;
-  const clickUpdateArray = [1, campaignId, creatorId];
-
-  //
-  let lastResult = {
-    error: null,
-    result: {
-      ipCheck: {},
-      ipInsert: {},
-      clickUpdate: {}
-    }
-  };
-
-  doQuery(ipCheckQuery, ipCheckArray)
-    .then((row) => {
-      const { error, result } = row;
-      if (!error) {
-        if (result.length === 0) {
-          lastResult.result.ipCheck = { error: null, result: 'success' };
-          // 이전에 찍힌 ip가 없는 경우
-          console.log('<조회> 이전에 찍힌 ip 가 아니기 때문에 작업합니다...');
-          Promise.all([
-            doQuery(ipInsertQuery, ipInsertArray)
-              .then((ipInsertRow) => {
-                console.log(`[click-ipInsert] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
-                const { ipInsertError, ipInsertResult } = ipInsertRow;
-                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 존재하는 경우
-                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.ipCheck = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.ipCheck = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /banner/click=>ipInsert\n`, reason);
-                lastResult.result.ipCheck = { error: true, reason };
-              }),
-            doQuery(clickUpdateQuery, clickUpdateArray)
-              .then((clickUpdateRow) => {
-                console.log(`[clickUpdate] - ${campaignId}/creatorId - ${new Date().toLocaleString()}`);
-                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
-                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 있는 경우
-                    lastResult.result.clickUpdate = { error: null, result: clickUpdateResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.clickUpdate = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.clickUpdate = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /banner/click=>clickUpdate\n`, reason);
-                lastResult.result.clickUpdate = { error: true, reason };
-              })
-          ])
-            .then(() => {
-              res.send(lastResult);
-            });
-        } else {
-          // 이전에 찍힌 ip가 있는 경우
-          console.log('<조회> - 이전에찍힌 IP가 있기 때문에 skip합니다...');
-          lastResult = { error: null, result: 'fail' };
-          res.send(lastResult);
-        }
-      }
-    })
-    .catch((reason) => {
-      console.log(reason);
-      lastResult = { error: true, reason };
-      res.send(lastResult);
-    });
-});
-
-// 배너 <이동> 버튼 클릭 시, 이동 수 + 1
-router.post('/banner/transfer', (req, res) => {
-  const TRANSFER_TYPE_NUM = 2; // db에서 이동의 type 넘버
-  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
-  const { campaignId, creatorId } = req.body;
-
-  // Queries
-  // ip 체크가 1시간 이내에 찍힌게 있는지 확인
-  const ipCheckQuery = `
-    SELECT ipAddress
-    FROM landingClickIp
-    WHERE campaignId = ? AND creatorId = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-    AND type = ?
-    `;
-  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM];
-
-  const ipInsertQuery = `
-    INSERT INTO landingClickIp 
-    (campaignId, creatorId, ipAddress, type)
-    VALUES (?, ?, ?, ?)
-    `;
-  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
-
-  // <이동>클릭 수 증가쿼리
-  const clickUpdateQuery = `
-    UPDATE landingClick
-    SET transferCount = transferCount + ?
-    WHERE campaignId = ? AND creatorId = ?`;
-  const clickUpdateArray = [1, campaignId, creatorId];
-
-  let lastResult = {
-    error: null,
-    result: {
-      ipCheck: {},
-      ipInsert: {},
-      clickUpdate: {}
-    }
-  };
-
-  doQuery(ipCheckQuery, ipCheckArray)
-    .then((row) => {
-      const { error, result } = row;
-      if (!error) {
-        if (result.length === 0) {
-          lastResult.result.ipCheck = { error: null, result: 'success' };
-          // 이전에 찍힌 ip가 없는 경우
-          console.log('<이동> 이전에 찍힌 ip 가 아니기 때문에 작업합니다...');
-          Promise.all([
-            doQuery(ipInsertQuery, ipInsertArray)
-              .then((ipInsertRow) => {
-                console.log(`[click-ipInsert] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
-                const { ipInsertError, ipInsertResult } = ipInsertRow;
-                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 존재하는 경우
-                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.ipCheck = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.ipCheck = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /banner/transfer=>ipInsert\n`, reason);
-                lastResult.result.ipCheck = { error: true, reason };
-              }),
-            doQuery(clickUpdateQuery, clickUpdateArray)
-              .then((clickUpdateRow) => {
-                console.log(`[transferUpdate] - ${campaignId}/${creatorId} - ${new Date().toLocaleString()}`);
-                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
-                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 있는 경우
-                    lastResult.result.clickUpdate = { error: null, result: clickUpdateResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.clickUpdate = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.clickUpdate = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                console.log(`ERROR - [${new Date().toLocaleString()}] - /banner/transfer=>transferUpdate\n`, reason);
-                lastResult.result.clickUpdate = { error: true, reason };
-              })
-          ])
-            .then(() => {
-              res.send(lastResult);
-            });
-        } else {
-          // 이전에 찍힌 ip가 있는 경우
-          console.log('<이동> - 이전에찍힌 IP가 있기 때문에 skip합니다...');
-          lastResult = { error: null, result: 'fail' };
-          res.send(lastResult);
-        }
-      }
-    })
-    .catch((reason) => {
-      console.log(reason);
-      lastResult = { error: true, reason };
-      res.send(lastResult);
-    });
-});
-
 // 크리에이터 레벨
 router.get('/level', (req, res) => {
   const { name } = req.query;
@@ -520,6 +219,323 @@ router.get('/level', (req, res) => {
     // db 쿼리 수행 과정의 오류인 경우
       console.log(`ERROR - [${new Date().toLocaleString()}] - /level\n`, reason);
       lastResult = { error: true, reason };
+      res.send(lastResult);
+    });
+});
+
+/* ***********************************
+ * ACTIONS
+ * *********************************** */
+
+
+// visitCount 처리 ( 아이피에 따른 카운트 차단 )
+router.post('/visit', (req, res) => {
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  const VISIT_TYPE_NUM = 0; // db에서 방문의 type 넘버
+  // ip 체크가 1시간 이내에 찍힌게 있는지 확인
+  const ipCheckQuery = `
+    SELECT ipAddress
+    FROM landingClickIp as cli
+    JOIN creatorInfo as ci
+    ON ci.creatorId = cli.creatorId
+    WHERE ci.creatorTwitchId = ? AND cli.ipAddress = ?
+    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+    `;
+  const ipCheckArray = [name, userIp, VISIT_TYPE_NUM];
+
+  const ipInsertQuery = `
+    INSERT INTO landingClickIp  (creatorId, ipAddress, type)
+    VALUES (
+    (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?), ?, ?)
+    `;
+  const ipInsertArray = [name, userIp, VISIT_TYPE_NUM];
+
+  // <랜딩페이지 입장>클릭 수 증가쿼리
+  const visitUpdateQuery = `
+    UPDATE creatorRoyaltyLevel
+    SET visitCount = visitCount + ?
+    WHERE creatorId = (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?)`;
+  const visitUpdateArray = [1, name];
+
+  let lastResult = {
+    error: null,
+    result: { ipCheck: {}, ipInsert: {}, visitUpdate: {} }
+  };
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      console.log('========================= [방문] =========================');
+      const { error, result } = row;
+
+      if (!error) {
+        if (result.length === 0) {
+          lastResult.result.ipCheck = { error: null, result: 'success' };
+          // 이전에 찍힌 ip가 없는 경우
+          logger(`방문-${name}`, userIp, '이전의 IP가 아니기 때문에 작업');
+          Promise.all([
+            doQuery(ipInsertQuery, ipInsertArray)
+              .then((ipInsertRow) => {
+                logger('방문,ipInsert', userIp, '새로운 IP 적재 완료');
+                const { ipInsertError, ipInsertResult } = ipInsertRow;
+                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 존재하는 경우
+                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.ipCheck = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.ipCheck = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('방문,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                lastResult.result.ipCheck = { error: true, reason };
+              }),
+
+            doQuery(visitUpdateQuery, visitUpdateArray)
+              .then((clickUpdateRow) => {
+                logger('방문,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
+                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 있는 경우
+                    lastResult.result.visitUpdate = { error: null, result: clickUpdateResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.visitUpdate = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.visitUpdate = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('방문,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                lastResult.result.visitUpdate = { error: true, reason };
+              })
+          ])
+            .then(() => {
+              res.send(lastResult);
+            });
+        } else {
+          // 이전에 찍힌 ip가 있는 경우
+          logger(`방문-${name}`, userIp, '이미 방문한 IP, SKIP');
+          lastResult = { error: null, result: 'fail' };
+          res.send(lastResult);
+        }
+      }
+    })
+    .catch((reason) => {
+      logger(`방문-${name}`, userIp, `아이피 조회 에러 - ${reason}`);
+      lastResult = { error: true, reason };
+      res.send(lastResult);
+    });
+});
+
+// 배너 클릭시, 클릭 수 + 1
+router.post('/banner/click', (req, res) => {
+  const TRANSFER_TYPE_NUM = 1; // db에서 이동의 type 넘버
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  const { campaignId, creatorId } = req.body;
+
+  // ip체크쿼리
+  const ipCheckQuery = `
+    SELECT ipAddress
+    FROM landingClickIp
+    WHERE campaignId = ? AND creatorId = ?
+    AND type = ? AND ipAddress = ?
+    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+    `;
+  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
+
+  const ipInsertQuery = `
+    INSERT INTO landingClickIp 
+    (campaignId, creatorId, ipAddress, type)
+    VALUES (?, ?, ?, ?)
+    `;
+  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
+
+  const clickUpdateQuery = `
+    UPDATE landingClick
+    SET clickCount = clickCount + ?
+    WHERE campaignId = ? AND creatorId = ?`;
+  const clickUpdateArray = [1, campaignId, creatorId];
+
+  //
+  let lastResult = {
+    error: null,
+    result: {
+      ipCheck: {},
+      ipInsert: {},
+      clickUpdate: {}
+    }
+  };
+
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      console.log('========================= [조회] =========================');
+      const { error, result } = row;
+      if (!error) {
+        if (result.length === 0) {
+          lastResult.result.ipCheck = { error: null, result: 'success' };
+          // 이전에 찍힌 ip가 없는 경우
+          logger(`조회-${name}`, userIp, '이전의 IP가 아니기 때문에 작업');
+          Promise.all([
+            doQuery(ipInsertQuery, ipInsertArray)
+              .then((ipInsertRow) => {
+                logger('조회,ipInsert', userIp, '새로운 IP 적재 완료');
+                const { ipInsertError, ipInsertResult } = ipInsertRow;
+                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 존재하는 경우
+                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.ipCheck = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.ipCheck = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('조회,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                lastResult.result.ipCheck = { error: true, reason };
+              }),
+            doQuery(clickUpdateQuery, clickUpdateArray)
+              .then((clickUpdateRow) => {
+                logger('조회,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
+                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 있는 경우
+                    lastResult.result.clickUpdate = { error: null, result: clickUpdateResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.clickUpdate = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.clickUpdate = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('조회,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                lastResult.result.clickUpdate = { error: true, reason };
+              })
+          ])
+            .then(() => {
+              res.send(lastResult);
+            });
+        } else {
+          // 이전에 찍힌 ip가 있는 경우
+          logger(`조회-${name}`, userIp, '이미 방문한 IP, SKIP');
+          lastResult = { error: null, result: 'fail' };
+          res.send(lastResult);
+        }
+      }
+    })
+    .catch((reason) => {
+      logger(`조회-${name}`, userIp, `아이피 조회 에러 - ${reason}`);
+      lastResult = { error: true, reason };
+      res.send(lastResult);
+    });
+});
+
+// 배너 <이동> 버튼 클릭 시, 이동 수 + 1
+router.post('/banner/transfer', (req, res) => {
+  const TRANSFER_TYPE_NUM = 2; // db에서 이동의 type 넘버
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
+  const { campaignId, creatorId } = req.body;
+
+  // Queries
+  // ip 체크가 1시간 이내에 찍힌게 있는지 확인
+  const ipCheckQuery = `
+    SELECT ipAddress
+    FROM landingClickIp
+    WHERE campaignId = ? AND creatorId = ?
+    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+    AND type = ? AND ipAddress = ?
+    `;
+  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
+
+  const ipInsertQuery = `
+    INSERT INTO landingClickIp 
+    (campaignId, creatorId, ipAddress, type)
+    VALUES (?, ?, ?, ?)
+    `;
+  const ipInsertArray = [campaignId, creatorId, userIp, TRANSFER_TYPE_NUM];
+
+  // <이동>클릭 수 증가쿼리
+  const clickUpdateQuery = `
+    UPDATE landingClick
+    SET transferCount = transferCount + ?
+    WHERE campaignId = ? AND creatorId = ?`;
+  const clickUpdateArray = [1, campaignId, creatorId];
+
+  let lastResult = {
+    error: null,
+    result: {
+      ipCheck: {},
+      ipInsert: {},
+      clickUpdate: {}
+    }
+  };
+
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      console.log('========================= [이동] =========================');
+      const { error, result } = row;
+      if (!error) {
+        if (result.length === 0) {
+          lastResult.result.ipCheck = { error: null, result: 'success' };
+          // 이전에 찍힌 ip가 없는 경우
+          logger(`이동-${name}`, userIp, '이전의 IP가 아니기 때문에 작업');
+          Promise.all([
+            doQuery(ipInsertQuery, ipInsertArray)
+              .then((ipInsertRow) => {
+                logger('이동,ipInsert', userIp, '새로운 IP 적재 완료');
+                const { ipInsertError, ipInsertResult } = ipInsertRow;
+                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 존재하는 경우
+                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.ipCheck = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.ipCheck = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('이동,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                lastResult.result.ipCheck = { error: true, reason };
+              }),
+            doQuery(clickUpdateQuery, clickUpdateArray)
+              .then((clickUpdateRow) => {
+                logger('이동,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
+                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
+                  if (result) { // 쿼리 결과가 있는 경우
+                    lastResult.result.clickUpdate = { error: null, result: clickUpdateResult };
+                  } else { // 쿼리 결과가 없는 경우
+                    lastResult.result.clickUpdate = { error: true, result: null };
+                  }
+                } else { // 쿼리 과정에서 오류인 경우
+                  lastResult.result.clickUpdate = { error: true, result: error };
+                }
+              })
+              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+                logger('이동,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                lastResult.result.clickUpdate = { error: true, reason };
+              })
+          ])
+            .then(() => {
+              res.send(lastResult);
+            });
+        } else {
+          // 이전에 찍힌 ip가 있는 경우
+          logger(`이동-${name}`, userIp, '이미 방문한 IP, SKIP');
+          lastResult = { error: null, result: 'fail' };
+          res.send(lastResult);
+        }
+      }
+    })
+    .catch((reason) => {
+      console.log(reason);
+      logger(`이동-${name}`, userIp, `아이피 조회 에러 - ${reason}`);
       res.send(lastResult);
     });
 });

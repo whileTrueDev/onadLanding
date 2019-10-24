@@ -34,6 +34,7 @@ const useBannerClick = (bannerList) => {
     const postRequest = async function call(targetObject) {
       try {
         const res = await axios.post(`${apiHOST}/api/banner/click`, {
+          name: window.location.pathname.replace('/', ''),
           creatorId: clickedList[targetIndex].creatorId,
           campaignId: clickedList[targetIndex].campaignId,
         });
@@ -114,6 +115,7 @@ const useBannerClick = (bannerList) => {
        * */
       try {
         const res = await axios.post(`${apiHOST}/api/banner/transfer`, {
+          name: window.location.pathname.replace('/', ''),
           creatorId: clickedList[targetIndex].creatorId,
           campaignId: clickedList[targetIndex].campaignId,
         });
