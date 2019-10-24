@@ -186,7 +186,7 @@ router.get('/clicks', (req, res) => {
 router.get('/level', (req, res) => {
   const { name } = req.query;
   const query = `
-  SELECT exp, truncate(exp / 500, 0) + 1 as level
+  SELECT exp, level
   FROM creatorRoyaltyLevel as crl
   JOIN creatorLanding as cl
   ON cl.creatorId = crl.creatorId
