@@ -275,7 +275,7 @@ router.post('/visit', (req, res) => {
           Promise.all([
             doQuery(ipInsertQuery, ipInsertArray)
               .then((ipInsertRow) => {
-                logger('방문,ipInsert', userIp, '새로운 IP 적재 완료');
+                logger(`방문-${name},ipInsert`, userIp, '새로운 IP 적재 완료');
                 const { ipInsertError, ipInsertResult } = ipInsertRow;
                 if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 존재하는 경우
@@ -288,13 +288,13 @@ router.post('/visit', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('방문,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                logger(`방문-${name},ipInsert`, userIp, `새로운 IP 적재오류 - ${reason}`);
                 lastResult.result.ipCheck = { error: true, reason };
               }),
 
             doQuery(visitUpdateQuery, visitUpdateArray)
               .then((clickUpdateRow) => {
-                logger('방문,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                logger(`방문-${name},visitUpdate`, userIp, '방문 수 업데이트 작업 완료');
                 const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
                 if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 있는 경우
@@ -307,7 +307,7 @@ router.post('/visit', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('방문,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                logger(`방문-${name},visitUpdate`, userIp, `방문 수 업데이트 오류 - ${reason}`);
                 lastResult.result.visitUpdate = { error: true, reason };
               })
           ])
@@ -381,7 +381,7 @@ router.post('/banner/click', (req, res) => {
           Promise.all([
             doQuery(ipInsertQuery, ipInsertArray)
               .then((ipInsertRow) => {
-                logger('조회,ipInsert', userIp, '새로운 IP 적재 완료');
+                logger(`조회-${name},ipInsert`, userIp, '새로운 IP 적재 완료');
                 const { ipInsertError, ipInsertResult } = ipInsertRow;
                 if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 존재하는 경우
@@ -394,12 +394,12 @@ router.post('/banner/click', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('조회,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                logger(`조회-${name},ipInsert`, userIp, `새로운 IP 적재오류 - ${reason}`);
                 lastResult.result.ipCheck = { error: true, reason };
               }),
             doQuery(clickUpdateQuery, clickUpdateArray)
               .then((clickUpdateRow) => {
-                logger('조회,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                logger(`조회-${name},visitUpdate`, userIp, '방문 수 업데이트 작업 완료');
                 const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
                 if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 있는 경우
@@ -412,7 +412,7 @@ router.post('/banner/click', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('조회,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                logger(`조회-${name},visitUpdate`, userIp, `방문 수 업데이트 오류 - ${reason}`);
                 lastResult.result.clickUpdate = { error: true, reason };
               })
           ])
@@ -500,12 +500,12 @@ router.post('/banner/transfer', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('이동,ipInsert', userIp, `새로운 IP 적재오류 - ${reason}`);
+                logger(`이동-${name},ipInsert`, userIp, `새로운 IP 적재오류 - ${reason}`);
                 lastResult.result.ipCheck = { error: true, reason };
               }),
             doQuery(clickUpdateQuery, clickUpdateArray)
               .then((clickUpdateRow) => {
-                logger('이동,visitUpdate', userIp, '방문 수 업데이트 작업 완료');
+                logger(`이동-${name},visitUpdate`, userIp, '방문 수 업데이트 작업 완료');
                 const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
                 if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 있는 경우
@@ -518,7 +518,7 @@ router.post('/banner/transfer', (req, res) => {
                 }
               })
               .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger('이동,visitUpdate', userIp, `방문 수 업데이트 오류 - ${reason}`);
+                logger(`이동-${name},visitUpdate`, userIp, `방문 수 업데이트 오류 - ${reason}`);
                 lastResult.result.clickUpdate = { error: true, reason };
               })
           ])
