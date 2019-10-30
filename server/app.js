@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
+require('dotenv').config(); // for environment variables
 
 const app = express();
 
