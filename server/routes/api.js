@@ -487,7 +487,7 @@ router.post('/banner/transfer', (req, res) => {
           Promise.all([
             doQuery(ipInsertQuery, ipInsertArray)
               .then((ipInsertRow) => {
-                logger('이동,ipInsert', userIp, '새로운 IP 적재 완료');
+                logger(`이동-${name},ipInsert`, userIp, '새로운 IP 적재 완료');
                 const { ipInsertError, ipInsertResult } = ipInsertRow;
                 if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
                   if (result) { // 쿼리 결과가 존재하는 경우
