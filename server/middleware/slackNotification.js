@@ -1,6 +1,6 @@
 const Axios = require('axios');
 
-const url = 'https://hooks.slack.com/services/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';
+const url = process.env.SLACK_ALARM_URL;
 
 /**
  * slack onad_alarm 채널에 메시지를 보내는 함수.
