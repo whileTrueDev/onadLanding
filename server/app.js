@@ -1,3 +1,4 @@
+require('dotenv').config(); // for environment variables
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -6,7 +7,6 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const slack = require('./middleware/slackNotification');
-require('dotenv').config(); // for environment variables
 
 const app = express();
 
