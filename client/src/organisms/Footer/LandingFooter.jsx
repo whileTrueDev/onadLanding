@@ -29,7 +29,7 @@ export default function LandingHero() {
         <img src="/images/logo/onad_logo_vertical.png" alt="" className={classes.logo} />
       </a>
       <Typography variant="body2">Powered by OnAD</Typography>
-      <Typography variant="body2">whileTrue Corp. All Right Reserved</Typography>
+      <Typography variant="body2">whileTrue Corp. All Rights Reserved</Typography>
     </Grid>
   );
 }
