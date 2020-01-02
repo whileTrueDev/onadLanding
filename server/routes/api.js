@@ -89,6 +89,7 @@ router.get('/description', (req, res) => {
 
 // 계약되었던 모든 배너, 배너당 클릭수, 이동수, 배너 정보들 조회
 router.get('/banner', (req, res) => {
+  const DELETED_CAMPAIGN_STATE = 0;
   const ON_STATE = 1;
   const { name } = req.query;
   const query = `
@@ -98,15 +99,18 @@ router.get('/banner', (req, res) => {
   DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
   
   FROM landingClick as lc
+  JOIN marketerInfo as mi
+    ON SUBSTRING_INDEX(lc.campaignId, "_", 1) = mi.marketerId
   JOIN creatorLanding as cl
     ON lc.creatorId = cl.creatorId
   JOIN campaign
     ON lc.campaignId = campaign.campaignId
   JOIN bannerRegistered as br
     ON campaign.bannerId = br.bannerId
-  WHERE creatorTwitchId = ? AND campaign.deletedState = 0 AND campaign.onOff = ?
+  WHERE creatorTwitchId = ? AND campaign.deletedState = ?
+    AND campaign.onOff = ? AND mi.marketerContraction = ?
   ORDER BY regiDate DESC`;
-  const queryArray = [name, ON_STATE];
+  const queryArray = [name, DELETED_CAMPAIGN_STATE, ON_STATE, ON_STATE];
 
   let lastResult;
 
