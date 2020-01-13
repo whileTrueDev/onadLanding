@@ -18,7 +18,7 @@ export default function LandingNoAd() {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <h2 className={classes.h2}>이 크리에이터는 아직 광고를 진행하지 않았어요!</h2>
+      <h2 className={classes.h2}>현재 이 크리에이터가 진행중인 클릭광고가 없습니다.</h2>
     </div>
   );
 }
