@@ -58,7 +58,6 @@ export default function LandingHero(props) {
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
           <Avatar
-            alt="avatar"
             src={userLogo}
             className={classes.bigAvatar}
             onClick={() => {
