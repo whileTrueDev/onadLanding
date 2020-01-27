@@ -127,7 +127,7 @@ export default function LandingImages(props) {
           textColor="primary"
           aria-label="icon tabs example"
         >
-          <Tab aria-label="favorite" label="배너목록" />
+          <Tab aria-label="favorite" label="광고목록" />
           {/* <Tab aria-label="plus" label="plus++" disabled /> */}
         </Tabs>
       </Grid>
