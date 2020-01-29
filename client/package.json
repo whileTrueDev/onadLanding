@@ -18,7 +18,8 @@
     "shortid": "^2.2.14"
   },
   "scripts": {
-    "start": "PORT=3011 react-scripts start",
+    "start": "set PORT=3011 && react-scripts start",
+    "start:mac": "PORT=3011 react-scripts start",
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
