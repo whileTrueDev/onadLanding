@@ -150,7 +150,10 @@ const useBannerClick = (bannerList) => {
     // 1. 지금 해당 배너 찾기
     const targetObject = newClickedList[targetIndex];
 
-    // 2. 해당 배너 state 값 수정 요청하기
+    // 2. targetObject.links 데이터에서 primary 링크 찾기.
+    const primaryLinkIndex = targetObject.links.links.findIndex(link => link.primary === true);
+
+    // 3. 해당 배너 state 값 수정 요청하기
     if (targetObject.isTransfered === false) {
       // componenet 생성 이후 첫번째 클릭
       // console.log('첫번째 <이동> 클릭');
@@ -166,11 +169,11 @@ const useBannerClick = (bannerList) => {
       });
 
       // 이벤트
-      window.open(targetObject.landingUrl);
+      window.open(targetObject.links.links[primaryLinkIndex].linkTo);
     } else {
       // componenet 생성 이후 두번째 클릭
       // 버튼 이동 이벤트
-      window.open(targetObject.landingUrl);
+      window.open(targetObject.links.links[primaryLinkIndex].linkTo);
     }
   };
   return { clickedList, handleClick, handleTransferClick };

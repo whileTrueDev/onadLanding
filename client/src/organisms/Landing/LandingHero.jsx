@@ -59,6 +59,7 @@ export default function LandingHero(props) {
         <Grid container justify="center">
           <Avatar
             src={userLogo}
+            alt=""
             className={classes.bigAvatar}
             onClick={() => {
               window.open(`https://www.twitch.tv${window.location.pathname}`);
