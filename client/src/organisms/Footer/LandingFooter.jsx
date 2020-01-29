@@ -25,7 +25,7 @@ export default function LandingHero() {
 
   return (
     <Grid container justify="center" direction="column" alignItems="center" className={classes.root}>
-      <a href="/">
+      <a href="https://onad.io">
         <img src="/images/logo/onad_logo_vertical.png" alt="" className={classes.logo} />
       </a>
       <Typography variant="body2">Powered by OnAD</Typography>

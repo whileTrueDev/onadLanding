@@ -152,6 +152,7 @@ const lightTheme = {
     h5: {
       ...rawTheme.typography.h5,
       ...fontHeader,
+      textTransform: 'initial',
       fontSize: 26,
       [rawTheme.breakpoints.down('xs')]: {
         fontSize: 18,
@@ -160,6 +161,7 @@ const lightTheme = {
     h6: {
       ...rawTheme.typography.h6,
       ...fontHeader,
+      textTransform: 'initial',
       fontSize: 18,
       [rawTheme.breakpoints.down('xs')]: {
         fontSize: 13,

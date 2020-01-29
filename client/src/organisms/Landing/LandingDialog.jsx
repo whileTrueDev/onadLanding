@@ -4,17 +4,22 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
 // own function
+import { Typography } from '@material-ui/core';
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {
     padding: '0',
+    '&:first-child': {
+      padding: '0',
+    }
   },
   imageWrapper: {
     marginBottom: theme.spacing(2),
@@ -58,7 +63,14 @@ export default function LandingDialog(props) {
       onClose={handleClose}
       maxWidth="md"
     >
-      <DialogContent className={classes.content}>
+      <DialogContent
+        classes={{
+          root: classes.content
+        }}
+      >
+        <DialogTitle disableTypography>
+          <Typography variant="h6">{data.marketerName}</Typography>
+        </DialogTitle>
         <ButtonBase
           className={classes.imageWrapper}
           onClick={() => { handleTransferClick(indexOfThisData); }}

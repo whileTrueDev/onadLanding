@@ -94,7 +94,7 @@ router.get('/banner', (req, res) => {
   const { name } = req.query;
   const query = `
   SELECT
-  bannerSrc, clickCount, transferCount, campaign.campaignId, lc.creatorId,
+  bannerSrc, clickCount, mi.marketerName, transferCount, campaign.campaignId, lc.creatorId,
   bannerDescription, companyDescription, links,
   DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
   
