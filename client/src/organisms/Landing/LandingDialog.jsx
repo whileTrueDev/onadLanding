@@ -4,22 +4,30 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Button from '@material-ui/core/Button';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import Flag from '@material-ui/icons/Flag';
 import ReDo from '@material-ui/icons/Redo';
 // own function
+import { Typography } from '@material-ui/core';
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 
 const useStyles = makeStyles(theme => ({
   content: {
     padding: '0',
+    '&:first-child': {
+      padding: '0',
+    }
   },
   imageWrapper: {
     marginBottom: theme.spacing(2),
+    textAlign: 'center'
   },
   image: {
+    width: 300,
+    height: 150,
     maxWidth: theme.breakpoints.width('sm'),
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%'
@@ -43,6 +51,20 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     color: theme.palette.common.white
+  },
+  paper: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      margin: 0
+    }
+  },
+  link: {
+    textDecoration: 'underline',
+    marginLeft: 10,
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'none'
+    }
   }
 }));
 
@@ -56,17 +78,50 @@ export default function LandingDialog(props) {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="md"
+      maxWidth="sm"
+      fullWidth
+      classes={{
+        paper: classes.paper
+      }}
     >
-      <DialogContent className={classes.content}>
-        <ButtonBase
-          className={classes.imageWrapper}
-          onClick={() => { handleTransferClick(indexOfThisData); }}
-        >
-          <img src={data.bannerSrc} alt="banner" className={classes.image} />
-        </ButtonBase>
-        <div className={classes.description}>
+      {/* dialog wrapper */}
+      <DialogContent
+        classes={{
+          root: classes.content
+        }}
+      >
+        {/* title */}
+        <DialogTitle disableTypography style={{ borderBottom: '1px solid #ddd' }}>
+          <Typography variant="h6">{data.marketerName}</Typography>
+        </DialogTitle>
 
+        {/* banner Image */}
+        <div style={{ textAlign: 'center' }}>
+          <ButtonBase
+            className={classes.imageWrapper}
+            onClick={() => {
+              // primary 링크를 찾아 인덱스전달.
+              handleTransferClick(indexOfThisData,
+                data.links.links[
+                  data.links.links.findIndex(link => link.primary === true)
+                ].linkTo);
+            }}
+          >
+            <img src={data.bannerSrc} alt="banner" className={classes.image} />
+          </ButtonBase>
+        </div>
+
+        {/* Description */}
+        <div className={classes.description}>
+          {/* view, transfer Count */}
+          <DialogContentText className={classes.descriptionIcons}>
+            <Flag className={classes.flagicon} />
+            {`${setNumberFormat(data.clickCount)} 조회 `}
+            <ReDo className={classes.redirecticon} />
+            {`${setNumberFormat(data.transferCount)} 이동 `}
+          </DialogContentText>
+
+          {/* description1 */}
           {data.companyDescription ? (
             <DialogContentText>
               {`- ${data.companyDescription}`}
@@ -75,6 +130,7 @@ export default function LandingDialog(props) {
             <div style={{ height: 20 }} />
           )}
 
+          {/* description2 */}
           {data.bannerDescription ? (
             <DialogContentText>
               {`- ${data.bannerDescription}`}
@@ -83,16 +139,23 @@ export default function LandingDialog(props) {
             <div style={{ height: 20 }} />
           )}
 
+          {/* 링크들 */}
+          {data.links.links.map((link, linkIndex) => (
+            <DialogContentText
+              color="primary"
+              key={link}
+              className={classes.link}
+              onClick={() => {
+                handleTransferClick(indexOfThisData, link.linkTo);
+              }}
+            >
+              {link.linkName ? link.linkName : `링크 바로가기${linkIndex + 1}`}
+            </DialogContentText>
+          ))}
 
-          <DialogContentText className={classes.descriptionIcons}>
-            <Flag className={classes.flagicon} />
-            {`${setNumberFormat(data.clickCount)} 조회 `}
-            <ReDo className={classes.redirecticon} />
-            {`${setNumberFormat(data.transferCount)} 이동 `}
-          </DialogContentText>
-
+          {/* date */}
           <DialogContentText variant="body2">
-            {`${data.regiDate}`}
+            {`${data.regiDate} ~`}
           </DialogContentText>
         </div>
 
@@ -100,7 +163,12 @@ export default function LandingDialog(props) {
 
           <DialogActions>
             <Button
-              onClick={() => { handleTransferClick(indexOfThisData); }}
+              onClick={() => {
+                handleTransferClick(indexOfThisData,
+                  data.links.links[
+                    data.links.links.findIndex(link => link.primary === true)
+                  ].linkTo);
+              }}
               color="primary"
               variant="contained"
               className={classes.button}

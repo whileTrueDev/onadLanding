@@ -103,7 +103,7 @@ const useBannerClick = (bannerList) => {
   };
 
   // 배너 <이동> 클릭 핸들러
-  const handleTransferClick = (targetIndex) => {
+  const handleTransferClick = (targetIndex, linkTo) => { // linkIndex 0 : primaryLink
     // 불변성을 지키기 위해 복제된 어레이 생성. (복제된 어레이의 값을 바꾼 이후 setFunction으로 한번만 바꾼다.)
     const newClickedList = [...clickedList];
 
@@ -150,7 +150,7 @@ const useBannerClick = (bannerList) => {
     // 1. 지금 해당 배너 찾기
     const targetObject = newClickedList[targetIndex];
 
-    // 2. 해당 배너 state 값 수정 요청하기
+    // 3. 해당 배너 state 값 수정 요청하기
     if (targetObject.isTransfered === false) {
       // componenet 생성 이후 첫번째 클릭
       // console.log('첫번째 <이동> 클릭');
@@ -166,11 +166,11 @@ const useBannerClick = (bannerList) => {
       });
 
       // 이벤트
-      window.open(targetObject.landingUrl);
+      window.open(linkTo);
     } else {
       // componenet 생성 이후 두번째 클릭
       // 버튼 이동 이벤트
-      window.open(targetObject.landingUrl);
+      window.open(linkTo);
     }
   };
   return { clickedList, handleClick, handleTransferClick };

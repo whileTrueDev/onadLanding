@@ -8,7 +8,7 @@ import LandingMain from '../../organisms/LandingMain';
 import AppBar from '../../organisms/AppBar/AppBar';
 import Footer from '../../organisms/Footer/LandingFooter';
 import Error from '../../organisms/Error/LandingError';
-import CircularProgress from '../../atoms/CircularProgress/CircularProgress';
+import LandingLoading from '../../organisms/Loading/LandingLoading';
 // theme
 import { lightTheme, darkTheme } from './theme';
 // config
@@ -36,7 +36,7 @@ export default function Landing(props) {
       <AppBar isDarkTheme={isDarkTheme} handleSearchChange={handleSearchChange} />
 
       {userData.loading && (
-        <CircularProgress large />
+        <LandingLoading />
       )}
 
       {!userData.loading && userData.errorState && (
