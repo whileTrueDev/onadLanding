@@ -83,7 +83,7 @@ export default function LandingDialog(props) {
         }}
       >
         {/* title */}
-        <DialogTitle disableTypography>
+        <DialogTitle disableTypography style={{ borderBottom: '1px solid #ddd' }}>
           <Typography variant="h6">{data.marketerName}</Typography>
         </DialogTitle>
 
@@ -124,6 +124,11 @@ export default function LandingDialog(props) {
           ) : (
             <div style={{ height: 20 }} />
           )}
+
+          {/* 링크들 */}
+          {data.links.map(link => (
+            <div key={link}>{link}</div>
+          ))}
 
           {/* date */}
           <DialogContentText variant="body2">
