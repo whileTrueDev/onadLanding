@@ -36,7 +36,17 @@ export default function Landing(props) {
       <AppBar isDarkTheme={isDarkTheme} handleSearchChange={handleSearchChange} />
 
       {userData.loading && (
-        <CircularProgress large />
+        <div style={{
+          display: 'flex',
+          minHeight: '80vh',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}
+        >
+          <CircularProgress size={150} disableShrink />
+          <h4>Loading... please wait a seconds..</h4>
+        </div>
       )}
 
       {!userData.loading && userData.errorState && (

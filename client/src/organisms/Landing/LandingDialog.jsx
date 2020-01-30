@@ -23,8 +23,11 @@ const useStyles = makeStyles(theme => ({
   },
   imageWrapper: {
     marginBottom: theme.spacing(2),
+    textAlign: 'center'
   },
   image: {
+    width: 300,
+    height: 150,
     maxWidth: theme.breakpoints.width('sm'),
     [theme.breakpoints.down('xs')]: {
       maxWidth: '100%'
@@ -48,6 +51,12 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     color: theme.palette.common.white
+  },
+  paper: {
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+      margin: 0
+    }
   }
 }));
 
@@ -61,24 +70,44 @@ export default function LandingDialog(props) {
     <Dialog
       open={open}
       onClose={handleClose}
-      maxWidth="md"
+      maxWidth="sm"
+      fullWidth
+      classes={{
+        paper: classes.paper
+      }}
     >
+      {/* dialog wrapper */}
       <DialogContent
         classes={{
           root: classes.content
         }}
       >
+        {/* title */}
         <DialogTitle disableTypography>
           <Typography variant="h6">{data.marketerName}</Typography>
         </DialogTitle>
-        <ButtonBase
-          className={classes.imageWrapper}
-          onClick={() => { handleTransferClick(indexOfThisData); }}
-        >
-          <img src={data.bannerSrc} alt="banner" className={classes.image} />
-        </ButtonBase>
-        <div className={classes.description}>
 
+        {/* banner Image */}
+        <div style={{ textAlign: 'center' }}>
+          <ButtonBase
+            className={classes.imageWrapper}
+            onClick={() => { handleTransferClick(indexOfThisData); }}
+          >
+            <img src={data.bannerSrc} alt="banner" className={classes.image} />
+          </ButtonBase>
+        </div>
+
+        {/* Description */}
+        <div className={classes.description}>
+          {/* view, transfer Count */}
+          <DialogContentText className={classes.descriptionIcons}>
+            <Flag className={classes.flagicon} />
+            {`${setNumberFormat(data.clickCount)} 조회 `}
+            <ReDo className={classes.redirecticon} />
+            {`${setNumberFormat(data.transferCount)} 이동 `}
+          </DialogContentText>
+
+          {/* description1 */}
           {data.companyDescription ? (
             <DialogContentText>
               {`- ${data.companyDescription}`}
@@ -87,6 +116,7 @@ export default function LandingDialog(props) {
             <div style={{ height: 20 }} />
           )}
 
+          {/* description2 */}
           {data.bannerDescription ? (
             <DialogContentText>
               {`- ${data.bannerDescription}`}
@@ -95,14 +125,7 @@ export default function LandingDialog(props) {
             <div style={{ height: 20 }} />
           )}
 
-
-          <DialogContentText className={classes.descriptionIcons}>
-            <Flag className={classes.flagicon} />
-            {`${setNumberFormat(data.clickCount)} 조회 `}
-            <ReDo className={classes.redirecticon} />
-            {`${setNumberFormat(data.transferCount)} 이동 `}
-          </DialogContentText>
-
+          {/* date */}
           <DialogContentText variant="body2">
             {`${data.regiDate}`}
           </DialogContentText>
