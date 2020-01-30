@@ -57,6 +57,14 @@ const useStyles = makeStyles(theme => ({
       width: '100%',
       margin: 0
     }
+  },
+  link: {
+    textDecoration: 'underline',
+    marginLeft: 10,
+    cursor: 'pointer',
+    '&:hover': {
+      textDecoration: 'none'
+    }
   }
 }));
 
@@ -91,7 +99,13 @@ export default function LandingDialog(props) {
         <div style={{ textAlign: 'center' }}>
           <ButtonBase
             className={classes.imageWrapper}
-            onClick={() => { handleTransferClick(indexOfThisData); }}
+            onClick={() => {
+              // primary 링크를 찾아 인덱스전달.
+              handleTransferClick(indexOfThisData,
+                data.links.links[
+                  data.links.links.findIndex(link => link.primary === true)
+                ].linkTo);
+            }}
           >
             <img src={data.bannerSrc} alt="banner" className={classes.image} />
           </ButtonBase>
@@ -126,13 +140,22 @@ export default function LandingDialog(props) {
           )}
 
           {/* 링크들 */}
-          {data.links.map(link => (
-            <div key={link}>{link}</div>
+          {data.links.links.map((link, linkIndex) => (
+            <DialogContentText
+              color="primary"
+              key={link}
+              className={classes.link}
+              onClick={() => {
+                handleTransferClick(indexOfThisData, link.linkTo);
+              }}
+            >
+              {link.linkName ? link.linkName : `링크 바로가기${linkIndex + 1}`}
+            </DialogContentText>
           ))}
 
           {/* date */}
           <DialogContentText variant="body2">
-            {`${data.regiDate}`}
+            {`${data.regiDate} ~`}
           </DialogContentText>
         </div>
 
@@ -140,7 +163,12 @@ export default function LandingDialog(props) {
 
           <DialogActions>
             <Button
-              onClick={() => { handleTransferClick(indexOfThisData); }}
+              onClick={() => {
+                handleTransferClick(indexOfThisData,
+                  data.links.links[
+                    data.links.links.findIndex(link => link.primary === true)
+                  ].linkTo);
+              }}
               color="primary"
               variant="contained"
               className={classes.button}
