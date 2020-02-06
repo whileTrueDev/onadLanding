@@ -140,18 +140,23 @@ export default function LandingDialog(props) {
           )}
 
           {/* 링크들 */}
-          {data.links.links.map((link, linkIndex) => (
-            <DialogContentText
-              color="primary"
-              key={link}
-              className={classes.link}
-              onClick={() => {
-                handleTransferClick(indexOfThisData, link.linkTo);
-              }}
-            >
-              {link.linkName ? link.linkName : `링크 바로가기${linkIndex + 1}`}
-            </DialogContentText>
-          ))}
+          {data.links.links.map((link, linkIndex) => {
+            if (link) {
+              return (
+                <DialogContentText
+                  color="primary"
+                  key={link}
+                  className={classes.link}
+                  onClick={() => {
+                    handleTransferClick(indexOfThisData, link.linkTo);
+                  }}
+                >
+                  {link.linkName ? link.linkName : `링크 바로가기${linkIndex + 1}`}
+                </DialogContentText>
+              );
+            }
+            return null;
+          })}
 
           {/* date */}
           <DialogContentText variant="body2">

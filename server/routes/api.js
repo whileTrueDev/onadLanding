@@ -94,9 +94,9 @@ router.get('/banner', (req, res) => {
   const { name } = req.query;
   const query = `
   SELECT
-  bannerSrc, clickCount, mi.marketerName, transferCount, campaign.campaignId, lc.creatorId,
-  bannerDescription, companyDescription, links,
-  DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
+    bannerSrc, clickCount, mi.marketerName, transferCount, campaign.campaignId, lc.creatorId,
+    bannerDescription, companyDescription, links,
+    DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
   
   FROM landingClick as lc
 
@@ -115,8 +115,9 @@ router.get('/banner', (req, res) => {
   JOIN linkRegistered as  lr
     ON lr.linkId = campaign.connectedLinkId
     
-  WHERE creatorTwitchId = "we10802" AND campaign.deletedState = 0
+  WHERE creatorTwitchId = ? AND campaign.deletedState = 0
     AND campaign.onOff = 1 AND mi.marketerContraction = 1
+    AND campaign.optionType != 0
   ORDER BY regiDate DESC`;
   const queryArray = [name, NOT_DELETED_CAMPAIGN_STATE, ON_STATE, ON_STATE];
 
