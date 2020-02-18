@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
+import { Hidden } from '@material-ui/core';
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
 import LandingNoAd from './Landing/LandingNoAd';
 import LandingHeroLoading from './Landing/LandingHeroLoading';
+
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
 import usePostData from '../utils/lib/hook/usePostData';
@@ -65,7 +68,28 @@ const LandingMain = (props) => {
           : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
       }
     >
-      <Grid item xs={12} sm={12} md={12} lg={9} xl={6} className={classes.container}>
+      <Hidden mdDown>
+        <Grid item xl={3} lg={2}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            minWidth: 160,
+            maxWidth: 320,
+            height: '100%',
+            alignItems: 'center',
+            flexDirection: 'column'
+          }}
+          >
+            <ins
+              className="adsbygoogle"
+              style={{ display: 'inline-block', width: '160px', height: '600px' }}
+              data-ad-client="ca-pub-4320356355619389"
+              data-ad-slot
+            />
+          </div>
+        </Grid>
+      </Hidden>
+      <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
           <LandingHero
@@ -91,8 +115,21 @@ const LandingMain = (props) => {
             searchText={searchText}
           />
         )}
-
       </Grid>
+
+      <Hidden mdDown>
+        <Grid item xl={3} lg={2}>
+          <div>
+            <AdSense.Google
+              client="ca-pub-4320356355619389"
+              slot="6393653150"
+              style={{ display: 'block' }}
+              format="auto"
+              responsive="true"
+            />
+          </div>
+        </Grid>
+      </Hidden>
     </Grid>
   );
 };

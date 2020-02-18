@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import shortId from 'shortid';
 // material-ui
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
@@ -125,7 +126,7 @@ export default function LandingHero(props) {
 
         <br />
         {userDesc && userDesc.split('\n').map(row => (
-          <Typography variant="body1" key={row}>{row}</Typography>
+          <Typography variant="body1" key={shortId.generate()}>{row}</Typography>
         ))}
       </Grid>
 
