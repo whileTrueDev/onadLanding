@@ -55,7 +55,6 @@ const LandingMain = (props) => {
   const levelData = useFetchData('/api/level', { name: match.params.name });
   usePostData('/api/visit', { name: match.params.name });
 
-  console.log(match.params.name);
   return (
     <Grid
       container
