@@ -55,6 +55,7 @@ const LandingMain = (props) => {
   const levelData = useFetchData('/api/level', { name: match.params.name });
   usePostData('/api/visit', { name: match.params.name });
 
+  console.log(match.params.name);
   return (
     <Grid
       container
@@ -70,6 +71,7 @@ const LandingMain = (props) => {
     >
       <Hidden mdDown>
         <Grid item xl={3} lg={2}>
+          {match.params.name === 'iamsupermazinga' && (
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -80,6 +82,7 @@ const LandingMain = (props) => {
             flexDirection: 'column'
           }}
           >
+            <h1>구글애드센스 테스트</h1>
             <ins
               className="adsbygoogle"
               style={{ display: 'inline-block', width: '160px', height: '600px' }}
@@ -87,6 +90,7 @@ const LandingMain = (props) => {
               data-ad-slot
             />
           </div>
+          )}
         </Grid>
       </Hidden>
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
@@ -119,6 +123,7 @@ const LandingMain = (props) => {
 
       <Hidden mdDown>
         <Grid item xl={3} lg={2}>
+          {match.params.name === 'iamsupermazinga' && (
           <div>
             <AdSense.Google
               client="ca-pub-4320356355619389"
@@ -128,6 +133,7 @@ const LandingMain = (props) => {
               responsive="true"
             />
           </div>
+          )}
         </Grid>
       </Hidden>
     </Grid>
