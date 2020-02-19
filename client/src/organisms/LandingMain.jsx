@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
@@ -14,6 +14,7 @@ import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
 import usePostData from '../utils/lib/hook/usePostData';
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -55,6 +56,10 @@ const LandingMain = (props) => {
   const levelData = useFetchData('/api/level', { name: match.params.name });
   usePostData('/api/visit', { name: match.params.name });
 
+  useEffect(() => {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  }, []);
+
   return (
     <Grid
       container
@@ -87,8 +92,13 @@ const LandingMain = (props) => {
                 style={{ display: 'inline-block', width: '160px', height: '600px' }}
                 data-ad-client="ca-pub-4320356355619389"
                 data-ad-slot="6393653150"
-
               />
+              <script>
+              (adsbygoogle = window.adsbygoogle || []).push(
+                {}
+              );
+              </script>
+
             </div>
           )}
         </Grid>
@@ -134,6 +144,7 @@ const LandingMain = (props) => {
             flexDirection: 'column'
           }}
           >
+            <h1>구글애드센스 테스트</h1>
             <AdSense.Google
               client="ca-pub-4320356355619389"
               slot="6393653150"
