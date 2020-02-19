@@ -87,6 +87,7 @@ const LandingMain = (props) => {
             }}
             >
               <h1>구글애드센스 테스트</h1>
+              <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
               <ins
                 className="adsbygoogle"
                 style={{ display: 'inline-block', width: '160px', height: '600px' }}
@@ -98,7 +99,6 @@ const LandingMain = (props) => {
                 {}
               );
               </script>
-
             </div>
           )}
         </Grid>
