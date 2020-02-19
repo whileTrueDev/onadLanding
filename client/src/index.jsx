@@ -32,7 +32,7 @@ ReactDOM.render(
               className="adsbygoogle"
               style={{ display: 'inline-block', width: '160px', height: '600px' }}
               data-ad-client="ca-pub-4320356355619389"
-              data-ad-slot
+              data-ad-slot="6393653150"
             />
           </div>
         </div>

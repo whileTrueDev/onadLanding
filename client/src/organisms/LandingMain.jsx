@@ -81,13 +81,13 @@ const LandingMain = (props) => {
               flexDirection: 'column'
             }}
             >
-              <script crossOrigin="anonymous" async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
               <h1>구글애드센스 테스트</h1>
               <ins
                 className="adsbygoogle"
                 style={{ display: 'inline-block', width: '160px', height: '600px' }}
                 data-ad-client="ca-pub-4320356355619389"
-                data-ad-slot
+                data-ad-slot="6393653150"
+
               />
             </div>
           )}
@@ -124,13 +124,23 @@ const LandingMain = (props) => {
       <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
-          <div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            minWidth: 160,
+            maxWidth: 320,
+            height: '100%',
+            alignItems: 'center',
+            flexDirection: 'column'
+          }}
+          >
             <AdSense.Google
               client="ca-pub-4320356355619389"
               slot="6393653150"
               style={{ display: 'block' }}
               format="auto"
               responsive="true"
+
             />
           </div>
           )}
