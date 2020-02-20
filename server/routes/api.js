@@ -1,7 +1,7 @@
 const express = require('express');
 const doQuery = require('../lib/doQuery');
 const logger = require('../middleware/landingActionLogging');
-
+const axios = require('axios');
 const router = express.Router();
 
 /* GET method of API server */
@@ -558,5 +558,67 @@ router.post('/banner/transfer', (req, res) => {
       res.send(lastResult);
     });
 });
+
+// manplus에서 배너이미지 가져오기.
+// check가 참이라는 의미는 입장시에 size가 모바일이었다.
+router.get('/manplus', (req, res)=>{
+  const { check } = req.query;
+  if(check){
+    console.log('모바일로 랜딩페이지에 입장하였습니다');
+  }
+  const params = {
+    e_version:'2',
+    a_publisher:'1543',
+    a_media:'32014',
+    a_section:'804388',
+    i_response_format:"json",
+    d_used_type : "api"
+  }
+  axios.get('https://mtag.mman.kr/get_ad.mezzo/', {params})
+  .then((row)=>{
+    try {
+      if(row.data === null){
+        res.send({});
+      }
+      const {adsinfo} = row.data;
+      const {error_code} = adsinfo;
+      if(error_code !== '0'){
+        throw [true, '광고가 존재하지 않음']; // generates an exception
+      }
+      const { impression_api, click_api, click_tracking_api, img_path } = adsinfo.ad[0];
+      const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api} }
+
+      if(check){
+        axios.get(impression_api)
+        .then(()=>{
+          console.log('노출 API를 통해 체크를 진행합니다.')
+          res.send(sendData);
+        })
+      }else{
+        res.send(sendData);
+      } 
+    }
+      catch (e) {
+      console.log(e);
+      res.send([true, '광고가 존재하지 않음']);
+    }
+  })
+})
+
+// 광고가 노출되었다는 것을 manplus에 전달한다.
+router.post('/manplus/impression', (req, res)=>{
+  const { impression_api } = req.body;
+  axios.get(impression_api)
+  .then(()=>{
+    res.send(true);
+  })
+})
+
+// 광고가 클릭돠었음을 manplus에 전달한다.
+router.post('/manplus/click', (req, res)=>{
+  const { click_api, click_tracking_api } = req.body;
+  axios.get(click_tracking_api);
+  res.redirect(click_api);
+})
 
 module.exports = router;

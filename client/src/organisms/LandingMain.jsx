@@ -39,6 +39,17 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(1),
     },
   },
+  belt: {
+    // marginTop: theme.spacing(5),
+    display: 'flex',
+    justifyContent: 'center',
+    width : '100%',
+    height: 'auto',
+    alignItems: 'center',
+    flexDirection: 'column',
+    color: 'white',
+    fontColor: "#fff"
+  }
 }));
 
 const LandingMain = (props) => {
@@ -54,6 +65,8 @@ const LandingMain = (props) => {
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
   const levelData = useFetchData('/api/level', { name: match.params.name });
+  const mezzoData = useFetchData('/api/manplus', { check: !isDesktopWidth });
+
   usePostData('/api/visit', { name: match.params.name });
 
   useEffect(() => {
@@ -118,6 +131,8 @@ const LandingMain = (props) => {
             totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
             levelData={levelData}
             isDesktopWidth={isDesktopWidth}
+            mezzoData={mezzoData}
+            name={match.params.name}
           />
         )}
         {bannerData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
@@ -130,6 +145,21 @@ const LandingMain = (props) => {
           />
         )}
       </Grid>
+      {/* manplus 하단 띠광고 테스트 */}
+      {/* <Hidden smUp>
+        <Grid item sm={4} xs={12}>
+          <Grid item>
+            {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && ( 
+               <img 
+               className={classes.belt}
+               src={mezzoData.data.img_path}
+               >
+              </img>
+            )
+            }
+          </Grid>
+        </Grid>
+      </Hidden> */}
 
       {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>

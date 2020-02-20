@@ -4,19 +4,25 @@ import shortId from 'shortid';
 // material-ui
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
+import ButtonBase from '@material-ui/core/ButtonBase';
+
 import Typography from '@material-ui/core/Typography';
 // own function
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
+import apiHOST from '../../config/host';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(10),
     [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(8),
+      // marginTop: theme.spacing(8),
+      marginTop: theme.spacing(5),
       fontSize: 10,
     },
   },
@@ -45,16 +51,68 @@ const useStyles = makeStyles(theme => ({
   bold: {
     fontWeight: 'bold',
   },
+  belt:{
+    display: 'flex',
+    justifyContent: 'center',
+    margin: 0,
+    padding: 0,
+    width : '100%',
+    height: 'auto',
+    alignItems: 'center',
+    flexDirection: 'column',
+  }
 }));
 
 export default function LandingHero(props) {
   const {
     user, userLogo, userDesc, levelData,
-    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
+    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount, mezzoData, name
   } = props;
   const classes = useStyles();
+
+  // const handleClick = () =>{ 
+  //   // axios.post(`${apiHOST}/api/manplus/click`, { 
+  //   //   click_api : mezzoData.data.click_api,
+  //   //   click_tracking_api: mezzoData.data.click_tracking_api 
+  //   // })
+  //   console.log('클릭')
+  // }
+
   return (
     <Grid container className={classes.root}>
+      {name === 'iamsupermazinga' && (
+      <Hidden smUp>
+        <Grid item sm={4} xs={12}>
+          <Grid item>
+            {!mezzoData.loading && !mezzoData.errorState && ( 
+              // <ButtonBase
+              //   onClick={handleClick}
+              //   className={classes.belt}
+              // >
+              //  <img 
+              // //  className={classes.belt}
+              // width="100%"
+              // height='auto'
+              //  src={mezzoData.data.img_path}
+              //  >
+              // </img>
+              // </ButtonBase>
+              <a href={mezzoData.data.click_api} >
+                <img 
+                className={classes.belt}
+                width="100%"
+                height='auto'
+                src={mezzoData.data.img_path}
+                // onClick={handleClick}
+                >
+                </img>
+              </a>
+            )
+            }
+          </Grid>
+        </Grid>
+      </Hidden>
+      )}
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
