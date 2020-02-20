@@ -6,7 +6,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
-import ButtonBase from '@material-ui/core/ButtonBase';
+// import ButtonBase from '@material-ui/core/ButtonBase';
 
 import Typography from '@material-ui/core/Typography';
 // own function
@@ -14,8 +14,8 @@ import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
-import apiHOST from '../../config/host';
-import axios from 'axios';
+// import apiHOST from '../../config/host';
+// import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {

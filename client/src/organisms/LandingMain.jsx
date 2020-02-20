@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import AdSense from 'react-adsense';
+// import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 // sub components
-import { Hidden } from '@material-ui/core';
+// import { Hidden } from '@material-ui/core';
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
