@@ -73,7 +73,7 @@ const LandingMain = (props) => {
           : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
       }
     >
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
             <div style={{
@@ -102,7 +102,7 @@ const LandingMain = (props) => {
             </div>
           )}
         </Grid>
-      </Hidden>
+      </Hidden> */}
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
@@ -131,7 +131,7 @@ const LandingMain = (props) => {
         )}
       </Grid>
 
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
           <div style={{
@@ -156,7 +156,7 @@ const LandingMain = (props) => {
           </div>
           )}
         </Grid>
-      </Hidden>
+      </Hidden> */}
     </Grid>
   );
 };
