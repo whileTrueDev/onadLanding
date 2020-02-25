@@ -94,9 +94,9 @@ router.get('/banner', (req, res) => {
   const { name } = req.query;
   const query = `
   SELECT
-    bannerSrc, clickCount, mi.marketerName, transferCount, campaign.campaignId, lc.creatorId,
-    bannerDescription, companyDescription, links,
-    DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
+  bannerSrc, clickCount, mi.marketerName, transferCount, campaign.campaignId, lc.creatorId,
+  bannerDescription, companyDescription, links,
+  DATE_FORMAT(lc.regiDate, "%Y년 %m월 %d일") as regiDate
   
   FROM landingClick as lc
 
@@ -248,20 +248,11 @@ router.get('/level', (req, res) => {
 
 
 // visitCount 처리 ( 아이피에 따른 카운트 차단 )
-router.post('/visit', (req, res) => {
+router.post('/visit', async (req, res) => {
   const { name } = req.body;
   const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
   const VISIT_TYPE_NUM = 0; // db에서 방문의 type 넘버
   // ip 체크가 1시간 이내에 찍힌게 있는지 확인
-  const ipCheckQuery = `
-    SELECT ipAddress
-    FROM landingClickIp as cli
-    JOIN creatorInfo as ci
-    ON ci.creatorId = cli.creatorId
-    WHERE ci.creatorTwitchId = ? AND cli.ipAddress = ?
-    AND type = ? AND cli.date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
-    `;
-  const ipCheckArray = [name, userIp, VISIT_TYPE_NUM];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp  (creatorId, ipAddress, type)
@@ -281,71 +272,48 @@ router.post('/visit', (req, res) => {
     error: null,
     result: { ipCheck: {}, ipInsert: {}, visitUpdate: {} }
   };
-  doQuery(ipCheckQuery, ipCheckArray)
-    .then((row) => {
-      console.log('========================= [방문] =========================');
-      const { error, result } = row;
 
-      if (!error) {
-        if (result.length === 0) {
-          lastResult.result.ipCheck = { error: null, result: 'success' };
-          // 이전에 찍힌 ip가 없는 경우
-          logger(`방문-${name}`, userIp, '이전의 IP가 아니기 때문에 작업');
-          Promise.all([
-            doQuery(ipInsertQuery, ipInsertArray)
-              .then((ipInsertRow) => {
-                logger(`방문-${name},ipInsert`, userIp, '새로운 IP 적재 완료');
-                const { ipInsertError, ipInsertResult } = ipInsertRow;
-                if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 존재하는 경우
-                    lastResult.result.ipCheck = { error: null, result: ipInsertResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.ipCheck = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.ipCheck = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger(`방문-${name},ipInsert`, userIp, `새로운 IP 적재오류 - ${reason}`);
-                lastResult.result.ipCheck = { error: true, reason };
-              }),
-
-            doQuery(visitUpdateQuery, visitUpdateArray)
-              .then((clickUpdateRow) => {
-                logger(`방문-${name},visitUpdate`, userIp, '방문 수 업데이트 작업 완료');
-                const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
-                if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
-                  if (result) { // 쿼리 결과가 있는 경우
-                    lastResult.result.visitUpdate = { error: null, result: clickUpdateResult };
-                  } else { // 쿼리 결과가 없는 경우
-                    lastResult.result.visitUpdate = { error: true, result: null };
-                  }
-                } else { // 쿼리 과정에서 오류인 경우
-                  lastResult.result.visitUpdate = { error: true, result: error };
-                }
-              })
-              .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
-                logger(`방문-${name},visitUpdate`, userIp, `방문 수 업데이트 오류 - ${reason}`);
-                lastResult.result.visitUpdate = { error: true, reason };
-              })
-          ])
-            .then(() => {
-              res.send(lastResult);
-            });
-        } else {
-          // 이전에 찍힌 ip가 있는 경우
-          logger(`방문-${name}`, userIp, '이미 방문한 IP, SKIP');
-          lastResult = { error: null, result: 'fail' };
-          res.send(lastResult);
+  Promise.all([
+    doQuery(ipInsertQuery, ipInsertArray)
+      .then((ipInsertRow) => {
+        logger(`방문-${name},ipInsert`, userIp, '새로운 IP 적재 완료');
+        const { ipInsertError, ipInsertResult } = ipInsertRow;
+        if (!ipInsertError) { // 쿼리 과정에서 오류가 아닌 경우
+          if (ipInsertResult) { // 쿼리 결과가 존재하는 경우
+            lastResult.result.ipCheck = { error: null, result: ipInsertResult };
+          } else { // 쿼리 결과가 없는 경우
+            lastResult.result.ipCheck = { error: true, result: null };
+          }
+        } else { // 쿼리 과정에서 오류인 경우
+          lastResult.result.ipCheck = { error: true, result: error };
         }
-      }
-    })
-    .catch((reason) => {
-      logger(`방문-${name}`, userIp, `아이피 조회 에러 - ${reason}`);
-      lastResult = { error: true, reason };
+      })
+      .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+        logger(`방문-${name},ipInsert`, userIp, `새로운 IP 적재오류 - ${reason}`);
+        lastResult.result.ipCheck = { error: true, reason };
+      }),
+    doQuery(visitUpdateQuery, visitUpdateArray)
+      .then((clickUpdateRow) => {
+        logger(`방문-${name},visitUpdate`, userIp, '방문 수 업데이트 작업 완료');
+        const { clickUpdateError, clickUpdateResult } = clickUpdateRow;
+        if (!clickUpdateError) { // 쿼리 과정에서 오류가 아닌 경우
+          if (clickUpdateResult) { // 쿼리 결과가 있는 경우
+            lastResult.result.visitUpdate = { error: null, result: clickUpdateResult };
+          } else { // 쿼리 결과가 없는 경우
+            lastResult.result.visitUpdate = { error: true, result: null };
+          }
+        } else { // 쿼리 과정에서 오류인 경우
+          lastResult.result.visitUpdate = { error: true, result: error };
+        }
+      })
+      .catch((reason) => { // db 쿼리 수행 과정의 오류인 경우
+        logger(`방문-${name},visitUpdate`, userIp, `방문 수 업데이트 오류 - ${reason}`);
+        lastResult.result.visitUpdate = { error: true, reason };
+      })
+  ])
+    .then(() => {
       res.send(lastResult);
-    });
+    });  
 });
 
 // 배너 클릭시, 클릭 수 + 1
@@ -361,7 +329,7 @@ router.post('/banner/click', (req, res) => {
     FROM landingClickIp
     WHERE campaignId = ? AND creatorId = ?
     AND type = ? AND ipAddress = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+    AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
     `;
   const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
 
@@ -466,7 +434,7 @@ router.post('/banner/transfer', (req, res) => {
     SELECT ipAddress
     FROM landingClickIp
     WHERE campaignId = ? AND creatorId = ?
-    AND date >= DATE_SUB(NOW(), INTERVAL 1 DAY)
+    AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
     AND type = ? AND ipAddress = ?
     `;
   const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
@@ -562,8 +530,8 @@ router.post('/banner/transfer', (req, res) => {
 // manplus에서 배너이미지 가져오기.
 // check가 참이라는 의미는 입장시에 size가 모바일이었다.
 router.get('/manplus', (req, res)=>{
-  const { check } = req.query;
-  if(check){
+  const isMobile = req.query.isMobile === "true";
+  if (isMobile) {
     console.log('모바일로 랜딩페이지에 입장하였습니다');
   }
   const params = {
@@ -588,7 +556,7 @@ router.get('/manplus', (req, res)=>{
       const { impression_api, click_api, click_tracking_api, img_path } = adsinfo.ad[0];
       const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api} }
 
-      if(check){
+      if(isMobile){
         axios.get(impression_api)
         .then(()=>{
           console.log('노출 API를 통해 체크를 진행합니다.')
@@ -596,7 +564,7 @@ router.get('/manplus', (req, res)=>{
         })
       }else{
         res.send(sendData);
-      } 
+      }
     }
       catch (e) {
       console.log(e);

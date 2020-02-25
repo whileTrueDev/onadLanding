@@ -102,6 +102,7 @@ export default function LandingHero(props) {
                 className={classes.belt}
                 width="100%"
                 height='auto'
+                alt="mezzo"
                 src={mezzoData.data.img_path}
                 // onClick={handleClick}
                 >

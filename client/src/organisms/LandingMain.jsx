@@ -57,7 +57,7 @@ const LandingMain = (props) => {
   const {
     match, isDesktopWidth, userData, searchText
   } = props;
-
+  
   // title 설정
   document.title = `${userData.creatorName} - 온애드`;
 
@@ -65,7 +65,7 @@ const LandingMain = (props) => {
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
   const levelData = useFetchData('/api/level', { name: match.params.name });
-  const mezzoData = useFetchData('/api/manplus', { check: !isDesktopWidth });
+  const mezzoData = useFetchData('/api/manplus', { isMobile: !isDesktopWidth });
 
   usePostData('/api/visit', { name: match.params.name });
 
