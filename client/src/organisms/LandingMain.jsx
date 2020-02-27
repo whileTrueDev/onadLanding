@@ -88,7 +88,7 @@ const LandingMain = (props) => {
   const levelData = useFetchData('/api/level', { name: match.params.name });
   const mezzoData = usePostData('/api/manplus', { name: match.params.name,
     dscreen : getScreen(), 
-    dosindex: getScreen(),
+    dosindex: getOsIndex(),
     dosv: osVersion,
     dmaker: mobileVendor,
     dmodel: mobileModel,

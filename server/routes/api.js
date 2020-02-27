@@ -592,7 +592,7 @@ router.post('/manplus', (req, res)=>{
 
   // 모바일이나 데스크탑일 경우에만 작동
   if(dscreen  === '1' && name === 'iamsupermazinga') {
-    // console.log('모바일로 랜딩페이지에 입장하였습니다');
+    console.log('광고 노출을 위해 요청합니다.');
     axios.get('https://mtag.mman.kr/get_ad.mezzo/', {params})
     .then((row)=>{
       try {
@@ -681,8 +681,6 @@ router.post('/manplus/click', (req, res)=>{
   }else{
     res.end();   
   }
-
-  // res.redirect(click_api);
 })
 
 module.exports = router;

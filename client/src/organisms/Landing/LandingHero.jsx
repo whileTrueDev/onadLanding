@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
 // material-ui
@@ -111,7 +111,6 @@ export default function LandingHero(props) {
       click_api : mezzoData.data.click_api,
       click_tracking_api: mezzoData.data.click_tracking_api 
     })
-    console.log('클릭')
   }
 
   return (
