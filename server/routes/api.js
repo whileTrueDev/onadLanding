@@ -3,7 +3,6 @@ const doQuery = require('../lib/doQuery');
 const logger = require('../middleware/landingActionLogging');
 const axios = require('axios');
 const router = express.Router();
-const  md = require('mobile-device-detect');
 const MobileDetect = require('mobile-detect');
 
 /* GET method of API server */
@@ -563,8 +562,17 @@ router.post('/banner/transfer', (req, res) => {
 
 // manplus에서 배너이미지 가져오기.
 // check가 참이라는 의미는 입장시에 size가 모바일이었다.
-router.get('/manplus', (req, res)=>{
-  const { name } = req.query;
+router.post('/manplus', (req, res)=>{
+ 
+  const { 
+    name,
+    dscreen, 
+    dosindex,
+    dosv,
+    dmaker,
+    dmodel,
+    dos
+   } = req.body;
 
   const params = {
     e_version:'2',
@@ -572,48 +580,80 @@ router.get('/manplus', (req, res)=>{
     a_media:'32014',
     a_section:'804388',
     i_response_format:"json",
-    d_used_type : "api"
+    i_rich_flag	: '1',
+    d_used_type : "api",
+    d_screen: dscreen,
+    d_os_index: dosindex,
+    d_osv: dosv,
+    d_maker: dmaker,
+    d_model: dmodel,
+    d_os:  dos
   }
-  
-  if(name  === 'iamsupermazinga') {
+
+  // 모바일이나 데스크탑일 경우에만 작동
+  if(dscreen  === '1' && name === 'iamsupermazinga') {
     // console.log('모바일로 랜딩페이지에 입장하였습니다');
-    console.log(md);
-    const md2 = new MobileDetect(req.headers['user-agent']);
-    console.log(md2.version());
-    console.log(md2.phone());
-    console.log(md2.os());
     axios.get('https://mtag.mman.kr/get_ad.mezzo/', {params})
     .then((row)=>{
       try {
         if(row.data === null){
-          res.send({});
+          res.send({ error: true, result: {}});
         }
         const {adsinfo} = row.data;
-        const {error_code} = adsinfo;
-        if(error_code !== '0'){
-          throw [true, '광고가 존재하지 않음']; // generates an exception
+        const {error_code, use_ssp } = adsinfo;
+        
+        // 하우스일 경우, SSP 호출 추후에는 0=> 5로변경
+        if(error_code === '0' && use_ssp === '1'){
+          console.log('하우스 이므로 SSP 요청합니다.');
+          axios.get('http://ssp.meba.kr/ssp.mezzo/', {params : {...params, i_banner_w: '320', i_banner_h:'50'}})
+          .then((inrow)=>{
+            const { error_code } = inrow;
+            // 반드시 error_code 존재
+            if(error_code !== "0"){
+              res.send({ error: true, result: {}});
+            } else {
+              const { img_path, landing_url, ssp_imp, ssp_click} = row.result[0];
+              const sendData =  { error: null, result: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click } }
+              
+              // 노출 API가 null일경우 회피하기위한 에러핸들링
+              if(ssp_imp === null || ssp_imp === 'null' || ssp_imp === ''){
+                axios.get(ssp_imp)
+                  .then(()=>{
+                    console.log('노출 API를 통해 체크를 진행합니다.');
+                    res.send(sendData);
+                  })
+                  .catch(()=>{
+                    res.send(sendData);
+                  })
+              }else{
+                res.send(sendData);
+              }
+            }
+          })
+        } else if (error_code !== '0'){
+          res.send({ error: true, result: {}});
         }
-        const { impression_api, click_api, click_tracking_api, img_path, html, logo_img_path } = adsinfo.ad[0];
-        const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api, html, logo_img_path} }
+        else {
+          const { impression_api, click_api, click_tracking_api, img_path, logo_img_path } = adsinfo.ad[0];
+          const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api, logo_img_path} }
 
-        // if(check){
-        //   axios.get(impression_api)
-        //   .then(()=>{
-        //     console.log('노출 API를 통해 체크를 진행합니다.')
-        //     res.send(sendData);
-        //   })
-        // }else{
-        //   res.send(sendData);
-        // } 
-        res.send(sendData);
+          axios.get(impression_api)
+          .then(()=>{
+            console.log('노출 API를 통해 체크를 진행합니다.');
+            res.send(sendData);
+          })
+          .catch(()=>{
+            res.send(sendData);
+          })
+        }
       }
         catch (e) {
         console.log(e);
-        res.send([true, '광고가 존재하지 않음']);
+        res.send({ error: true, result: {}});
       }
     })
-  }else {
-    res.send([true, '광고가 존재하지 않음']);
+  } else {
+    res.send({ error: true, result: {}});
   }
 })
 
@@ -629,12 +669,19 @@ router.post('/manplus/impression', (req, res)=>{
 // 광고가 클릭돠었음을 manplus에 전달한다.
 router.post('/manplus/click', (req, res)=>{
   console.log('클릭을 체크합니다.')
-  const { click_api, click_tracking_api } = req.body;
-  axios.get(click_tracking_api)
-  .then(()=>{
-    console.log('API로 클릭 체크를 진행합니다.');
+  const { click_tracking_api } = req.body;
+
+  // 클릭 API가 null일경우 회피하기위한 에러핸들링
+  if(click_tracking_api === null || click_tracking_api === 'null' || click_tracking_api === ''){
+    axios.get(click_tracking_api)
+    .then(()=>{
+      console.log('API로 클릭 체크를 진행합니다.');
+      res.end();   
+    });
+  }else{
     res.end();   
-  });
+  }
+
   // res.redirect(click_api);
 })
 

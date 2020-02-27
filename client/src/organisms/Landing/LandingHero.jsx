@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
 // material-ui
@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
 import ButtonBase from '@material-ui/core/ButtonBase';
-
 import Typography from '@material-ui/core/Typography';
 // own function
 import setNumberFormat from '../../utils/lib/setNumberFormat';
