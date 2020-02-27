@@ -564,9 +564,8 @@ router.post('/banner/transfer', (req, res) => {
 // manplus에서 배너이미지 가져오기.
 // check가 참이라는 의미는 입장시에 size가 모바일이었다.
 router.get('/manplus', (req, res)=>{
-  const { check, name } = req.query;
+  const { name } = req.query;
 
-  
   const params = {
     e_version:'2',
     a_publisher:'1543',
@@ -577,15 +576,12 @@ router.get('/manplus', (req, res)=>{
   }
   
   if(name  === 'iamsupermazinga') {
-    
-    if(check){
-      console.log('모바일로 랜딩페이지에 입장하였습니다');
-      console.log(md);
-      const md2 = new MobileDetect(req.headers['user-agent']);
-      console.log(md2.version());
-      console.log(md2.phone());
-      console.log(md2.os());
-    }
+    // console.log('모바일로 랜딩페이지에 입장하였습니다');
+    console.log(md);
+    const md2 = new MobileDetect(req.headers['user-agent']);
+    console.log(md2.version());
+    console.log(md2.phone());
+    console.log(md2.os());
     axios.get('https://mtag.mman.kr/get_ad.mezzo/', {params})
     .then((row)=>{
       try {
@@ -600,15 +596,16 @@ router.get('/manplus', (req, res)=>{
         const { impression_api, click_api, click_tracking_api, img_path, html, logo_img_path } = adsinfo.ad[0];
         const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api, html, logo_img_path} }
 
-        if(check){
-          axios.get(impression_api)
-          .then(()=>{
-            console.log('노출 API를 통해 체크를 진행합니다.')
-            res.send(sendData);
-          })
-        }else{
-          res.send(sendData);
-        } 
+        // if(check){
+        //   axios.get(impression_api)
+        //   .then(()=>{
+        //     console.log('노출 API를 통해 체크를 진행합니다.')
+        //     res.send(sendData);
+        //   })
+        // }else{
+        //   res.send(sendData);
+        // } 
+        res.send(sendData);
       }
         catch (e) {
         console.log(e);
