@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 // import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import {
+  isBrowser, isTablet, isSmartTV, isMobile, 
+  osName, osVersion, mobileModel, mobileVendor
+} from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
 // sub components
 // import { Hidden } from '@material-ui/core';
@@ -61,11 +65,36 @@ const LandingMain = (props) => {
   // title 설정
   document.title = `${userData.creatorName} - 온애드`;
 
+  const getScreen = () => {
+    if(isTablet || isMobile){
+      return '1';
+    }
+    if(isBrowser){
+      return '3';
+    }
+    if(isSmartTV){
+      return '4';
+    }
+    return '5';
+  }
+
+  const getOsIndex = () => {
+    return osName === 'IOS' ? '2' : '3';
+  }
+
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
   const levelData = useFetchData('/api/level', { name: match.params.name });
-  const mezzoData = useFetchData('/api/manplus', { isMobile: !isDesktopWidth });
+
+  const mezzoData = usePostData('/api/manplus', { name: match.params.name,
+    dscreen : getScreen(), 
+    dosindex: getOsIndex(),
+    dosv: osVersion,
+    dmaker: mobileVendor,
+    dmodel: mobileModel,
+    dos: osName
+  });
 
   usePostData('/api/visit', { name: match.params.name });
 

@@ -6,16 +6,15 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
-// import ButtonBase from '@material-ui/core/ButtonBase';
-
+import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 // own function
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
-// import apiHOST from '../../config/host';
-// import axios from 'axios';
+import apiHOST from '../../config/host';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,16 +50,53 @@ const useStyles = makeStyles(theme => ({
   bold: {
     fontWeight: 'bold',
   },
-  belt:{
+  logo: {
+    right:'1px',
+    top: '33px',
+    position:'absolute',
+    textAlign:'right',
+    width: '15px',
+    height:'15px'
+  },
+  image: {
+    position: 'relative',
+    [theme.breakpoints.down('xs')]: {
+      width: '100% !important', // Overrides inline-style
+      height: 'auto',
+    },
+    '&:hover, &$focusVisible': {
+      zIndex: 1,
+      '& $imageBackdrop': {
+        opacity: 0.15,
+      },
+      '& $imageMarked': {
+        opacity: 0,
+      },
+      '& $imageTitle': {
+        border: '4px solid currentColor',
+      },
+    },
+  },
+  imageSrc: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center 40%',
+  },
+  imageButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     display: 'flex',
-    justifyContent: 'center',
-    margin: 0,
-    padding: 0,
-    width : '100%',
-    height: 'auto',
     alignItems: 'center',
-    flexDirection: 'column',
-  }
+    justifyContent: 'center',
+    color: theme.palette.common.white,
+  },
 }));
 
 export default function LandingHero(props) {
@@ -70,13 +106,12 @@ export default function LandingHero(props) {
   } = props;
   const classes = useStyles();
 
-  // const handleClick = () =>{ 
-  //   // axios.post(`${apiHOST}/api/manplus/click`, { 
-  //   //   click_api : mezzoData.data.click_api,
-  //   //   click_tracking_api: mezzoData.data.click_tracking_api 
-  //   // })
-  //   console.log('클릭')
-  // }
+  const handleClick = () =>{ 
+    axios.post(`${apiHOST}/api/manplus/click`, { 
+      click_api : mezzoData.data.click_api,
+      click_tracking_api: mezzoData.data.click_tracking_api 
+    })
+  }
 
   return (
     <Grid container className={classes.root}>
@@ -85,29 +120,29 @@ export default function LandingHero(props) {
         <Grid item sm={4} xs={12}>
           <Grid item>
             {!mezzoData.loading && !mezzoData.errorState && ( 
-              // <ButtonBase
-              //   onClick={handleClick}
-              //   className={classes.belt}
-              // >
-              //  <img 
-              // //  className={classes.belt}
-              // width="100%"
-              // height='auto'
-              //  src={mezzoData.data.img_path}
-              //  >
-              // </img>
-              // </ButtonBase>
-              <a href={mezzoData.data.click_api} >
-                <img 
-                className={classes.belt}
-                width="100%"
-                height='auto'
-                alt="mezzo"
-                src={mezzoData.data.img_path}
-                // onClick={handleClick}
-                >
-                </img>
-              </a>
+              <ButtonBase
+                focusRipple
+                className={classes.image}
+                onClick={handleClick}
+                style={{
+                  height:'50px'
+                }}
+              >
+                <a href={mezzoData.data.click_api} >
+                  <span
+                    className={classes.imageSrc}
+                    style={{
+                      backgroundImage: `url('${mezzoData.data.img_path}')`,
+                      width: "100%",
+                      height: 'auto'
+                    }}
+                    
+                  />
+                  <span className={classes.imageButton}>
+                    <img className={classes.logo} src={mezzoData.data.logo_img_path} alt=''/>
+                  </span>
+                </a>
+              </ButtonBase>
             )
             }
           </Grid>
