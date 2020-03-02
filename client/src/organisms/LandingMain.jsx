@@ -1,10 +1,14 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import AdSense from 'react-adsense';
+// import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import {
+  isBrowser, isTablet, isSmartTV, isMobile, 
+  osName, osVersion, mobileModel, mobileVendor
+} from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
 // sub components
-import { Hidden } from '@material-ui/core';
+// import { Hidden } from '@material-ui/core';
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
@@ -39,6 +43,17 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(1),
     },
   },
+  belt: {
+    // marginTop: theme.spacing(5),
+    display: 'flex',
+    justifyContent: 'center',
+    width : '100%',
+    height: 'auto',
+    alignItems: 'center',
+    flexDirection: 'column',
+    color: 'white',
+    fontColor: "#fff"
+  }
 }));
 
 const LandingMain = (props) => {
@@ -50,10 +65,36 @@ const LandingMain = (props) => {
   // title 설정
   document.title = `${userData.creatorName} - 온애드`;
 
+  const getScreen = () => {
+    if(isTablet || isMobile){
+      return '1';
+    }
+    if(isBrowser){
+      return '3';
+    }
+    if(isSmartTV){
+      return '4';
+    }
+    return '5';
+  }
+
+  const getOsIndex = () => {
+    return osName === 'IOS' ? '2' : '3';
+  }
+
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
   const clickData = useFetchData('/api/clicks', { name: match.params.name });
   const levelData = useFetchData('/api/level', { name: match.params.name });
+  const mezzoData = usePostData('/api/manplus', { name: match.params.name,
+    dscreen : getScreen(), 
+    dosindex: getOsIndex(),
+    dosv: osVersion,
+    dmaker: mobileVendor,
+    dmodel: mobileModel,
+    dos: osName
+  });
+
   usePostData('/api/visit', { name: match.params.name });
 
   useEffect(() => {
@@ -118,6 +159,8 @@ const LandingMain = (props) => {
             totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
             levelData={levelData}
             isDesktopWidth={isDesktopWidth}
+            mezzoData={mezzoData}
+            name={match.params.name}
           />
         )}
         {bannerData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
@@ -130,6 +173,21 @@ const LandingMain = (props) => {
           />
         )}
       </Grid>
+      {/* manplus 하단 띠광고 테스트 */}
+      {/* <Hidden smUp>
+        <Grid item sm={4} xs={12}>
+          <Grid item>
+            {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && ( 
+               <img 
+               className={classes.belt}
+               src={mezzoData.data.img_path}
+               >
+              </img>
+            )
+            }
+          </Grid>
+        </Grid>
+      </Hidden> */}
 
       {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>

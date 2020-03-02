@@ -4,19 +4,24 @@ import shortId from 'shortid';
 // material-ui
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
+import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 // own function
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
+import apiHOST from '../../config/host';
+import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
     marginTop: theme.spacing(10),
     [theme.breakpoints.down('sm')]: {
-      marginTop: theme.spacing(8),
+      // marginTop: theme.spacing(8),
+      marginTop: theme.spacing(5),
       fontSize: 10,
     },
   },
@@ -45,16 +50,105 @@ const useStyles = makeStyles(theme => ({
   bold: {
     fontWeight: 'bold',
   },
+  logo: {
+    right:'1px',
+    top: '33px',
+    position:'absolute',
+    textAlign:'right',
+    width: '15px',
+    height:'15px'
+  },
+  image: {
+    position: 'relative',
+    [theme.breakpoints.down('xs')]: {
+      width: '100% !important', // Overrides inline-style
+      height: 'auto',
+    },
+    '&:hover, &$focusVisible': {
+      zIndex: 1,
+      '& $imageBackdrop': {
+        opacity: 0.15,
+      },
+      '& $imageMarked': {
+        opacity: 0,
+      },
+      '& $imageTitle': {
+        border: '4px solid currentColor',
+      },
+    },
+  },
+  imageSrc: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center 40%',
+  },
+  imageButton: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.palette.common.white,
+  },
 }));
 
 export default function LandingHero(props) {
   const {
     user, userLogo, userDesc, levelData,
-    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount
+    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount, mezzoData, name
   } = props;
   const classes = useStyles();
+
+  const handleClick = () =>{ 
+    axios.post(`${apiHOST}/api/manplus/click`, { 
+      click_api : mezzoData.data.click_api,
+      click_tracking_api: mezzoData.data.click_tracking_api 
+    })
+  }
+
   return (
     <Grid container className={classes.root}>
+      {name === 'iamsupermazinga' && (
+      <Hidden smUp>
+        <Grid item sm={4} xs={12}>
+          <Grid item>
+            {!mezzoData.loading && !mezzoData.errorState && ( 
+              <ButtonBase
+                focusRipple
+                className={classes.image}
+                onClick={handleClick}
+                style={{
+                  height:'50px'
+                }}
+              >
+                <a href={mezzoData.data.click_api} >
+                  <span
+                    className={classes.imageSrc}
+                    style={{
+                      backgroundImage: `url('${mezzoData.data.img_path}')`,
+                      width: "100%",
+                      height: 'auto'
+                    }}
+                    
+                  />
+                  <span className={classes.imageButton}>
+                    <img className={classes.logo} src={mezzoData.data.logo_img_path} alt=''/>
+                  </span>
+                </a>
+              </ButtonBase>
+            )
+            }
+          </Grid>
+        </Grid>
+      </Hidden>
+      )}
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
