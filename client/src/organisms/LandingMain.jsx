@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-env eslint-disable-next-line react-hooks/exhaustive-deps */
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 // import AdSense from 'react-adsense';
@@ -114,6 +115,9 @@ const LandingMain = (props) => {
   const [loading, setLoading] = useState(true);
   const [errorState, setErrorState] = useState(false);
 
+  const callBackFunc = () => {
+
+  };
   useEffect(() => {
     setLoading(true);
     if (getScreen() === '1' && match.params.name === 'iamsupermazinga') {
