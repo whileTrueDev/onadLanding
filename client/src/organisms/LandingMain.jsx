@@ -131,7 +131,7 @@ const LandingMain = (props) => {
       const {error_code, use_ssp} = adsinfo;
       if(error_code === '0' && use_ssp === '1'){
         console.log('하우스 이므로 SSP 요청합니다.');
-        axios.get('http://ssp.meba.kr/ssp.mezzo/', {params : {...params, i_banner_w: '320', i_banner_h:'50'}})
+        axios.get('https://ssp.meba.kr/ssp.mezzo/', {params : {...params, i_banner_w: '320', i_banner_h:'50'}})
         .then((inrow)=>{
           const ssp_error_code = inrow.data.error_code;
           // 반드시 error_code 존재, 광고가 없음 => 하우스 광고 진행
