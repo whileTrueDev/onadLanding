@@ -86,6 +86,7 @@ const LandingMain = (props) => {
           : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
       }
     >
+      {/* 구글애드센스 테스트 */}
       {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
@@ -107,11 +108,6 @@ const LandingMain = (props) => {
                 data-ad-client="ca-pub-4320356355619389"
                 data-ad-slot="6393653150"
               />
-              <script>
-              (adsbygoogle = window.adsbygoogle || []).push(
-                {}
-              );
-              </script>
             </div>
           )}
         </Grid>
