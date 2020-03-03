@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import history from './history';
 // Pages
 import LandingPage from './pages/Landing';
 
 import * as serviceWorker from './serviceWorker';
 
-const history = createBrowserHistory();
+// const history = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={history}>

@@ -558,6 +558,7 @@ router.post('/manplus', (req, res)=>{
     d_os:  dos
   }
 
+  
   // 모바일이나 데스크탑일 경우에만 작동
   if(dscreen  === '1' && name === 'iamsupermazinga') {
     console.log('광고 노출을 위해 요청합니다.');
@@ -583,8 +584,8 @@ router.post('/manplus', (req, res)=>{
             // 광고성공, SSP요청을 진행하였으나 광고가없으므로 하우스로진행
             if(ssp_error_code === "5"){
               console.log("SSP광고가 없으므로 하우스광고를 진행합니다.");
-              const { impression_api, click_api, click_tracking_api, img_path, logo_img_path } = adsinfo.ad[0];
-              const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api, logo_img_path} }
+              const { impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url } = adsinfo.ad[0];
+              const sendData =  { error: null, result: {img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url} }
               axios.get(impression_api)
               .then(()=>{
                 console.log('노출 API를 통해 체크를 진행합니다.');
