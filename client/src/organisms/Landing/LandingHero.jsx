@@ -64,18 +64,6 @@ const useStyles = makeStyles(theme => ({
       width: '100% !important', // Overrides inline-style
       height: 'auto',
     },
-    '&:hover, &$focusVisible': {
-      zIndex: 1,
-      '& $imageBackdrop': {
-        opacity: 0.15,
-      },
-      '& $imageMarked': {
-        opacity: 0,
-      },
-      '& $imageTitle': {
-        border: '4px solid currentColor',
-      },
-    },
   },
   imageSrc: {
     position: 'absolute',
@@ -119,7 +107,7 @@ export default function LandingHero(props) {
       <Hidden smUp>
         <Grid item sm={4} xs={12}>
           <Grid item>
-            {!mezzoData.loading && !mezzoData.errorState && ( 
+            {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && ( 
               <ButtonBase
                 focusRipple
                 className={classes.image}
@@ -139,7 +127,9 @@ export default function LandingHero(props) {
                     
                   />
                   <span className={classes.imageButton}>
-                    <img className={classes.logo} src={mezzoData.data.logo_img_path} alt=''/>
+                    <a href={mezzoData.data.logo_landing_url} style={{zIndex: 5}}>
+                      <img className={classes.logo} src={mezzoData.data.logo_img_path} alt='' />
+                    </a>
                   </span>
                 </a>
               </ButtonBase>
