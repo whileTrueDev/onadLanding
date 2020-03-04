@@ -129,19 +129,16 @@ const LandingMain = (props) => {
       }
       const {adsinfo} = row.data;
       const {error_code, use_ssp} = adsinfo;
-      if(error_code === '0' && use_ssp === '1'){
-        console.log('하우스 이므로 SSP 요청합니다.');
+      if((error_code === '0' || error_code === '5') && use_ssp === '1'){
         axios.get('https://ssp.meba.kr/ssp.mezzo/', {params : {...params, i_banner_w: '320', i_banner_h:'50'}})
         .then((inrow)=>{
           const ssp_error_code = inrow.data.error_code;
           // 반드시 error_code 존재, 광고가 없음 => 하우스 광고 진행
           // 광고성공, SSP요청을 진행하였으나 광고가없으므로 하우스로진행
-          if(ssp_error_code === "5"){
-            console.log("SSP광고가 없으므로 하우스광고를 진행합니다.");
+          if(ssp_error_code === "5" && error_code === '0'){
             const { impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url } = adsinfo.ad[0];
             axios.get(impression_api)
             .then(()=>{
-              console.log('노출 API를 통해 체크를 진행합니다.');
               setLoading(false);
               setErrorState(false);
               setData({img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url});
@@ -158,7 +155,6 @@ const LandingMain = (props) => {
             if(ssp_imp === null || ssp_imp === 'null' || ssp_imp === ''){
               axios.get(ssp_imp)
                 .then(()=>{
-                  console.log('노출 API를 통해 체크를 진행합니다.');
                   setLoading(false);
                   setErrorState(false);
                   setData({ img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click })
@@ -189,7 +185,6 @@ const LandingMain = (props) => {
         const { impression_api, click_api, click_tracking_api, img_path, logo_img_path } = adsinfo.ad[0];
         axios.get(impression_api)
         .then(()=>{
-          console.log('노출 API를 통해 체크를 진행합니다.');
           setLoading(true);
           setErrorState(false);
           setData({img_path, impression_api, click_api, click_tracking_api, logo_img_path});
