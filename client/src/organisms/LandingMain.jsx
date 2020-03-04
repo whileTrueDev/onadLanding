@@ -132,76 +132,31 @@ const LandingMain = (props) => {
           const ssp_error_code = inrow.data.error_code;
           if(ssp_error_code === "5" && error_code === '0'){
             const { impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url } = adsinfo.ad[0];
+            setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url}})
             axios.get(impression_api)
-            .then(()=>{
-              setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url}})
-            })
-            .catch(()=>{
-              setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url}})
-            })
           } else if(ssp_error_code === "0") {
             console.log("ssp")
-            const { img_path, landing_url, ssp_imp, ssp_click} = row.result[0];
-            
+            const { adsinfo } = inrow.data;
+            const { img_path, landing_url, ssp_imp, ssp_click } = adsinfo;
+            setState({load: false, err: false, data: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click }})
             // 노출 API가 null일경우 회피하기위한 에러핸들링
             if(ssp_imp === null || ssp_imp === 'null' || ssp_imp === ''){
               axios.get(ssp_imp)
-                .then(()=>{
-                  setState({load: false, err: false, data: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click }})
-
-                  // setLoading(false);
-                  // setErrorState(false);
-                  // setData({ img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click })
-                })
-                .catch(()=>{
-                  setState({load: false, err: false, data: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click }})
-
-                  // setLoading(false);
-                  // setErrorState(false);
-                  // setData({ img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click })
-                })
-            } else {
-              setState({load: false, err: false, data: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click }})
-
-              // setLoading(false);
-              // setErrorState(false);
-              // setData({ img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click })
             }
           } else{
             setState({load: false, err: true, data: {}})
-            // setLoading(false);
-            // setData({});
             return;
           }
         })
       } else if (error_code !== '0'){
         setState({load: false, err: true, data: {}})
-
-        // setLoading(true);
-        // setErrorState(true);
-        // setData({});
       }
       else {
         const { impression_api, click_api, click_tracking_api, img_path, logo_img_path } = adsinfo.ad[0];
+        setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path}})
         axios.get(impression_api)
-        .then(()=>{
-          setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path}})
-
-
-          // setLoading(true);
-          // setErrorState(false);
-          // setData({img_path, impression_api, click_api, click_tracking_api, logo_img_path});
-        })
-        .catch(()=>{
-          setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path}})
-
-          // setLoading(false);
-          // setErrorState(false);
-          // setData({img_path, impression_api, click_api, click_tracking_api, logo_img_path});
-        })
       }
     })
-
     }
     // eslint-disable-next-line
   }, []);
