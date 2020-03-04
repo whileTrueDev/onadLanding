@@ -23,7 +23,7 @@
         "no-underscore-dangle": "off",
         "comma-dangle": "off",
         "linebreak-style": [
-            "error",
+            "error", "windows"
         ],
         "react/require-default-props": 1,
         "no-unused-vars": "warn",

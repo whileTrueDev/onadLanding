@@ -328,11 +328,11 @@ router.post('/banner/click', (req, res) => {
   const ipCheckQuery = `
     SELECT ipAddress
     FROM landingClickIp
-    WHERE campaignId = ? AND creatorId = ?
+    WHERE campaignId = ?
     AND type = ? AND ipAddress = ?
     AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
     `;
-  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
+  const ipCheckArray = [campaignId, TRANSFER_TYPE_NUM, userIp];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
@@ -434,11 +434,11 @@ router.post('/banner/transfer', (req, res) => {
   const ipCheckQuery = `
     SELECT ipAddress
     FROM landingClickIp
-    WHERE campaignId = ? AND creatorId = ?
+    WHERE campaignId = ?
     AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
     AND type = ? AND ipAddress = ?
     `;
-  const ipCheckArray = [campaignId, creatorId, TRANSFER_TYPE_NUM, userIp];
+  const ipCheckArray = [campaignId, TRANSFER_TYPE_NUM, userIp];
 
   const ipInsertQuery = `
     INSERT INTO landingClickIp 
