@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 // import AdSense from 'react-adsense';
@@ -9,7 +9,7 @@ import {
 } from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
 // sub components
-// import { Hidden } from '@material-ui/core';
+import { Hidden } from '@material-ui/core';
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
@@ -78,6 +78,10 @@ const LandingMain = (props) => {
     return '5';
   };
   const getOsIndex = () => (osName === 'iOS' ? '2' : '3');
+
+  useEffect(() => {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  }, []);
 
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
@@ -204,10 +208,6 @@ const LandingMain = (props) => {
 
   usePostData('/api/visit', { name: match.params.name });
 
-  // useEffect(() => {
-  //   (window.adsbygoogle = window.adsbygoogle || []).push({});
-  // }, []);
-
   return (
     <Grid
       container
@@ -222,7 +222,7 @@ const LandingMain = (props) => {
       }
     >
       {/* 구글애드센스 테스트 */}
-      {/* <Hidden mdDown>
+      <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
             <div style={{
@@ -245,7 +245,7 @@ const LandingMain = (props) => {
           )}
         </Grid>
 
-      </Hidden> */}
+      </Hidden>
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
@@ -292,7 +292,7 @@ const LandingMain = (props) => {
         </Grid>
       </Hidden> */}
 
-      {/* <Hidden mdDown>
+      <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
           <div style={{
@@ -305,19 +305,18 @@ const LandingMain = (props) => {
             flexDirection: 'column'
           }}
           >
-            <h1>구글애드센스 테스트</h1>
-            <AdSense.Google
-              client="ca-pub-4320356355619389"
-              slot="6393653150"
-              style={{ display: 'block' }}
-              format="auto"
-              responsive="true"
-
+            <ins
+              className="adsbygoogle"
+              style={{ display: 'inline-block' }}
+              data-ad-client="ca-pub-4320356355619389"
+              data-ad-slot="6541265886"
+              data-ad-format="auto"
+              data-full-width-responsive="true"
             />
           </div>
           )}
         </Grid>
-      </Hidden> */}
+      </Hidden>
     </Grid>
   );
 };
