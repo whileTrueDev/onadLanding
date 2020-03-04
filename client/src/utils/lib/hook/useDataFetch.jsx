@@ -39,7 +39,6 @@ const useFetchData = (initialUrl = '', params = {}) => {
 
       setLoading(false);
     };
-
     fetchData();
   }, [url]);
 
