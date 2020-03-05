@@ -116,6 +116,7 @@ router.get('/banner', (req, res) => {
     ON lr.linkId = campaign.connectedLinkId
     
   WHERE creatorTwitchId = ? AND campaign.deletedState = 0
+    AND campaign.limitState != 1
     AND campaign.onOff = 1 AND mi.marketerContraction = 1
     AND campaign.optionType != 0
   ORDER BY regiDate DESC`;
