@@ -3,7 +3,6 @@ const doQuery = require('../lib/doQuery');
 const logger = require('../middleware/landingActionLogging');
 const axios = require('axios');
 const router = express.Router();
-const MobileDetect = require('mobile-detect');
 
 /* GET method of API server */
 
@@ -645,28 +644,89 @@ router.post('/manplus', (req, res)=>{
 
 // 광고가 노출되었다는 것을 manplus에 전달한다.
 router.post('/manplus/impression', (req, res)=>{
-  const { impression_api } = req.body;
-  axios.get(impression_api)
-  .then(()=>{
-    res.send(true);
-  })
+  const MANPOINT_IMPRESSION_NUM = 0;
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
+
+   // ip체크쿼리
+   const ipCheckQuery = `
+   SELECT ipAddress
+   FROM manpointClick
+   WHERE type = ? AND ipAddress = ?
+   AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+   `;
+ const ipCheckArray = [MANPOINT_IMPRESSION_NUM, userIp];
+
+  const ipInsertQuery = `
+  INSERT INTO manpointClick  (creatorId, ipAddress, type)
+  VALUES (
+  (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?), ?, ?)
+  `;
+
+  const ipInsertArray = [name, userIp, MANPOINT_IMPRESSION_NUM];
+
+  
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      if(row.result.length > 0){
+        res.send(true);
+        return
+      }
+      doQuery(ipInsertQuery, ipInsertArray)
+      .then(()=>{
+        res.send(true);
+      })
+      .catch(()=>{
+        res.send(true);
+      })
+    })
+    .catch((error)=> {
+      console.log(error);
+      res.send(true);
+    })
 })
 
 // 광고가 클릭돠었음을 manplus에 전달한다.
 router.post('/manplus/click', (req, res)=>{
-  console.log('클릭을 체크합니다.')
-  const { click_tracking_api } = req.body;
+  const MANPOINT_CLICK_NUM = 1;
+  const { name } = req.body;
+  const userIp = req.header('x-forwarded-for') || req.connection.remoteAddress;
 
-  // 클릭 API가 null일경우 회피하기위한 에러핸들링
-  if(click_tracking_api === null || click_tracking_api === 'null' || click_tracking_api === ''){
-    axios.get(click_tracking_api)
-    .then(()=>{
-      console.log('API로 클릭 체크를 진행합니다.');
-      res.end();   
-    });
-  }else{
-    res.end();   
-  }
+  
+  // ip체크쿼리
+  const ipCheckQuery = `
+  SELECT ipAddress
+  FROM manpointClick
+  WHERE type = ? AND ipAddress = ?
+  AND date >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+  `;
+  const ipCheckArray = [MANPOINT_CLICK_NUM, userIp];
+
+  const ipInsertQuery = `
+  INSERT INTO manpointClick  (creatorId, ipAddress, type)
+  VALUES (
+  (SELECT creatorId FROM creatorInfo WHERE creatorTwitchId = ?), ?, ?)
+  `;
+  const ipInsertArray = [name, userIp, MANPOINT_CLICK_NUM];
+  
+  doQuery(ipCheckQuery, ipCheckArray)
+    .then((row) => {
+      if(row.result.length > 0){
+        res.send(true);
+        return
+      }
+      doQuery(ipInsertQuery, ipInsertArray)
+      .then(()=>{
+        res.send(true);
+      })
+      .catch(()=>{
+        res.send(true);
+      })
+    })
+    .catch((error)=> {
+      console.log(error);
+      res.send(true);
+    })
 })
 
 module.exports = router;

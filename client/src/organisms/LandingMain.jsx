@@ -19,6 +19,7 @@ import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
 import usePostData from '../utils/lib/hook/usePostData';
+import apiHOST from '../config/host';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -116,6 +117,7 @@ const LandingMain = (props) => {
       axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
         .then((row) => {
           if (row.data === null) {
+            console.log("BANNER API IS NOT FOUND");
             setState({ load: false, err: true, data: {} });
             return;
           }
@@ -127,52 +129,59 @@ const LandingMain = (props) => {
               .then((inrow) => {
                 const ssp_error_code = inrow.data.error_code;
                 if (ssp_error_code === '5' && error_code === '0') {
+                  console.log("SSP API IS NOT FOUND");
+                  console.log("HOUSE API CALL");
                   const {
-                    impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url
+                    click_tracking_api, html
                   } = adsinfo.ad[0];
                   setState({
                     load: false,
                     err: false,
                     data: {
-                      img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url
+                      click_tracking_api, html, isSSP: false
                     }
                   });
-                  axios.get(impression_api);
+                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
                 } else if (ssp_error_code === '0') {
-                  console.log('ssp');
-                  const { adsinfo } = inrow.data;
+                  console.log("SSP API CALL");
+                  const { adsinfo } = inrow.data; 
                   const {
-                    img_path, landing_url, ssp_imp, ssp_click
+                    adm, ssp_imp, ssp_click
                   } = adsinfo;
                   setState({
                     load: false,
                     err: false,
                     data: {
-                      img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click
+                      html: adm, click_tracking_api: ssp_click, isSSP: true
                     }
                   });
+                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
                   // 노출 API가 null일경우 회피하기위한 에러핸들링
                   if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
                     axios.get(ssp_imp);
+                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
                   }
                 } else {
+                  console.log("SSP API ERROR");
                   setState({ load: false, err: true, data: {} });
                 }
               });
           } else if (error_code !== '0') {
+            console.log("HOUSE API ERROR");
             setState({ load: false, err: true, data: {} });
           } else {
+            console.log("HOUSE API CALL");
             const {
-              impression_api, click_api, click_tracking_api, img_path, logo_img_path
+              click_tracking_api, html
             } = adsinfo.ad[0];
             setState({
               load: false,
               err: false,
               data: {
-                img_path, impression_api, click_api, click_tracking_api, logo_img_path
+                click_tracking_api, html, isSSP: false
               }
             });
-            axios.get(impression_api);
+            axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
           }
         });
     }
