@@ -144,10 +144,9 @@ const LandingMain = (props) => {
                   axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
                 } else if (ssp_error_code === '0') {
                   console.log("SSP API CALL");
-                  const { adsinfo } = inrow.data; 
                   const {
                     adm, ssp_imp, ssp_click
-                  } = adsinfo;
+                  } = inrow.data;
                   setState({
                     load: false,
                     err: false,
