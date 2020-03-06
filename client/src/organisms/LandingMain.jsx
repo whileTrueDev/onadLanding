@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 // import AdSense from 'react-adsense';
@@ -79,9 +79,9 @@ const LandingMain = (props) => {
   };
   const getOsIndex = () => (osName === 'iOS' ? '2' : '3');
 
-  useEffect(() => {
-    (window.adsbygoogle = window.adsbygoogle || []).push({});
-  }, []);
+  // useEffect(() => {
+  //   (window.adsbygoogle = window.adsbygoogle || []).push({});
+  // }, []);
 
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
@@ -108,55 +108,77 @@ const LandingMain = (props) => {
   const [loading, setLoading] = useState(true);
   const [errorState, setErrorState] = useState(false);
 
-  const setState = ({load, err, data}) =>{
-      setLoading(load);
-      setErrorState(err);
-      setData(data);
-  }
+  const setState = ({ load, err, data }) => {
+    setLoading(load);
+    setErrorState(err);
+    setData(data);
+  };
 
   useEffect(() => {
     setLoading(true);
-    if(getScreen()  === '1' && match.params.name === 'iamsupermazinga') {
-    axios.get('https://mtag.mman.kr/get_ad.mezzo/', {params})
-    .then((row)=>{
-      if(row.data === null){
-        setState({load: false, err: true, data: {}})
-        return;
-      }
-      const {adsinfo} = row.data;
-      const {error_code, use_ssp, ad_type} = adsinfo;
-      // SSP 요청조건 - (광고 성공 + 하우스 광고, 광고 없음 ) + SSP 사용
-      if(((error_code === '0' && ad_type === '4') || error_code === '5') && use_ssp === '1'){
-        axios.get('https://ssp.meba.kr/ssp.mezzo/', {params : {...params, i_banner_w: '320', i_banner_h:'50'}})
-        .then((inrow)=>{
-          const ssp_error_code = inrow.data.error_code;
-          if(ssp_error_code === "5" && error_code === '0'){
-            const { impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url } = adsinfo.ad[0];
-            setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url}})
-            axios.get(impression_api)
-          } else if(ssp_error_code === "0") {
-            console.log("ssp")
-            const { adsinfo } = inrow.data;
-            const { img_path, landing_url, ssp_imp, ssp_click } = adsinfo;
-            setState({load: false, err: false, data: { img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click }})
-            // 노출 API가 null일경우 회피하기위한 에러핸들링
-            if(ssp_imp === null || ssp_imp === 'null' || ssp_imp === ''){
-              axios.get(ssp_imp)
-            }
-          } else{
-            setState({load: false, err: true, data: {}})
+    if (getScreen() === '1' && match.params.name === 'iamsupermazinga') {
+      axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
+        .then((row) => {
+          if (row.data === null) {
+            setState({ load: false, err: true, data: {} });
             return;
           }
-        })
-      } else if (error_code !== '0'){
-        setState({load: false, err: true, data: {}})
-      }
-      else {
-        const { impression_api, click_api, click_tracking_api, img_path, logo_img_path } = adsinfo.ad[0];
-        setState({load: false, err: false, data: {img_path, impression_api, click_api, click_tracking_api, logo_img_path}})
-        axios.get(impression_api)
-      }
-    })
+          const { adsinfo } = row.data;
+          const { error_code, use_ssp, ad_type } = adsinfo;
+          // SSP 요청조건 - (광고 성공 + 하우스 광고, 광고 없음 ) + SSP 사용
+          if (((error_code === '0' && ad_type === '4') || error_code === '5') && use_ssp === '1') {
+            axios.get('https://ssp.meba.kr/ssp.mezzo/', { params: { ...params, i_banner_w: '320', i_banner_h: '50' } })
+              .then((inrow) => {
+                const ssp_error_code = inrow.data.error_code;
+                if (ssp_error_code === '5' && error_code === '0') {
+                  const {
+                    impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url
+                  } = adsinfo.ad[0];
+                  setState({
+                    load: false,
+                    err: false,
+                    data: {
+                      img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url
+                    }
+                  });
+                  axios.get(impression_api);
+                } else if (ssp_error_code === '0') {
+                  console.log('ssp');
+                  const { adsinfo } = inrow.data;
+                  const {
+                    img_path, landing_url, ssp_imp, ssp_click
+                  } = adsinfo;
+                  setState({
+                    load: false,
+                    err: false,
+                    data: {
+                      img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click
+                    }
+                  });
+                  // 노출 API가 null일경우 회피하기위한 에러핸들링
+                  if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
+                    axios.get(ssp_imp);
+                  }
+                } else {
+                  setState({ load: false, err: true, data: {} });
+                }
+              });
+          } else if (error_code !== '0') {
+            setState({ load: false, err: true, data: {} });
+          } else {
+            const {
+              impression_api, click_api, click_tracking_api, img_path, logo_img_path
+            } = adsinfo.ad[0];
+            setState({
+              load: false,
+              err: false,
+              data: {
+                img_path, impression_api, click_api, click_tracking_api, logo_img_path
+              }
+            });
+            axios.get(impression_api);
+          }
+        });
     }
     // eslint-disable-next-line
   }, []);
@@ -177,7 +199,7 @@ const LandingMain = (props) => {
       }
     >
       {/* 구글애드센스 테스트 */}
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
             <div style={{
@@ -200,7 +222,7 @@ const LandingMain = (props) => {
           )}
         </Grid>
 
-      </Hidden>
+      </Hidden> */}
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
@@ -247,7 +269,7 @@ const LandingMain = (props) => {
         </Grid>
       </Hidden> */}
 
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
           <div style={{
@@ -271,7 +293,7 @@ const LandingMain = (props) => {
           </div>
           )}
         </Grid>
-      </Hidden>
+      </Hidden> */}
     </Grid>
   );
 };
