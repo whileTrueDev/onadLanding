@@ -130,7 +130,7 @@ const LandingMain = (props) => {
                 const ssp_error_code = inrow.data.error_code;
                 if (ssp_error_code === '5' && error_code === '0') {
                   console.log("SSP API IS NOT FOUND");
-                  if(inrow.data.hasOwnProperty('html')){
+                  if(adsinfo.ad[0].hasOwnProperty('html')){
                     console.log("HOUSE API CALL");
                     const {
                       click_tracking_api, html
