@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-// import AdSense from 'react-adsense';
+import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   isBrowser, isTablet, isSmartTV, isMobile,
@@ -19,6 +19,7 @@ import LandingHeroLoading from './Landing/LandingHeroLoading';
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
 import usePostData from '../utils/lib/hook/usePostData';
+import apiHOST from '../config/host';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -120,6 +121,7 @@ const LandingMain = (props) => {
       axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
         .then((row) => {
           if (row.data === null) {
+            console.log('BANNER API IS NOT FOUND');
             setState({ load: false, err: true, data: {} });
             return;
           }
@@ -131,52 +133,58 @@ const LandingMain = (props) => {
               .then((inrow) => {
                 const ssp_error_code = inrow.data.error_code;
                 if (ssp_error_code === '5' && error_code === '0') {
+                  console.log('SSP API IS NOT FOUND');
+                  console.log('HOUSE API CALL');
                   const {
-                    impression_api, click_api, click_tracking_api, img_path, logo_img_path, logo_landing_url
+                    click_tracking_api, html
                   } = adsinfo.ad[0];
                   setState({
                     load: false,
                     err: false,
                     data: {
-                      img_path, impression_api, click_api, click_tracking_api, logo_img_path, logo_landing_url
+                      click_tracking_api, html, isSSP: false
                     }
                   });
-                  axios.get(impression_api);
+                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                 } else if (ssp_error_code === '0') {
-                  console.log('ssp');
-                  const { adsinfo } = inrow.data;
+                  console.log('SSP API CALL');
                   const {
-                    img_path, landing_url, ssp_imp, ssp_click
-                  } = adsinfo;
+                    adm, ssp_imp, ssp_click
+                  } = inrow.data;
                   setState({
                     load: false,
                     err: false,
                     data: {
-                      img_path, impression_api: ssp_imp, click_api: landing_url, click_tracking_api: ssp_click
+                      html: adm, click_tracking_api: ssp_click, isSSP: true
                     }
                   });
+                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                   // 노출 API가 null일경우 회피하기위한 에러핸들링
                   if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
                     axios.get(ssp_imp);
+                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                   }
                 } else {
+                  console.log('SSP API ERROR');
                   setState({ load: false, err: true, data: {} });
                 }
               });
           } else if (error_code !== '0') {
+            console.log('HOUSE API ERROR');
             setState({ load: false, err: true, data: {} });
           } else {
+            console.log('HOUSE API CALL');
             const {
-              impression_api, click_api, click_tracking_api, img_path, logo_img_path
+              click_tracking_api, html
             } = adsinfo.ad[0];
             setState({
               load: false,
               err: false,
               data: {
-                img_path, impression_api, click_api, click_tracking_api, logo_img_path
+                click_tracking_api, html, isSSP: false
               }
             });
-            axios.get(impression_api);
+            axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
           }
         });
     }
@@ -202,24 +210,25 @@ const LandingMain = (props) => {
       {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              minWidth: 160,
-              maxWidth: 320,
-              height: '100%',
-              alignItems: 'center',
-              flexDirection: 'column'
-            }}
-            >
-              <ins
-                className="adsbygoogle"
-                style={{ display: 'inline-block', width: '160px', height: '600px' }}
-                data-ad-client="ca-pub-4320356355619389"
-                data-ad-slot="6393653150"
-              />
-            </div>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            minWidth: 160,
+            maxWidth: 320,
+            height: '100%',
+            alignItems: 'center',
+            flexDirection: 'column'
+          }}
+          >
+            <AdSense.Google
+              client="ca-pub-4320356355619389"
+              slot="6393653150"
+              style={{ display: 'inline-block', width: '160px', height: '600px' }}
+            />
+          </div>
           )}
+
+
         </Grid>
 
       </Hidden> */}
@@ -282,13 +291,12 @@ const LandingMain = (props) => {
             flexDirection: 'column'
           }}
           >
-            <ins
-              className="adsbygoogle"
+            <AdSense.Google
+              client="ca-pub-4320356355619389"
+              slot="6393653150"
               style={{ display: 'inline-block' }}
-              data-ad-client="ca-pub-4320356355619389"
-              data-ad-slot="6541265886"
-              data-ad-format="auto"
-              data-full-width-responsive="true"
+              format="auto"
+              responsive="true"
             />
           </div>
           )}

@@ -15,6 +15,7 @@ import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
 import apiHOST from '../../config/host';
 import axios from 'axios';
+import Dynamic from './Dynamic';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -95,10 +96,11 @@ export default function LandingHero(props) {
   const classes = useStyles();
 
   const handleClick = () =>{ 
-    axios.post(`${apiHOST}/api/manplus/click`, { 
-      click_api : mezzoData.data.click_api,
-      click_tracking_api: mezzoData.data.click_tracking_api 
-    })
+    axios.post(`${apiHOST}/api/manplus/click`, {name})
+    if(mezzoData.data.isSSP){
+      console.log('SSP CLICK TRACKING')
+      axios.get(mezzoData.data.click_tracking_api)
+    }
   }
 
   return (
@@ -112,29 +114,11 @@ export default function LandingHero(props) {
                 focusRipple
                 className={classes.image}
                 onClick={handleClick}
-                style={{
-                  height:'50px'
-                }}
+                
               >
-                <a href={mezzoData.data.click_api} >
-                  <span
-                    className={classes.imageSrc}
-                    style={{
-                      backgroundImage: `url('${mezzoData.data.img_path}')`,
-                      width: "100%",
-                      height: 'auto'
-                    }}
-                    
-                  />
-                  <span className={classes.imageButton}>
-                    <a href={mezzoData.data.logo_landing_url} style={{zIndex: 5}}>
-                      <img className={classes.logo} src={mezzoData.data.logo_img_path} alt='' />
-                    </a>
-                  </span>
-                </a>
+                <Dynamic html={mezzoData.data.html} />
               </ButtonBase>
-            )
-            }
+            )}
           </Grid>
         </Grid>
       </Hidden>
