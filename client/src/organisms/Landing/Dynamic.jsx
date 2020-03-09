@@ -1,8 +1,10 @@
 import React, {useEffect,useState} from 'react';
+import $ from "jquery";
+
 
 const  Dynamic = (props) => {
-	const { html } = props;  
-	const [htmlText, setHtml] = useState(`<div/>`);
+	const { html, isSSP } = props;  
+	const [htmlText, setHtml] = useState(`<div id="edit-me"/>`);
 
   const markup = (val) => {
 		return { __html: val }
@@ -10,12 +12,16 @@ const  Dynamic = (props) => {
 
   useEffect(()=>{
 		if(html !== null){
-			const newhtml =  html.replace(/<(\/meta|meta)([^>]*)>/gi,"");
-			setHtml(newhtml)
+			if(isSSP){
+				$('#edit-me').html(html);
+			}else{
+				const newhtml =  html.replace(/<(\/meta|meta)([^>]*)>/gi,"");
+				setHtml(newhtml)
+			}
 		}
   },[html])
 	
-	return <div dangerouslySetInnerHTML={markup(htmlText)} />;
+	return <div dangerouslySetInnerHTML={markup(htmlText)} style={{width: '90%', height: 'auto'}}/>;
 }
 
 export default Dynamic;
