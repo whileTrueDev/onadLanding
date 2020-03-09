@@ -130,35 +130,44 @@ const LandingMain = (props) => {
                 const ssp_error_code = inrow.data.error_code;
                 if (ssp_error_code === '5' && error_code === '0') {
                   console.log("SSP API IS NOT FOUND");
-                  console.log("HOUSE API CALL");
-                  const {
-                    click_tracking_api, html
-                  } = adsinfo.ad[0];
-                  setState({
-                    load: false,
-                    err: false,
-                    data: {
-                      click_tracking_api, html, isSSP: false
-                    }
-                  });
-                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
-                } else if (ssp_error_code === '0') {
-                  console.log("SSP API CALL");
-                  const {
-                    adm, ssp_imp, ssp_click
-                  } = inrow.data;
-                  setState({
-                    load: false,
-                    err: false,
-                    data: {
-                      html: adm, click_tracking_api: ssp_click, isSSP: true
-                    }
-                  });
-                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
-                  // 노출 API가 null일경우 회피하기위한 에러핸들링
-                  if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
-                    axios.get(ssp_imp);
+                  if(inrow.data.hasOwnProperty('html')){
+                    console.log("HOUSE API CALL");
+                    const {
+                      click_tracking_api, html
+                    } = adsinfo.ad[0];
+                    setState({
+                      load: false,
+                      err: false,
+                      data: {
+                        click_tracking_api, html, isSSP: false
+                      }
+                    });
                     axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                  }
+                  else{
+                    setState({ load: false, err: true, data: {} });
+                  }
+                } else if (ssp_error_code === '0') {
+                  if(inrow.data.hasOwnProperty('adm')){
+                    console.log("SSP API CALL");
+                    const {
+                      adm, ssp_imp, ssp_click
+                    } = inrow.data;
+                    setState({
+                      load: false,
+                      err: false,
+                      data: {
+                        html: adm, click_tracking_api: ssp_click, isSSP: true
+                      }
+                    });
+                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                    // 노출 API가 null일경우 회피하기위한 에러핸들링
+                    if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
+                      axios.get(ssp_imp);
+                    }
+                  }
+                  else{
+                   setState({ load: false, err: true, data: {} });
                   }
                 } else {
                   console.log("SSP API ERROR");

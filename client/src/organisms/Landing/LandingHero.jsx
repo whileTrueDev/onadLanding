@@ -114,9 +114,8 @@ export default function LandingHero(props) {
                 focusRipple
                 className={classes.image}
                 onClick={handleClick}
-                
               >
-                <Dynamic html={mezzoData.data.html} />
+                <Dynamic html={mezzoData.data.html} isSSP={mezzoData.data.isSSP}/>
               </ButtonBase>
             )}
           </Grid>
