@@ -21,7 +21,7 @@ const  Dynamic = (props) => {
 		}
   },[html])
 	
-	return <div dangerouslySetInnerHTML={markup(htmlText)} style={{width: '90%', height: 'auto'}}/>;
+	return <div dangerouslySetInnerHTML={markup(htmlText)} style={{width: '95%', height: 'auto'}}/>;
 }
 
 export default Dynamic;
