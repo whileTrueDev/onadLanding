@@ -117,7 +117,7 @@ const LandingMain = (props) => {
       axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
         .then((row) => {
           if (row.data === null) {
-            console.log("BANNER API IS NOT FOUND");
+            console.log('BANNER API IS NOT FOUND');
             setState({ load: false, err: true, data: {} });
             return;
           }
@@ -129,8 +129,8 @@ const LandingMain = (props) => {
               .then((inrow) => {
                 const ssp_error_code = inrow.data.error_code;
                 if (ssp_error_code === '5' && error_code === '0') {
-                  console.log("SSP API IS NOT FOUND");
-                  console.log("HOUSE API CALL");
+                  console.log('SSP API IS NOT FOUND');
+                  console.log('HOUSE API CALL');
                   const {
                     click_tracking_api, html
                   } = adsinfo.ad[0];
@@ -141,9 +141,9 @@ const LandingMain = (props) => {
                       click_tracking_api, html, isSSP: false
                     }
                   });
-                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                 } else if (ssp_error_code === '0') {
-                  console.log("SSP API CALL");
+                  console.log('SSP API CALL');
                   const {
                     adm, ssp_imp, ssp_click
                   } = inrow.data;
@@ -154,22 +154,22 @@ const LandingMain = (props) => {
                       html: adm, click_tracking_api: ssp_click, isSSP: true
                     }
                   });
-                  axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                   // 노출 API가 null일경우 회피하기위한 에러핸들링
                   if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
                     axios.get(ssp_imp);
-                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                   }
                 } else {
-                  console.log("SSP API ERROR");
+                  console.log('SSP API ERROR');
                   setState({ load: false, err: true, data: {} });
                 }
               });
           } else if (error_code !== '0') {
-            console.log("HOUSE API ERROR");
+            console.log('HOUSE API ERROR');
             setState({ load: false, err: true, data: {} });
           } else {
-            console.log("HOUSE API CALL");
+            console.log('HOUSE API CALL');
             const {
               click_tracking_api, html
             } = adsinfo.ad[0];
@@ -180,7 +180,7 @@ const LandingMain = (props) => {
                 click_tracking_api, html, isSSP: false
               }
             });
-            axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+            axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
           }
         });
     }
@@ -203,7 +203,7 @@ const LandingMain = (props) => {
       }
     >
       {/* 구글애드센스 테스트 */}
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
           <div style={{
@@ -227,7 +227,7 @@ const LandingMain = (props) => {
 
         </Grid>
 
-      </Hidden>
+      </Hidden> */}
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
@@ -274,7 +274,7 @@ const LandingMain = (props) => {
         </Grid>
       </Hidden> */}
 
-      <Hidden mdDown>
+      {/* <Hidden mdDown>
         <Grid item xl={3} lg={2}>
           {match.params.name === 'iamsupermazinga' && (
           <div style={{
@@ -297,7 +297,7 @@ const LandingMain = (props) => {
           </div>
           )}
         </Grid>
-      </Hidden>
+      </Hidden> */}
     </Grid>
   );
 };
