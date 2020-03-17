@@ -106,7 +106,6 @@ export default function LandingHero(props) {
 
   return (
     <Grid container className={classes.root}>
-      {name === 'iamsupermazinga' && (
       <Hidden smUp>
         <Grid item sm={4} xs={12}>
           <Grid item>
@@ -122,7 +121,6 @@ export default function LandingHero(props) {
           </Grid>
         </Grid>
       </Hidden>
-      )}
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
