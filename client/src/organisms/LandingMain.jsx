@@ -113,7 +113,7 @@ const LandingMain = (props) => {
 
   useEffect(() => {
     setLoading(true);
-    if (getScreen() === '1' && match.params.name === 'iamsupermazinga') {
+    if (getScreen() === '1') {
       axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
         .then((row) => {
           if (row.data === null) {
