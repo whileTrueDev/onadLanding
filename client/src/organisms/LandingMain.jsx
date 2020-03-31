@@ -267,12 +267,12 @@ const LandingMain = (props) => {
                 market 테스트
             </Button>
             <Button
-              onClick={() => { window.open('https://onad.io/redirect/http'); }}
+              onClick={() => { window.open('https://l.onad.io/redirect/http'); }}
             >
                 redirect http 테스트
             </Button>
             <Button
-              onClick={() => { window.open('http://onad.io/redirect/market'); }}
+              onClick={() => { window.open('https://l.onad.io/redirect/market'); }}
             >
                 redirect market 테스트
             </Button>
