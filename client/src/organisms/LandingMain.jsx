@@ -235,6 +235,24 @@ const LandingMain = (props) => {
       }
     >
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
+        {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
+        {!userDescData.loading && userDescData.data && (
+          <LandingHero
+            userTheme={userData.userTheme}
+            user={userData.creatorName}
+            userLogo={userData.creatorLogo}
+            userDesc={userDescData.data.creatorDesc}
+            userDescTitle={userDescData.data.creatorDescTitle}
+            userDescLink={userDescData.data.creatorDescLlink}
+            bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
+            totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
+            totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
+            levelData={levelData}
+            isDesktopWidth={isDesktopWidth}
+            mezzoData={{ data, loading, errorState }}
+            name={match.params.name}
+          />
+        )}
         {
         match.params.name === 'kevin20222' ? (
           <Grid>
@@ -261,24 +279,6 @@ const LandingMain = (props) => {
           </Grid>
         ) : null
       }
-        {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
-        {!userDescData.loading && userDescData.data && (
-          <LandingHero
-            userTheme={userData.userTheme}
-            user={userData.creatorName}
-            userLogo={userData.creatorLogo}
-            userDesc={userDescData.data.creatorDesc}
-            userDescTitle={userDescData.data.creatorDescTitle}
-            userDescLink={userDescData.data.creatorDescLlink}
-            bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
-            totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
-            totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
-            levelData={levelData}
-            isDesktopWidth={isDesktopWidth}
-            mezzoData={{ data, loading, errorState }}
-            name={match.params.name}
-          />
-        )}
         {bannerData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
         {!bannerData.loading && !bannerData.data && (<LandingNoAd />)}
         {!bannerData.loading && bannerData.data && (
