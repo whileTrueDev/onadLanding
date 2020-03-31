@@ -117,7 +117,7 @@ const LandingMain = (props) => {
 
   useEffect(() => {
     setLoading(true);
-    if (getScreen() === '1' && match.params.name === 'iamsupermazinga') {
+    if (getScreen() === '1') {
       axios.get('https://mtag.mman.kr/get_ad.mezzo/', { params })
         .then((row) => {
           if (row.data === null) {
@@ -132,48 +132,89 @@ const LandingMain = (props) => {
             axios.get('https://ssp.meba.kr/ssp.mezzo/', { params: { ...params, i_banner_w: '320', i_banner_h: '50' } })
               .then((inrow) => {
                 const ssp_error_code = inrow.data.error_code;
+
+                // AD 광고가 존재하지만 SSP는 존재하지 않을 때
                 if (ssp_error_code === '5' && error_code === '0') {
-                  console.log('SSP API IS NOT FOUND');
-                  console.log('HOUSE API CALL');
-                  const {
-                    click_tracking_api, html
-                  } = adsinfo.ad[0];
-                  setState({
-                    load: false,
-                    err: false,
-                    data: {
-                      click_tracking_api, html, isSSP: false
-                    }
-                  });
-                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+                  console.log("SSP API IS NOT FOUND");
+                  if(adsinfo.ad[0].hasOwnProperty('html')){
+                    console.log("HOUSE API CALL");
+                    const {
+                      click_tracking_api, html
+                    } = adsinfo.ad[0];
+                    setState({
+                      load: false,
+                      err: false,
+                      data: {
+                        click_tracking_api, html, isSSP: false
+                      }
+                    });
+                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                  }
+                  else{
+                    setState({ load: false, err: true, data: {} });
+                  }
                 } else if (ssp_error_code === '0') {
-                  console.log('SSP API CALL');
-                  const {
-                    adm, ssp_imp, ssp_click
-                  } = inrow.data;
-                  setState({
-                    load: false,
-                    err: false,
-                    data: {
-                      html: adm, click_tracking_api: ssp_click, isSSP: true
+                  // SSP가 존재하는 경우
+                  if(inrow.data.hasOwnProperty('adm')){
+                    console.log("SSP API CALL");
+                    const {
+                      adm, ssp_imp, ssp_click
+                    } = inrow.data;
+                    setState({
+                      load: false,
+                      err: false,
+                      data: {
+                        html: adm, click_tracking_api: ssp_click, isSSP: true
+                      }
+                    });
+                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                    // 노출 API가 null일경우 회피하기위한 에러핸들링
+                    if (ssp_imp !== null || ssp_imp !== undefined || ssp_imp !== '' || ssp_imp !== 'null') {
+                      if(ssp_imp.length !== 0){
+                        console.log("SSP IMPRESSION API CALL");
+                        axios.get(ssp_imp);
+                      }
                     }
-                  });
-                  axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
-                  // 노출 API가 null일경우 회피하기위한 에러핸들링
-                  if (ssp_imp === null || ssp_imp === 'null' || ssp_imp === '') {
-                    axios.get(ssp_imp);
-                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+                  }
+                  else{
+                   setState({ load: false, err: true, data: {} });
                   }
                 } else {
-                  console.log('SSP API ERROR');
+                  // SSP가 존재하지 않고 여러가지 에러가 존재할 때,
+                  if(error_code === '5'){
+                    console.log('AD API EMPTY');
+                  }else {
+                    console.log('SSP API ERROR');
+                  }
                   setState({ load: false, err: true, data: {} });
                 }
               });
-          } else if (error_code !== '0') {
-            console.log('HOUSE API ERROR');
+          } else if (error_code === '5') {
+            //광고 없음일 때
+            console.log('AD API EMPTY');
             setState({ load: false, err: true, data: {} });
-          } else {
+          } else if (error_code !== '5' && error_code !== '0') {
+            console.log('SSP API ERROR');
+            setState({ load: false, err: true, data: {} });
+          } else if (error_code === '0' && ad_type === '4') {
             console.log('HOUSE API CALL');
+            const {
+              click_tracking_api, html
+            } = adsinfo.ad[0];
+            setState({
+              load: false,
+              err: false,
+              data: {
+                click_tracking_api, html, isSSP: false
+              }
+            });
+            axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+          } else {
+<<<<<<< HEAD
+            console.log('HOUSE API CALL');
+=======
+            console.log('AD API CALL');
+>>>>>>> 275e7b81c5dfeec88c25a1922233168b126fcf8c
             const {
               click_tracking_api, html
             } = adsinfo.ad[0];

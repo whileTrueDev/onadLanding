@@ -6,16 +6,17 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
+import ButtonBase from '@material-ui/core/ButtonBase';
+
 // own function
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
+import Dynamic from './Dynamic';
 import apiHOST from '../../config/host';
 import axios from 'axios';
-import Dynamic from './Dynamic';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -96,33 +97,30 @@ export default function LandingHero(props) {
   const classes = useStyles();
 
   const handleClick = () =>{ 
-    axios.post(`${apiHOST}/api/manplus/click`, {name})
-    if(mezzoData.data.isSSP){
-      console.log('SSP CLICK TRACKING')
+    if(!mezzoData.data.isSSP){
+      console.log('HOUSE API CLICK');
+      axios.post(`${apiHOST}/api/manplus/click`, {name})
       axios.get(mezzoData.data.click_tracking_api)
     }
   }
 
   return (
     <Grid container className={classes.root}>
-      {name === 'iamsupermazinga' && (
       <Hidden smUp>
         <Grid item sm={4} xs={12}>
           <Grid item>
             {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && ( 
-              <ButtonBase
-                focusRipple
-                className={classes.image}
-                onClick={handleClick}
-                
-              >
-                <Dynamic html={mezzoData.data.html} />
-              </ButtonBase>
+               <ButtonBase
+               focusRipple
+               className={classes.image}
+               onClick={handleClick}
+             >
+                <Dynamic html={mezzoData.data.html} isSSP={mezzoData.data.isSSP} name={name} click_tracking_api={mezzoData.data.click_tracking_api}/>
+             </ButtonBase>
             )}
           </Grid>
         </Grid>
       </Hidden>
-      )}
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
