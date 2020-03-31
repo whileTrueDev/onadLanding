@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import AdSense from 'react-adsense';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import {
   isBrowser, isTablet, isSmartTV, isMobile,
   osName, osVersion, mobileModel, mobileVendor
 } from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 // sub components
-import { Hidden } from '@material-ui/core';
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
@@ -24,9 +24,7 @@ import apiHOST from '../config/host';
 const useStyles = makeStyles(theme => ({
   root: {
     [theme.breakpoints.up('lg')]: {
-      // background: 'linear-gradient(115deg, #FE6B8B 30%, rgb(29.4%, 0%, 51%) 90%)',
       backgroundImage: 'url(\'/images/background-whale.jpg\')',
-      // backgroundSize: 'auto',
     },
   },
   container: {
@@ -45,7 +43,6 @@ const useStyles = makeStyles(theme => ({
     },
   },
   belt: {
-    // marginTop: theme.spacing(5),
     display: 'flex',
     justifyContent: 'center',
     width: '100%',
@@ -79,10 +76,6 @@ const LandingMain = (props) => {
     return '5';
   };
   const getOsIndex = () => (osName === 'iOS' ? '2' : '3');
-
-  // useEffect(() => {
-  //   (window.adsbygoogle = window.adsbygoogle || []).push({});
-  // }, []);
 
   const userDescData = useFetchData('/api/description', { name: match.params.name });
   const bannerData = useFetchData('/api/banner', { name: match.params.name });
@@ -135,9 +128,9 @@ const LandingMain = (props) => {
 
                 // AD 광고가 존재하지만 SSP는 존재하지 않을 때
                 if (ssp_error_code === '5' && error_code === '0') {
-                  console.log("SSP API IS NOT FOUND");
-                  if(adsinfo.ad[0].hasOwnProperty('html')){
-                    console.log("HOUSE API CALL");
+                  console.log('SSP API IS NOT FOUND');
+                  if (adsinfo.ad[0].hasOwnProperty('html')) {
+                    console.log('HOUSE API CALL');
                     const {
                       click_tracking_api, html
                     } = adsinfo.ad[0];
@@ -148,15 +141,14 @@ const LandingMain = (props) => {
                         click_tracking_api, html, isSSP: false
                       }
                     });
-                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
-                  }
-                  else{
+                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+                  } else {
                     setState({ load: false, err: true, data: {} });
                   }
                 } else if (ssp_error_code === '0') {
                   // SSP가 존재하는 경우
-                  if(inrow.data.hasOwnProperty('adm')){
-                    console.log("SSP API CALL");
+                  if (inrow.data.hasOwnProperty('adm')) {
+                    console.log('SSP API CALL');
                     const {
                       adm, ssp_imp, ssp_click
                     } = inrow.data;
@@ -167,30 +159,29 @@ const LandingMain = (props) => {
                         html: adm, click_tracking_api: ssp_click, isSSP: true
                       }
                     });
-                    axios.post(`${apiHOST}/api/manplus/impression`, {name: match.params.name})
+                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
                     // 노출 API가 null일경우 회피하기위한 에러핸들링
                     if (ssp_imp !== null || ssp_imp !== undefined || ssp_imp !== '' || ssp_imp !== 'null') {
-                      if(ssp_imp.length !== 0){
-                        console.log("SSP IMPRESSION API CALL");
+                      if (ssp_imp.length !== 0) {
+                        console.log('SSP IMPRESSION API CALL');
                         axios.get(ssp_imp);
                       }
                     }
-                  }
-                  else{
-                   setState({ load: false, err: true, data: {} });
+                  } else {
+                    setState({ load: false, err: true, data: {} });
                   }
                 } else {
                   // SSP가 존재하지 않고 여러가지 에러가 존재할 때,
-                  if(error_code === '5'){
+                  if (error_code === '5') {
                     console.log('AD API EMPTY');
-                  }else {
+                  } else {
                     console.log('SSP API ERROR');
                   }
                   setState({ load: false, err: true, data: {} });
                 }
               });
           } else if (error_code === '5') {
-            //광고 없음일 때
+            // 광고 없음일 때
             console.log('AD API EMPTY');
             setState({ load: false, err: true, data: {} });
           } else if (error_code !== '5' && error_code !== '0') {
@@ -210,11 +201,7 @@ const LandingMain = (props) => {
             });
             axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
           } else {
-<<<<<<< HEAD
-            console.log('HOUSE API CALL');
-=======
             console.log('AD API CALL');
->>>>>>> 275e7b81c5dfeec88c25a1922233168b126fcf8c
             const {
               click_tracking_api, html
             } = adsinfo.ad[0];
@@ -247,33 +234,33 @@ const LandingMain = (props) => {
           : { backgroundImage: 'url(\'/pngs/landing/background-whale.jpg\')' }
       }
     >
-      {/* 구글애드센스 테스트 */}
-      {/* <Hidden mdDown>
-        <Grid item xl={3} lg={2}>
-          {match.params.name === 'iamsupermazinga' && (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            minWidth: 160,
-            maxWidth: 320,
-            height: '100%',
-            alignItems: 'center',
-            flexDirection: 'column'
-          }}
-          >
-            <AdSense.Google
-              client="ca-pub-4320356355619389"
-              slot="6393653150"
-              style={{ display: 'inline-block', width: '160px', height: '600px' }}
-            />
-          </div>
-          )}
-
-
-        </Grid>
-
-      </Hidden> */}
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
+        {
+        match.params.name === 'kevin20222' ? (
+          <Grid>
+            <Button
+              onClick={() => { window.open('http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7'); }}
+            >
+                http 테스트
+            </Button>
+            <Button
+              onClick={() => { window.open('https://playapp.me/7bad6ab'); }}
+            >
+                market 테스트
+            </Button>
+            <Button
+              onClick={() => { window.open('https://onad.io/redirect/http'); }}
+            >
+                redirect http 테스트
+            </Button>
+            <Button
+              onClick={() => { window.open('http://onad.io/redirect/market'); }}
+            >
+                redirect market 테스트
+            </Button>
+          </Grid>
+        ) : null
+      }
         {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
         {!userDescData.loading && userDescData.data && (
           <LandingHero
@@ -288,7 +275,6 @@ const LandingMain = (props) => {
             totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
             levelData={levelData}
             isDesktopWidth={isDesktopWidth}
-            // mezzoData={mezzoData}
             mezzoData={{ data, loading, errorState }}
             name={match.params.name}
           />
@@ -303,46 +289,6 @@ const LandingMain = (props) => {
           />
         )}
       </Grid>
-      {/* manplus 하단 띠광고 테스트 */}
-      {/* <Hidden smUp>
-        <Grid item sm={4} xs={12}>
-          <Grid item>
-            {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && (
-               <img
-               className={classes.belt}
-               src={mezzoData.data.img_path}
-               >
-              </img>
-            )
-            }
-          </Grid>
-        </Grid>
-      </Hidden> */}
-
-      {/* <Hidden mdDown>
-        <Grid item xl={3} lg={2}>
-          {match.params.name === 'iamsupermazinga' && (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            minWidth: 160,
-            maxWidth: 320,
-            height: '100%',
-            alignItems: 'center',
-            flexDirection: 'column'
-          }}
-          >
-            <AdSense.Google
-              client="ca-pub-4320356355619389"
-              slot="6393653150"
-              style={{ display: 'inline-block' }}
-              format="auto"
-              responsive="true"
-            />
-          </div>
-          )}
-        </Grid>
-      </Hidden> */}
     </Grid>
   );
 };
