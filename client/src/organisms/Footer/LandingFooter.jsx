@@ -24,7 +24,14 @@ export default function LandingHero() {
   const classes = useStyles();
 
   return (
-    <Grid container justify="center" direction="column" alignItems="center" className={classes.root}>
+    <Grid
+      container
+      justify="center"
+      direction="column"
+      alignItems="center"
+      className={classes.root}
+      component="footer"
+    >
       <a href="https://onad.io">
         <img src="/images/logo/onad_logo_vertical.png" alt="" className={classes.logo} />
       </a>

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
 const Redirect = (props) => {
-  const { classes, match } = props;
+  const { match } = props;
   return (
     <React.Fragment>
       {match.params.name === 'http'
