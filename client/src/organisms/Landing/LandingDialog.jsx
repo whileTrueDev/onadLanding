@@ -13,6 +13,8 @@ import ReDo from '@material-ui/icons/Redo';
 // own function
 import { Typography } from '@material-ui/core';
 import setNumberFormat from '../../utils/lib/setNumberFormat';
+import isVideo from '../../utils/lib/isVideo';
+import VideoBanner from '../../atoms/Banner/VideoBanner';
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -107,7 +109,11 @@ export default function LandingDialog(props) {
                 ].linkTo);
             }}
           >
-            <img src={data.bannerSrc} alt="banner" className={classes.image} />
+            {isVideo(data.bannerSrc) ? (
+              <VideoBanner src={data.bannerSrc} alt="banner" className={classes.image} />
+            ) : (
+              <img src={data.bannerSrc} alt="banner" className={classes.image} />
+            )}
           </ButtonBase>
         </div>
 

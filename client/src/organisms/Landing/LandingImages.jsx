@@ -17,6 +17,8 @@ import useBannerClick from '../../utils/lib/hook/useBannerClick';
 import LandingDialog from './LandingDialog';
 // own functions
 import setNumberFormat from '../../utils/lib/setNumberFormat';
+import isVideo from '../../utils/lib/isVideo';
+import VideoBanner from '../../atoms/Banner/VideoBanner';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -154,7 +156,11 @@ export default function LandingImages(props) {
                   }}
                   className={classes.imageButton}
                 >
-                  <img src={banner.bannerSrc} alt="" className={classes.image} />
+                  {isVideo(banner.bannerSrc) ? (
+                    <VideoBanner src={banner.bannerSrc} alt="" className={classes.image} />
+                  ) : (
+                    <img src={banner.bannerSrc} alt="" className={classes.image} />
+                  )}
                   <div className={classes.imageBackdrop} />
                   <div className={classes.imageDesc}>
                     <Flag className={classes.iconOnImage} />

@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import { Router, Route, Switch } from 'react-router-dom';
+import history from './history';
 // Pages
 import LandingPage from './pages/Landing';
+import Redirect from './pages/Redirect';
 
 import * as serviceWorker from './serviceWorker';
 
-const history = createBrowserHistory();
+// const history = createBrowserHistory();
 
 ReactDOM.render(
   <Router history={history}>
-    <Route path="/:name" component={LandingPage} />
+    <Switch>
+      <Route path="/redirect/:name" component={Redirect} />
+      <Route path="/:name" component={LandingPage} />
+    </Switch>
   </Router>, document.getElementById('root')
 );
 

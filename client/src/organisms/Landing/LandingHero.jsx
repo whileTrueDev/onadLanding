@@ -6,15 +6,17 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 import Avatar from '@material-ui/core/Avatar';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
+import ButtonBase from '@material-ui/core/ButtonBase';
+
 // own function
+import axios from 'axios';
 import setNumberFormat from '../../utils/lib/setNumberFormat';
 // own component
 import LevelBar from '../../atoms/LevelBar/LevelBar';
 import Tooltip from '../../atoms/Tooltip/Tooltip';
+import Dynamic from './Dynamic';
 import apiHOST from '../../config/host';
-import axios from 'axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,30 +53,18 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold',
   },
   logo: {
-    right:'1px',
+    right: '1px',
     top: '33px',
-    position:'absolute',
-    textAlign:'right',
+    position: 'absolute',
+    textAlign: 'right',
     width: '15px',
-    height:'15px'
+    height: '15px'
   },
   image: {
     position: 'relative',
     [theme.breakpoints.down('xs')]: {
       width: '100% !important', // Overrides inline-style
       height: 'auto',
-    },
-    '&:hover, &$focusVisible': {
-      zIndex: 1,
-      '& $imageBackdrop': {
-        opacity: 0.15,
-      },
-      '& $imageMarked': {
-        opacity: 0,
-      },
-      '& $imageTitle': {
-        border: '4px solid currentColor',
-      },
     },
   },
   imageSrc: {
@@ -106,49 +96,36 @@ export default function LandingHero(props) {
   } = props;
   const classes = useStyles();
 
-  const handleClick = () =>{ 
-    axios.post(`${apiHOST}/api/manplus/click`, { 
-      click_api : mezzoData.data.click_api,
-      click_tracking_api: mezzoData.data.click_tracking_api 
-    })
-  }
+  const handleClick = () => {
+    if (!mezzoData.data.isSSP) {
+      console.log('HOUSE API CLICK');
+      axios.post(`${apiHOST}/api/manplus/click`, { name });
+      axios.get(mezzoData.data.click_tracking_api);
+    }
+  };
 
   return (
     <Grid container className={classes.root}>
-      {name === 'iamsupermazinga' && (
       <Hidden smUp>
         <Grid item sm={4} xs={12}>
           <Grid item>
-            {!mezzoData.loading && !mezzoData.errorState && ( 
-              <ButtonBase
-                focusRipple
-                className={classes.image}
-                onClick={handleClick}
-                style={{
-                  height:'50px'
-                }}
-              >
-                <a href={mezzoData.data.click_api} >
-                  <span
-                    className={classes.imageSrc}
-                    style={{
-                      backgroundImage: `url('${mezzoData.data.img_path}')`,
-                      width: "100%",
-                      height: 'auto'
-                    }}
-                    
-                  />
-                  <span className={classes.imageButton}>
-                    <img className={classes.logo} src={mezzoData.data.logo_img_path} alt=''/>
-                  </span>
-                </a>
-              </ButtonBase>
-            )
-            }
+            {!mezzoData.loading && !mezzoData.errorState && mezzoData.data && (
+            <ButtonBase
+              focusRipple
+              className={classes.image}
+              onClick={handleClick}
+            >
+              <Dynamic
+                html={mezzoData.data.html}
+                isSSP={mezzoData.data.isSSP}
+                name={name}
+                click_tracking_api={mezzoData.data.click_tracking_api}
+              />
+            </ButtonBase>
+            )}
           </Grid>
         </Grid>
       </Hidden>
-      )}
       {/* Avatar logo */}
       <Grid item sm={4} xs={12}>
         <Grid container justify="center">
