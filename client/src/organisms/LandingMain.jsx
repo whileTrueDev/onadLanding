@@ -256,22 +256,22 @@ const LandingMain = (props) => {
         match.params.name === 'kevin20222' ? (
           <Grid>
             <Button
-              onClick={() => { window.open('http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7'); }}
+              onClick={() => { document.location.href('http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7'); }}
             >
                 http 테스트
             </Button>
             <Button
-              onClick={() => { window.open('https://playapp.me/7bad6ab'); }}
+              onClick={() => { document.location.href('https://playapp.me/7bad6ab'); }}
             >
                 market 테스트
             </Button>
             <Button
-              onClick={() => { window.open('https://l.onad.io/redirect/http'); }}
+              onClick={() => { document.location.href('https://l.onad.io/redirect/http'); }}
             >
                 redirect http 테스트
             </Button>
             <Button
-              onClick={() => { window.open('https://l.onad.io/redirect/market'); }}
+              onClick={() => { document.location.href('https://l.onad.io/redirect/market'); }}
             >
                 redirect market 테스트
             </Button>
