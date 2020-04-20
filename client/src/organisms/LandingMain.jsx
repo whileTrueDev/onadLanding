@@ -8,6 +8,8 @@ import {
 } from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
+
 // sub components
 import LandingHero from './Landing/LandingHero';
 import LandingImagesLoading from './Landing/LandingImagesLoading';
@@ -255,26 +257,26 @@ const LandingMain = (props) => {
         {
         match.params.name === 'kevin20222' ? (
           <Grid>
-            <Button
-              onClick={() => { document.location.href('http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7'); }}
+            <a
+              href="http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7"
             >
                 http 테스트
-            </Button>
-            <Button
-              onClick={() => { document.location.href('https://playapp.me/7bad6ab'); }}
+            </a>
+            <a
+              href="https://playapp.me/7bad6ab"
             >
                 market 테스트
-            </Button>
-            <Button
-              onClick={() => { document.location.href('https://l.onad.io/redirect/http'); }}
+            </a>
+            <a
+              href="https://l.onad.io/redirect/http"
             >
                 redirect http 테스트
-            </Button>
-            <Button
-              onClick={() => { document.location.href('https://l.onad.io/redirect/market'); }}
+            </a>
+            <a
+              href="https://l.onad.io/redirect/market"
             >
                 redirect market 테스트
-            </Button>
+            </a>
           </Grid>
         ) : null
       }
