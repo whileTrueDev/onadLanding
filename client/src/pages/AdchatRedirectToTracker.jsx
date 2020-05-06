@@ -5,7 +5,7 @@ export default function AdchatRedirectToTracker(props) {
   const { match } = props;
 
   useEffect(() => {
-    window.location.href = `https://t.onad.io/adchat/${match.params.name}`;
+    window.location.href = `https://l.onad.io/${match.params.name}`;
   });
   return (
     <div />

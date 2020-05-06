@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // components
 import LandingMain from '../../organisms/LandingMain';
+import LandingMainError from '../../organisms/LandingMainError';
 import AppBar from '../../organisms/AppBar/AppBar';
 import Footer from '../../organisms/Footer/LandingFooter';
 import Error from '../../organisms/Error/LandingError';
@@ -32,27 +33,12 @@ export default function Landing(props) {
     <ThemeProvider theme={isDarkTheme === 'dark' ? darkTheme : lightTheme}>
       <CssBaseline />
 
-
-      <AppBar isDarkTheme={isDarkTheme} handleSearchChange={handleSearchChange} />
-
-      {userData.loading && (
-        <LandingLoading />
-      )}
-
-      {!userData.loading && userData.errorState && (
-        <Error />
-      )}
-
-      {!userData.loading && userData.data && (
-        <LandingMain
-          match={match}
-          isDesktopWidth={isDesktopWidth}
-          userData={userData.data}
-          searchText={searchText}
-        />
-      )}
-
-      <Footer />
+      <LandingMainError
+        match={match}
+        isDesktopWidth={isDesktopWidth}
+        userData={userData.data}
+        searchText={searchText}
+      />
 
     </ThemeProvider>
   );
