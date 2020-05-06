@@ -19,15 +19,15 @@ import useSearch from '../../utils/lib/hook/useSearch';
 export default function Landing(props) {
   const { match } = props;
   const isDesktopWidth = useMediaQuery('(min-width:600px)');
-  const userData = useFetchData('/api/user', { name: match.params.name });
+  // const userData = useFetchData('/api/user', { name: match.params.name });
   const { searchText, handleSearchChange } = useSearch();
 
   const [isDarkTheme, setDarkTheme] = React.useState('light');
-  React.useEffect(() => {
-    if (!userData.loading && userData.data) {
-      setDarkTheme(userData.data.creatorTheme);
-    }
-  }, [userData.loading, userData.data]);
+  // React.useEffect(() => {
+  //   if (!userData.loading && userData.data) {
+  //     setDarkTheme(userData.data.creatorTheme);
+  //   }
+  // }, []);
 
   return (
     <ThemeProvider theme={isDarkTheme === 'dark' ? darkTheme : lightTheme}>
@@ -36,7 +36,7 @@ export default function Landing(props) {
       <LandingMainError
         match={match}
         isDesktopWidth={isDesktopWidth}
-        userData={userData.data}
+        // userData={userData.data}
         searchText={searchText}
       />
 
