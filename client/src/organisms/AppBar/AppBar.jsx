@@ -5,8 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Hidden from '@material-ui/core/Hidden';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
+// import InputBase from '@material-ui/core/InputBase';
+// import SearchIcon from '@material-ui/icons/Search';
 
 
 const useStyles = makeStyles(theme => ({
@@ -61,7 +61,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function PrimarySearchAppBar(props) {
-  const { isDarkTheme, handleSearchChange } = props;
+  // handleSearchChange
+  const { isDarkTheme } = props;
   const classes = useStyles();
 
   return (
@@ -87,7 +88,7 @@ export default function PrimarySearchAppBar(props) {
 
           <div className={classes.grow} />
 
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIconWrapper}>
               <SearchIcon className={classes.searchIcon} />
             </div>
@@ -101,7 +102,7 @@ export default function PrimarySearchAppBar(props) {
               // 검색 기능
               onChange={handleSearchChange}
             />
-          </div>
+          </div> */}
 
           <Hidden mdDown>
             <div className={classes.grow} />

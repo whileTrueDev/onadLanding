@@ -3,18 +3,16 @@ import ReactDOM from 'react-dom';
 import { Router, Route, Switch } from 'react-router-dom';
 import history from './history';
 // Pages
-// import LandingPage from './pages/Landing';
+import LandingPage from './pages/Landing';
 // import Redirect from './pages/Redirect';
 
 import * as serviceWorker from './serviceWorker';
 import AdpanelRedirectToTracker from './pages/AdpanelRedirectToTracker';
 
-// const history = createBrowserHistory();
-
 ReactDOM.render(
   <Router history={history}>
     <Switch>
-      <Route path="/:name" component={AdpanelRedirectToTracker} />
+      <Route path="/:name" component={LandingPage} />
       <Route path="/adchat/:name" component={AdpanelRedirectToTracker} />
     </Switch>
   </Router>, document.getElementById('root')

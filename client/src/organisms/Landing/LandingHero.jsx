@@ -92,7 +92,7 @@ const useStyles = makeStyles(theme => ({
 export default function LandingHero(props) {
   const {
     user, userLogo, userDesc, levelData,
-    isDesktopWidth, bannerCount, totalClickCount, totalTransferCount, mezzoData, name
+    isDesktopWidth, bannerCount, totalClickCount, mezzoData, name
   } = props;
   const classes = useStyles();
 
@@ -174,22 +174,11 @@ export default function LandingHero(props) {
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'광고 조회 '}
+              {'광고 이동 '}
               { totalClickCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (
                 <span className={classes.bold}>{setNumberFormat(totalClickCount)}</span>
-              )}
-            </Typography>
-          </Grid>
-
-          <Grid item>
-            <Typography variant="h6" gutterBottom>
-              {'광고 이동 '}
-              { totalTransferCount === null ? (
-                <span className={classes.bold}>0</span>
-              ) : (
-                <span className={classes.bold}>{setNumberFormat(totalTransferCount)}</span>
               )}
             </Typography>
           </Grid>

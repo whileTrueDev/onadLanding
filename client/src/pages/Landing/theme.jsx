@@ -41,12 +41,7 @@ const rawTheme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: "'Work Sans', sans-serif",
-    fontSize: 14,
-    fontWeightLight: 300, // Work Sans
-    fontWeightRegular: 400, // Work Sans
-    fontWeightMedium: 700, // Roboto Condensed
-    fontFamilySecondary: "'Nanum Gothic', sans-serif",
+    fontFamily: '"NotoSansKR-Regular", "Sunflower", sans-serif',
   },
 });
 
@@ -86,14 +81,10 @@ const darkRawTheme = createMuiTheme({
       main: grey[400],
       dark: grey[700],
     },
+    card: '#585858'
   },
   typography: {
-    fontFamily: "'Work Sans', sans-serif",
-    fontSize: 14,
-    fontWeightLight: 300, // Work Sans
-    fontWeightRegular: 400, // Work Sans
-    fontWeightMedium: 700, // Roboto Condensed
-    fontFamilySecondary: "'Nanum Gothic', sans-serif",
+    fontFamily: '"NotoSansKR-Regular", "Sunflower", sans-serif',
   },
 });
 

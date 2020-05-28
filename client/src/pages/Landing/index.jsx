@@ -9,7 +9,9 @@ import AppBar from '../../organisms/AppBar/AppBar';
 import Footer from '../../organisms/Footer/LandingFooter';
 import Error from '../../organisms/Error/LandingError';
 import LandingLoading from '../../organisms/Loading/LandingLoading';
+
 // theme
+import '../../assets/onad.css';
 import { lightTheme, darkTheme } from './theme';
 // config
 import useFetchData from '../../utils/lib/hook/useDataFetch';
@@ -18,7 +20,7 @@ import useSearch from '../../utils/lib/hook/useSearch';
 export default function Landing(props) {
   const { match } = props;
   const isDesktopWidth = useMediaQuery('(min-width:600px)');
-  const userData = useFetchData('/api/user', { name: match.params.name });
+  const userData = useFetchData('/adpage/user', { name: match.params.name });
   const { searchText, handleSearchChange } = useSearch();
 
   const [isDarkTheme, setDarkTheme] = React.useState('light');

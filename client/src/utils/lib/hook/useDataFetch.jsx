@@ -24,7 +24,6 @@ const useFetchData = (initialUrl = '', params = {}) => {
 
       try {
         const response = await axios(url);
-
         if (!response.data.error) {
           // api 서버에서 올바른 결과를 받은 경우
           setData(response.data.result);

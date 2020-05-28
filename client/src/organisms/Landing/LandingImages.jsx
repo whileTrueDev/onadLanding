@@ -1,24 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import shortid from 'shortid';
 // material-ui
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
 // icons
-import ReDo from '@material-ui/icons/Redo';
-import Flag from '@material-ui/icons/Flag';
 // own handler
-import useBannerClick from '../../utils/lib/hook/useBannerClick';
-// own component
-import LandingDialog from './LandingDialog';
 // own functions
-import setNumberFormat from '../../utils/lib/setNumberFormat';
-import isVideo from '../../utils/lib/isVideo';
-import VideoBanner from '../../atoms/Banner/VideoBanner';
+import CPACampaigns from '../Campaigns/CPACampaignList';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -105,18 +95,9 @@ const useTabValue = () => {
 };
 
 export default function LandingImages(props) {
-  const { isDesktopWidth, bannerData, searchText } = props;
+  const { campaignData, isDesktopWidth } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
-  const { clickedList, handleClick, handleTransferClick } = useBannerClick(bannerData.data);
-
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  function handleDialogOpen(targetIndex) {
-    setDialogOpen(targetIndex);
-  }
-  function handleDialogClose() {
-    setDialogOpen(false);
-  }
   return (
     <Grid container className={classes.root}>
       {/* Tabs */}
@@ -133,72 +114,10 @@ export default function LandingImages(props) {
           {/* <Tab aria-label="plus" label="plus++" disabled /> */}
         </Tabs>
       </Grid>
+      
 
       {/* Image section */}
-      <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
-        {/* // 검색어에 해당하는 배너만을 필터링 */}
-        {clickedList
-          .filter(banner => (
-            searchText === null
-              ? banner
-              : banner.bannerDescription.concat(banner.companyDescription)
-                .toLowerCase()
-                .indexOf(searchText) !== -1
-          ))
-          .map((banner, index) => (
-            <Grid item xs={4} key={shortid.generate()}>
-              <div className={classes.imageContainer}>
-                <ButtonBase
-                  onClick={() => {
-                    handleClick(index);
-                    // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1
-                    handleDialogOpen(index + 1);
-                  }}
-                  className={classes.imageButton}
-                >
-                  {isVideo(banner.bannerSrc) ? (
-                    <VideoBanner src={banner.bannerSrc} alt="" className={classes.image} />
-                  ) : (
-                    <img src={banner.bannerSrc} alt="" className={classes.image} />
-                  )}
-                  <div className={classes.imageBackdrop} />
-                  <div className={classes.imageDesc}>
-                    <Flag className={classes.iconOnImage} />
-                    <Typography
-                      variant="h5"
-                      color="inherit"
-                      style={{ fontWeight: 'bold' }}
-                    >
-                      {setNumberFormat(banner.clickCount)}
-                    </Typography>
-                    <ReDo className={classes.iconOnImage} />
-                    <Typography
-                      variant="h5"
-                      color="inherit"
-                      style={{ fontWeight: 'bold' }}
-                    >
-                      {setNumberFormat(banner.transferCount)}
-                    </Typography>
-                  </div>
-                </ButtonBase>
-              </div>
-            </Grid>
-          ))}
-      </Grid>
-
-      {dialogOpen ? (
-        <LandingDialog
-          open={Boolean(dialogOpen)}
-          handleClose={handleDialogClose}
-          handleTransferClick={handleTransferClick}
-          // 0 인덱스가 false가 되어 첫번째 이미지는 open 되지않기때문에 + 1 했기 때문에 - 1
-          data={clickedList[dialogOpen - 1]}
-          indexOfThisData={dialogOpen - 1}
-        />
-      ) : (
-        null
-      )}
-
+      <CPACampaigns campaigns={campaignData.data} isDesktopWidth={isDesktopWidth}/>
     </Grid>
   );
 }

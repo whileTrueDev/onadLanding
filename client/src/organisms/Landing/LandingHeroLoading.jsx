@@ -51,10 +51,10 @@ export default function LandingHeroLoading(props) {
               <Skeleton width={80} height={40} />
             </Grid>
 
-            <Grid item xs={3}>
+            {/* <Grid item xs={3}>
               <Skeleton width={50} />
               <Skeleton width={80} />
-            </Grid>
+            </Grid> */}
           </Grid>
         )}
         {isDesktopWidth ? (
@@ -66,14 +66,14 @@ export default function LandingHeroLoading(props) {
       </Grid>
 
       {/* loyalty level visualization */}
-      {isDesktopWidth ? (
+      {/* {isDesktopWidth ? (
         <Grid item sm={1} xs={3}>
           <Skeleton width={130} />
           <Skeleton width={150} />
         </Grid>
       ) : (
         null
-      )}
+      )} */}
 
     </Grid>
   );

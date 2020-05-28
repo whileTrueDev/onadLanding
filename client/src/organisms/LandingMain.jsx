@@ -7,8 +7,6 @@ import {
   osName, osVersion, mobileModel, mobileVendor
 } from 'mobile-device-detect';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
 
 // sub components
 import LandingHero from './Landing/LandingHero';
@@ -16,7 +14,6 @@ import LandingImagesLoading from './Landing/LandingImagesLoading';
 import LandingImages from './Landing/LandingImages';
 import LandingNoAd from './Landing/LandingNoAd';
 import LandingHeroLoading from './Landing/LandingHeroLoading';
-
 // from my own hooks
 import useFetchData from '../utils/lib/hook/useDataFetch';
 import usePostData from '../utils/lib/hook/usePostData';
@@ -58,7 +55,7 @@ const useStyles = makeStyles(theme => ({
 const LandingMain = (props) => {
   const classes = useStyles();
   const {
-    match, isDesktopWidth, userData, searchText
+    match, isDesktopWidth, userData
   } = props;
 
   // title 설정
@@ -78,10 +75,11 @@ const LandingMain = (props) => {
   };
   const getOsIndex = () => (osName === 'iOS' ? '2' : '3');
 
-  const userDescData = useFetchData('/api/description', { name: match.params.name });
-  const bannerData = useFetchData('/api/banner', { name: match.params.name });
-  const clickData = useFetchData('/api/clicks', { name: match.params.name });
-  const levelData = useFetchData('/api/level', { name: match.params.name });
+  // const bannerData = useFetchData('/adpage/banner', { name: match.params.name });
+  const clickData = useFetchData('/adpage/clicks', { name: match.params.name });
+  const campaignData = useFetchData('/adpage/campaigns' , {name: match.params.name });
+
+  usePostData('/adpage/visit', { name: match.params.name });
 
   const params = {
     e_version: '2',
@@ -142,7 +140,7 @@ const LandingMain = (props) => {
                         click_tracking_api, html, isSSP: false
                       }
                     });
-                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+                    axios.post(`${apiHOST}/adpage/manplus/impression`, { name: match.params.name });
                   } else {
                     setState({ load: false, err: true, data: {} });
                   }
@@ -160,7 +158,7 @@ const LandingMain = (props) => {
                         html: adm, click_tracking_api: ssp_click, isSSP: true
                       }
                     });
-                    axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+                    axios.post(`${apiHOST}/adpage/manplus/impression`, { name: match.params.name });
                     // 노출 API가 null일경우 회피하기위한 에러핸들링
                     if (ssp_imp !== null || ssp_imp !== undefined || ssp_imp !== '' || ssp_imp !== 'null') {
                       if (ssp_imp.length !== 0) {
@@ -200,7 +198,7 @@ const LandingMain = (props) => {
                 click_tracking_api, html, isSSP: false
               }
             });
-            axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+            axios.post(`${apiHOST}/adpage/manplus/impression`, { name: match.params.name });
           } else {
             console.log('AD API CALL');
             const {
@@ -213,14 +211,12 @@ const LandingMain = (props) => {
                 click_tracking_api, html, isSSP: false
               }
             });
-            axios.post(`${apiHOST}/api/manplus/impression`, { name: match.params.name });
+            axios.post(`${apiHOST}/adpage/manplus/impression`, { name: match.params.name });
           }
         });
     }
     // eslint-disable-next-line
   }, []);
-
-  usePostData('/api/visit', { name: match.params.name });
 
   return (
     <Grid
@@ -236,58 +232,26 @@ const LandingMain = (props) => {
       }
     >
       <Grid item xs={12} sm={12} md={12} lg={8} xl={6} className={classes.container}>
-        {userDescData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
-        {!userDescData.loading && userDescData.data && (
+      {clickData.loading && (<LandingHeroLoading isDesktopWidth={isDesktopWidth} />)}
+      {!clickData.loading && clickData.data && (
           <LandingHero
             userTheme={userData.userTheme}
             user={userData.creatorName}
             userLogo={userData.creatorLogo}
-            userDesc={userDescData.data.creatorDesc}
-            userDescTitle={userDescData.data.creatorDescTitle}
-            userDescLink={userDescData.data.creatorDescLlink}
+            userDesc={userData.creatorDesc}
             bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
             totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
-            totalTransferCount={clickData.loading ? '-' : clickData.data.totalTransferCount}
-            levelData={levelData}
+            levelData={userData}
             isDesktopWidth={isDesktopWidth}
             mezzoData={{ data, loading, errorState }}
             name={match.params.name}
           />
-        )}
-        {
-        match.params.name === 'kevin20222' ? (
-          <Grid>
-            <a
-              href="http://track.shallweadcorp.com/track/cox3/1853179970/986322556?sub_param1=ap_a6454_4490c7_c4f350d3cc87d17bd06bbedfe7cba291&aff_id=4490c7"
-            >
-                http 테스트
-            </a>
-            <a
-              href="https://playapp.me/7bad6ab"
-            >
-                market 테스트
-            </a>
-            <a
-              href="https://l.onad.io/redirect/http"
-            >
-                redirect http 테스트
-            </a>
-            <a
-              href="https://l.onad.io/redirect/market"
-            >
-                redirect market 테스트
-            </a>
-          </Grid>
-        ) : null
-      }
-        {bannerData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
-        {!bannerData.loading && !bannerData.data && (<LandingNoAd />)}
-        {!bannerData.loading && bannerData.data && (
-          <LandingImages
-            isDesktopWidth={isDesktopWidth}
-            bannerData={bannerData}
-            searchText={searchText}
-          />
+      )}
+     
+        {campaignData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
+        {!campaignData.loading && !campaignData.data && (<LandingNoAd />)}
+        {!campaignData.loading && campaignData.data && (
+          <LandingImages campaignData = {campaignData}  isDesktopWidth={isDesktopWidth}/>
         )}
       </Grid>
     </Grid>

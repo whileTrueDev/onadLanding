@@ -94,11 +94,11 @@ export default function LandingImageLoading(props) {
       </Grid>
 
       {/* Image section */}
-      <Grid container justify="flex-start" alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
+      <Grid container justify={isDesktopWidth ? "flex-start" : "center"}  alignItems="center" spacing={isDesktopWidth ? 0 : 0} className={classes.imageSection}>
         {dummyArray.map(() => (
-          <Grid item xs={4} key={shortid.generate()}>
+          <Grid item xs={10} md={3} key={shortid.generate()}>
             <div className={classes.imageContainer}>
-              <Skeleton className={classes.image} height={isDesktopWidth ? 180 : 100} />
+              <Skeleton className={classes.image} height={isDesktopWidth ? 280 : 280} />
             </div>
           </Grid>
         ))}
