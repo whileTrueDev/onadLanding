@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import shortid from 'shortid';
+import apiHOST from '../../config/host';
 import {
   Typography, Divider, Collapse
 } from '@material-ui/core';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import useTheme from '@material-ui/core/styles/useTheme';
 import TransparentButton from '@material-ui/core/Button';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDownOutlined';
@@ -15,8 +18,6 @@ import Card from '../../atoms/Card/Card';
 import Button from '../../atoms/CustomButtons/Button';
 
 // types
-// hooks
-
 const  AdpickCampaignTypeEnum = {
   INSTALL : '1', 
   SIGNUP : '3', 
@@ -24,10 +25,34 @@ const  AdpickCampaignTypeEnum = {
   RESERVATION : '16'
 } 
 
+// styles
+const useStyles = makeStyles(theme => ({
+  img : {
+    borderRadius: 10 
+  },
+  card: {
+    backgroundColor : theme.palette.card
+  },
+  desc: {
+    paddingLeft: 16, 
+    display: 'flex', 
+    alignItems: 'center'
+  },
+  text: {
+    padding: 16
+  },
+  button: {
+    padding: '0px 16px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 
-export default function CPACampaigns({ campaigns, isDesktopWidth }) {
+}));
+
+export default function CPACampaigns({ campaigns, isDesktopWidth, name }) {
   const theme = useTheme();
-
+  const classes = useStyles();
   // 상세보기 open state
   const [openIndex, setOpenIdx] = useState(null);
   function handleOpen(num) {
@@ -54,19 +79,7 @@ export default function CPACampaigns({ campaigns, isDesktopWidth }) {
         .filter((cam) => !(cam.apType === AdpickCampaignTypeEnum.INSTALL))
         .map((item, idx) => (
           <GridItem key={item.apOffer} xs={10} md={4} lg={3} xl={3}>
-            <Card style={{backgroundColor : theme.palette.card}}>
-              {/* <div style={{
-                position: 'absolute',
-                left: 0,
-                padding: 8,
-                backgroundColor: theme.palette.success.xLight,
-                borderRadius: '0px 0px 5px 0px'
-              }}
-              >
-                <Typography variant="body2" style={{ color: 'black' }}>
-                  진행중
-                </Typography>
-              </div> */}
+            <Card className= {classes.card}>
               <div style={{
                 padding: 16,
                 display: 'flex',
@@ -75,7 +88,7 @@ export default function CPACampaigns({ campaigns, isDesktopWidth }) {
                 justifyContent: 'center'
               }}
               >
-                <img src={ item && item.apImages && item.apImages.icon} alt="" height="140" width="140" style={{ borderRadius: 10 }} />
+                <img src={ item && item.apImages && item.apImages.icon} alt="" height="140" width="140" className= {classes.img} />
 
                 <Typography style={{
                   fontWeight: 800,
@@ -92,7 +105,7 @@ export default function CPACampaigns({ campaigns, isDesktopWidth }) {
                 {/* 캠페인 타입 */}
               </div>
 
-              <div style={{ paddingLeft: 16, display: 'flex', alignItems: 'center' }}>
+              <div className={classes.desc}>
                 <TransparentButton size="small" onClick={() => { handleOpen(idx); }}>
                   {openIndex === idx ? (<ArrowDropDownIcon />) : (<ArrowRightIcon />)}
                   <Typography variant="caption">
@@ -104,7 +117,7 @@ export default function CPACampaigns({ campaigns, isDesktopWidth }) {
 
               {(item.apHeadline || item.apKPI || item.apAppPromoText) && (
                 <Collapse in={openIndex === idx}>
-                  <div style={{ padding: 16 }}>
+                  <div className= {classes.text}>
                     {item.apHeadline && (
                       <>
                         {item.apHeadline.split('\n').map((v) => (
@@ -118,17 +131,12 @@ export default function CPACampaigns({ campaigns, isDesktopWidth }) {
                 </Collapse>
               )}
               <Divider />
-              <div style={{
-                padding: '0px 16px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-              >
+              <div className= {classes.button}>
                 <Button
                   color="primary"
                   onClick={() => {
                     // 우리 클릭 트래킹 추가.
+                    axios.post(`${apiHOST}/adpage/banner/click`, { campaignId: item.campaignId, creatorId: item.creatorId });
                     window.location.href = item.apTrackingLink;
                   }}
                   style={{

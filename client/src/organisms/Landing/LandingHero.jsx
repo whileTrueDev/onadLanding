@@ -174,7 +174,7 @@ export default function LandingHero(props) {
 
           <Grid item>
             <Typography variant="h6" gutterBottom>
-              {'광고 이동 '}
+              {'광고 참여 '}
               { totalClickCount === null ? (
                 <span className={classes.bold}>0</span>
               ) : (

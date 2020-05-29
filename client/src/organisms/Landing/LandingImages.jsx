@@ -95,7 +95,7 @@ const useTabValue = () => {
 };
 
 export default function LandingImages(props) {
-  const { campaignData, isDesktopWidth } = props;
+  const { campaignData, isDesktopWidth, name } = props;
   const classes = useStyles();
   const { value, handleTabChange } = useTabValue();
   return (
@@ -117,26 +117,14 @@ export default function LandingImages(props) {
       
 
       {/* Image section */}
-      <CPACampaigns campaigns={campaignData.data} isDesktopWidth={isDesktopWidth}/>
+      <CPACampaigns campaigns={campaignData.data} isDesktopWidth={isDesktopWidth} name={name}/>
     </Grid>
   );
 }
 
 LandingImages.propTypes = {
   isDesktopWidth: PropTypes.bool.isRequired,
-  bannerData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
-  searchText: PropTypes.string
+  campaignData: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired
 };
 
-LandingImages.defaultProps = {
-  bannerData: [{
-    clicked: false,
-    clickSuccess: false,
-    clickError: '',
-    campaignId: '',
-    creatorId: '',
-    clickCount: 0,
-    bannerSrc: '',
-  }],
-  searchText: null
-};
+

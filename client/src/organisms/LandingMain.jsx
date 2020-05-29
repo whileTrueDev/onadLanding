@@ -75,10 +75,10 @@ const LandingMain = (props) => {
   };
   const getOsIndex = () => (osName === 'iOS' ? '2' : '3');
 
-  // const bannerData = useFetchData('/adpage/banner', { name: match.params.name });
   const clickData = useFetchData('/adpage/clicks', { name: match.params.name });
   const campaignData = useFetchData('/adpage/campaigns' , {name: match.params.name });
 
+  // 방문처리.
   usePostData('/adpage/visit', { name: match.params.name });
 
   const params = {
@@ -239,7 +239,8 @@ const LandingMain = (props) => {
             user={userData.creatorName}
             userLogo={userData.creatorLogo}
             userDesc={userData.creatorDesc}
-            bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
+            // bannerCount={clickData.loading ? '-' : clickData.data.bannerCount}
+            bannerCount = {(campaignData.loading && !campaignData.data) ? '-': campaignData.data.length}
             totalClickCount={clickData.loading ? '-' : clickData.data.totalClickCount}
             levelData={userData}
             isDesktopWidth={isDesktopWidth}
@@ -249,10 +250,10 @@ const LandingMain = (props) => {
       )}
      
         {campaignData.loading && (<LandingImagesLoading isDesktopWidth={isDesktopWidth} />)}
-        {!campaignData.loading && !campaignData.data && (<LandingNoAd />)}
         {!campaignData.loading && campaignData.data && (
-          <LandingImages campaignData = {campaignData}  isDesktopWidth={isDesktopWidth}/>
+          <LandingImages campaignData = {campaignData}  isDesktopWidth={isDesktopWidth} name={match.params.name} />
         )}
+        {!campaignData.loading && campaignData.data  && campaignData.data.length == 0 && (<LandingNoAd />)}
       </Grid>
     </Grid>
   );

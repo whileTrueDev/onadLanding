@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     borderTop: '0.5px solid'
   },
   h2: {
-    marginTop: theme.spacing(8)
+    marginTop: theme.spacing(4),
+    fontSize : "22px"
   }
 }));
 

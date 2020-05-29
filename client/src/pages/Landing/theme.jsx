@@ -39,6 +39,7 @@ const rawTheme = createMuiTheme({
       main: grey[400],
       dark: grey[700],
     },
+    card: '#FFFFFF'
   },
   typography: {
     fontFamily: '"NotoSansKR-Regular", "Sunflower", sans-serif',
@@ -102,6 +103,7 @@ const lightTheme = {
     background: {
       ...rawTheme.palette.background,
       default: rawTheme.palette.background,
+      paper: '#F7F7F7'
     },
   },
   typography: {
